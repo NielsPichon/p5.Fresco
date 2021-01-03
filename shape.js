@@ -57,15 +57,14 @@ function drawNormal(nrm, pt, s, l = 10) {
   return n;
 }
 
-// container class describing a Point object
+// container class describing a Point object. A point object is a p5.Vector with a color,
+// a radius, a transform and a potential owner
 class Point extends p5.Vector{
   constructor(position) {
     super(position.x, position.y, position.z);
     this.rotation = 0;
     this.color = [255, 255, 255, 255];
     this.radius = 1;
-    this.velocity = createVector(0, 0);
-    this.mass = 1;
     this.scale = createVector(1, 1);
     this.owner;
   }
@@ -79,17 +78,6 @@ class Point extends p5.Vector{
   }
 
 
-  // Modifies the position of the point based on its velocity
-  updatePosition(dt) {
-    this.add(this.velocity * dt);
-
-    if (this.owner) {
-      this.owner.updateBounds = true;
-      this.owner.updateLengths = true;
-    }
-  }
-
-
   // Checks whether all properties are equal. Is so, the other point
   // is considered the same as this one.
   // This ignores ownership so 2 points belonging to 2 different shapes will
@@ -98,21 +86,21 @@ class Point extends p5.Vector{
     return this.position().equals(pt.position()) &&
       this.rotation == pt.rotation &&
       this.radius == pt.radius &&
-      this.velocity.equals(pt.velocity) &&
-      this.mass == pt.mass &&
       this.scale.equals(pt.scale) &&
       this.color[0] == pt.color[0] &&
       this.color[1] == pt.color[1] &&
       this.color[2] == pt.color[2] &&
       this.color[3] == pt.color[3];    
   }
-  
+
+
   // returns a copy of the position of the point as a
   // p5.Vector
   position() {
     return createVector(this.x, this.y, this.z);
   }
   
+
   // set a provided p5.Vector as the new position of this
   // point
   setPosition(nu_pos) {
@@ -121,6 +109,7 @@ class Point extends p5.Vector{
     this.z = nu_pos.z;
   }
   
+
   // returns a deepcopy of this point
   copy() {
     // ugly but avoids issues with cyclic references
@@ -128,8 +117,6 @@ class Point extends p5.Vector{
     let nu_pt = new Point(this.position());
     nu_pt.rotation = this.rotation;
     nu_pt.radius = this.radius;
-    nu_pt.velocity = this.velocity.copy();
-    nu_pt.mass = this.mass;
     nu_pt.scale = this.scale.copy();
     nu_pt.owner = this.owner;
     arrayCopy(this.color, nu_pt.color);
@@ -165,7 +152,6 @@ class Shape {
     this.boundingBox = []; // DO NOT CALL DIRECTLY. Use boundingBox() instead.
     this.updateLengths = true; // whether the edge length should be recomputed
     this.edgeLengths = [];
-    this.velocity = createVector(0, 0);
   }
 
 
@@ -250,6 +236,7 @@ class Shape {
     }
   }
 
+
   numberVertices() {
     let nrm = this.normals();
     for (let i = 0; i < this.vertices.length - 1; i++) {
@@ -265,6 +252,7 @@ class Shape {
         nrm[this.vertices.length - 1].copy().mult(20))));
     }
   }
+
 
   // returns the world position of points
   applyTransform(vtx) {
@@ -537,14 +525,6 @@ class Shape {
     
     return nu_pt;
   }
-  
-  // move shape and its vertices
-  updatePosition(dt) {
-    this.position += this.velocity * dt;
-    for (let i = 0; i < this.vertices.length[i]; i++) {
-      this.vertices[i].updatePosition(dt);
-    }
-  }
 
 
   // set the center of rotation as the center of the boundingBox
@@ -665,6 +645,7 @@ class Shape {
     return nrm;
   }
   
+
   // returns true if the the shape is clockwise
   isClockwise() {
     this.getBoundingBox();
@@ -692,7 +673,6 @@ class Shape {
     nu_shape.noStroke = this.noStroke;
     nu_shape.noFill = this.noFill;
     nu_shape.strokeWeight = this.strokeWeight;
-    nu_shape.velocity = this.velocity.copy();
 
     return nu_shape;
   }
@@ -1219,10 +1199,6 @@ function resample(shape, num_points = 0, offset=true, approx=false,
     }
     pt.radius = shape.vertices[j].radius * (1 - t) +
       shape.vertices[j + 1].radius * t;
-    pt.velocity = shape.vertices[j].velocity.copy().mult(1- t).add(
-      shape.vertices[j + 1].velocity.copy().mult(t));
-    pt.mass = shape.vertices[j].mass * (1 - t) +
-      shape.vertices[j + 1].mass * t;
     pt.scale = shape.vertices[j].scale.copy().mult(1 - t).add(
       shape.vertices[j + 1].scale.copy().mult(t));
 
@@ -1280,10 +1256,6 @@ function divide(shape, num_division, approx=false) {
       vtx.radius = nu_shape.vertices[i].radius * (1 - t) +
         nu_shape.vertices[i + 1].radius * t;
       
-      vtx.velocity = nu_shape.vertices[i].velocity.copy().mult(1 - t).add(
-        nu_shape.vertices[i + 1].velocity.copy().mult(t));
-      vtx.mass = nu_shape.vertices[i].mass * (1 - t) +
-        nu_shape.vertices[i + 1].mass * t;
       vtx.scale = nu_shape.vertices[i].scale.copy().mult(1 -t).add(
         nu_shape.vertices[i + 1].scale.copy().mult(t));
       append(nu_vtx, vtx.copy());
@@ -1515,13 +1487,6 @@ function copyToPoints(shape, points) {
     nu_shape.scale.mult(points[i].scale);
     nu_shape.updateBounds = true;
     nu_shape.updateLengths = true;
-    nu_shape.velocity = points[i].velocity.copy();
-    // if point has an owner, add the owners's velocity to the point's (times its scale)
-    if (points[i].owner) {
-      nu_shape.velocity.add(
-        points[i].owner.velocity.copy().mult(
-          points[i].owner.scale));
-    }
     append(shapes, nu_shape.copy());
   }
 
