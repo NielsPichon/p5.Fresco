@@ -113,6 +113,14 @@ class Particle extends Point {
         append(particles, this);
     }
 
+    asPoint() {
+        let nu_point = new Point(this.position());
+        nu_point.color = this.color;
+        nu_point.rotation = this.rotation;
+        nu_point.radius = this.radius;
+        nu_point.scale = this.scale.copy();
+        return nu_point;
+    }
 
     // reads the forces buffer and computes the acceleration accordingly
     updateAcceleration() {
@@ -153,12 +161,12 @@ class Particle extends Point {
         // resolve position
         if (this.simulatePhysics) {
             // update the acceleration
-            updateAcceleration();
+            this.updateAcceleration();
             // update position based on the acceleration
             this.velocity.add(this.acceleration.copy().mult(dt));
 
             // solve for collisions if relevant
-            if (this.handleCollisions()) {
+            if (this.handleCollisions) {
                 solveCollision(this, dt);
             }
             else {
@@ -176,10 +184,10 @@ class Particle extends Point {
         // position to the trail shape vertices (or create it)
         if (this.leaveTrail) {
             if (this.trail) {
-                append(this.trail.vertices, Point(this).copy());
+                append(this.trail.vertices, this.asPoint());
             }
             else {
-                this.trail = new Shape([Point(this).copy()]);
+                this.trail = new Shape([this.asPoint()]);
             }
         }
     }
@@ -187,7 +195,13 @@ class Particle extends Point {
 
     draw() {
         if (this.leaveTrail) {
-            this.trail.draw();
+            if (this.trail && this.trail.vertices.length > 1) {
+                this.trail.draw(true);
+            }
+            else {
+                stroke(this.color);
+                PPoint(this);
+            }
         }
         else {
             stroke(this.color);
@@ -358,6 +372,9 @@ class Emitter {
         this.burst = false;
 
         this.isDead = false;
+
+        // register emitter
+        append(emitters, this);
     }
 
     spawn() {}
@@ -366,14 +383,14 @@ class Emitter {
 
 class PointEmitter extends Emitter {
     constructor(position) {
-        this.position = position;
         super();
+        this.position = position;
     }
 
     spawn() {
         let t;
         for (let i = 0; i < this.spawnRate; i++) {
-            if (random() > this.spawnProbability) {
+            if (random() <= this.spawnProbability) {
                 let nu_particle = new Particle(this.position);
 
                 // assign random velocity in range
@@ -495,7 +512,7 @@ class ShapeEmitter extends Emitter {
 }
 
 // simulates a single step
-function simulate_step(real_time = false, dT = 1) {
+function simulationStep(real_time = false, dT = 0.01) {
     // update current simulation time, either using real time
     // (may lead to reproducibility issues), or a set time step
     if (real_time) {
