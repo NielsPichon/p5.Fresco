@@ -513,7 +513,6 @@ class Shape {
       
       if (!approx) {
         let dt = 1 / resolution;
-        let t = 0;
         let l = 0;
 
         // We discretize the integration by taking resolution points along
@@ -521,10 +520,8 @@ class Shape {
         let a2 = d;
         let a1;
         for (let  t = 0; t < 1; t += dt) {
-        // while(l / this.edgeLengths[edge_idx] < interp ) {
           a1 = a2.copy();
           // compute next point
-          t += dt;
           a2 = a.copy().mult(t * t * t).add(
             b.copy().mult(t * t)).add(
             c.copy().mult(t)).add(d);
@@ -1345,9 +1342,9 @@ function scatter(shape, num_points = 100,
       l -= t;
       l /= shape.edgeLengths[j];
       l = 1 - l;
-      append(vtx, shape.edgeInterpolation(l, j, approx)); 
+      append(vtx, shape.edgeInterpolation(l, j, 100, approx)); 
     }
-  } 
+  }
   else {
     if (!shape.isClosed()) {
       throw "Points can not be scattered within an open shape." + 
