@@ -125,6 +125,11 @@ class Point extends p5.Vector{
 }
 
 
+// simple utility to create a point from coordinates
+function createPoint(x, y, z=0) {
+  return new Point(createVector(x, y, z));
+}
+
 // Container for all point based shapes
 // Note that for easier handling in functions,
 // the class has no understanding of closed shapes.
@@ -142,7 +147,7 @@ class Shape {
     this.position = createVector(0, 0);
     this.rotation = 0;
     this.scale = createVector(1, 1);
-    this.stroke = [255, 255, 255, 255];
+    this.color = [255, 255, 255, 255];
     this.fillColor = [255, 255, 255, 255];
     this.noStroke = false;
     this.noFill = true;
@@ -160,7 +165,7 @@ class Shape {
     if (this.noStroke && !usePointColor) {
       noStroke();
     } else {
-      stroke(this.stroke);
+      stroke(this.color);
       strokeWeight(this.strokeWeight);
     }
     
@@ -228,6 +233,7 @@ class Shape {
 
   // draws only the vertices of the shape
   drawPoints() {
+    stroke(this.color);
     strokeWeight(this.strokeWeight + 2);
 
     for (let i = 0; i < this.vertices.length; i++) {
@@ -236,6 +242,50 @@ class Shape {
     }
   }
 
+
+  // draw scattered points along contour.
+  // diffusivity defines how far from the original
+  // line points may be moved
+  drawScattered(num_points = 1000, diffusivity = 5, minWeight = .5, maxWeight = 2) {
+    stroke(this.color);
+    let p = scatter(this, num_points);
+
+    let theta = 0;
+    let r = 0;
+    for (let i = 0; i < p.length; i++) {
+      r = random(0, diffusivity);
+      theta = random(0, 2 * Math.PI);
+      p[i].x += r * Math.cos(theta);
+      p[i].y += r * Math.sin(theta);
+
+      strokeWeight(random(minWeight, maxWeight));
+      PPoint(p[i]);
+    }
+  }
+
+
+  // draws multiple lines on top of one another
+  // with a bit of noise. 
+  noisyDraw(num_lines, diffusivity = 5, line_opacity = 128, close = true) {
+    let tmp_s = this.copy();
+    tmp_s.color[3] = line_opacity;
+    let j;
+    let r;
+    let theta;
+    for (let i = 0; i < num_lines; i++) {
+      for (j = 0; j < tmp_s.vertices.length; j++) {
+        r = random(0, diffusivity);
+        theta = random(0, 2 * Math.PI);
+        tmp_s.vertices[j].x = this.vertices[j].x + r * Math.cos(theta);
+        tmp_s.vertices[j].y = this.vertices[j].y + r * Math.sin(theta);
+      }
+      if (this.isClosed() && close) {
+        tmp_s.vertices[tmp_s.vertices.length - 1] = tmp_s.vertices[0];
+      }
+
+      tmp_s.draw();
+    }
+  }
 
   numberVertices() {
     let nrm = this.normals();
@@ -429,7 +479,7 @@ class Shape {
       // simple linear interpolation
       let l = edge_idx + 1;
       if (l > this.vertices.length - 1) {
-        if (this.vertices[0].equals(this.vertices[this.vertices.length - 1])) {
+        if (this.isClosed()) {
           l = 0;
         }
         else {
@@ -668,7 +718,7 @@ class Shape {
     nu_shape.position = this.position.copy();
     nu_shape.rotation = this.rotation;
     nu_shape.scale = this.scale.copy();
-    arrayCopy(this.stroke, nu_shape.stroke);
+    arrayCopy(this.color, nu_shape.color);
     arrayCopy(this.fillColor, nu_shape.fillColor);
     nu_shape.noStroke = this.noStroke;
     nu_shape.noFill = this.noFill;
