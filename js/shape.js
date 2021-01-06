@@ -1676,6 +1676,79 @@ function matchPoints(A, B) {
 }
 
 
+// given a function and a set of coordinates, this function returns the
+// displaced coordinates following the gradient of the function which takes
+// x and y coordinates as input and returns a value in the [0, 1] range
+// The function also takes as argument the amplitude of the deformation,
+// as well as the derivative step
+function gradDistort(point, func, amplitude, step = 1) {
+  // compute the gradient
+  let grad = createVector(
+    func(point.x + step, point.y), func(point.x, point.y + step)).sub(
+      createVector(
+        func(point.x - step, point.y), func(point.x, point.y - step)
+      )
+    ).div(2 * step);
+  // move the point in the opposite direction to the gradient by the
+  // specified amplitude
+  return point.copy().add(grad.mult(-amplitude));
+}
+
+
+// distorts an image using some simulated depth.
+// This works by stretching the uv coordinates to wrap around the simulated
+// geometry, assuming white means an elevation of "amplitude" and black means 0
+function distort(point, func, amplitude, step) {
+  // compute the original uv coordinates of the point
+  let uv = createVector(point.x / width + 0.5, point.y / height + 0.5);
+
+  // compute the new "length" along the X and Y directions
+  let lenX = 0;
+  let lenY = 0;
+  let buffer = func(-width / 2, point.y);
+  let depth;
+  for (let i = - width / 2 + step; i < width / 2; i += step) {
+    depth = func(i, point.y);
+    lenX += createVector(step, (depth - buffer) * amplitude).mag();
+    buffer = depth;
+  }
+  buffer = func(point.x, -height / 2);
+  for (let i = - height / 2 + step; i < height / 2; i += step) {
+    depth = func(point.x, i);
+    lenY += createVector(step, (depth - buffer) * amplitude).mag();
+    buffer = depth;
+  }
+
+  let nu_pt = point.copy()
+  // find the point in x which corresponds to the u coordinate
+  // and same thing with y and v
+  let u = 0;
+  let v = 0;
+  buffer = func(-width / 2, point.y);
+  for (let i = - width / 2 + step; i < width / 2; i += step) {
+    depth = func(i, point.y);
+    u += createVector(step, (depth - buffer) * amplitude).mag();
+    buffer = depth;
+    if (u / lenX >= uv.x) {
+      nu_pt.x = i;
+      break; 
+    }
+  }
+  buffer = func(point.x, -height / 2);
+  for (let i = - height / 2 + step; i < height / 2; i += step) {
+    depth = func(point.x, i);
+    v += createVector(step, (depth - buffer) * amplitude).mag();
+    buffer = depth;
+    if (v / lenY >= uv.y) {
+      nu_pt.y = i;
+      break; 
+    }
+  }
+
+  return nu_pt;
+}
+
+
 // Boolean operation which returns the union of B from A.
 // If either A or B is not closed, the last point will be
 // considered as connected to the first.
