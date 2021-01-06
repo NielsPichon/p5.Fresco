@@ -15,6 +15,9 @@ let lines = [];
 function setup() {
   createCanvas(500, 500);
 
+
+  print(colorFromHex('b72196'));
+
   // create a grid of lines
   for (let  i = 0; i < num_lines; i++) {
     append(lines, new Shape([createPoint(-width / 2, - height / 2 + (i + 1) * height / (num_lines + 1)),

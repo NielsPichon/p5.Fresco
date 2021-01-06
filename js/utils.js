@@ -30,3 +30,33 @@ function colorFromHex(hex, A = 255) {
   let B = parseInt('0x' + hex[4] + hex[5]);
   return [R, G, B, A];
 }
+
+
+// The bellow function is a handmade tailored interpolant 
+// between 0 and 1 in an S shaped manner (obtained by solving a 4th order 
+// polynomial with 0 derivative in 0 and 1 and going through 0 and 1 at these points
+// https://tinyurl.com/y23km6u5
+function SCurve(t) {
+  return (t * t * t * (t * (t * 6 - 15) + 10));
+}
+
+
+// a GLSL inspired smooth step
+function smoothstep(t) {
+  return t * t * (3 - 2 * t);
+}
+
+
+// invert smoothstep
+function invertSmoothstep(t) {
+  return 0.5 - Math.sin(Math.asin(1.0 - 2.0 * t) / 3.0);
+}
+
+
+// a function which calls smoothstep in a loop to get steeper step
+function steeperStep(t, n) {
+  for (let i = 0; i < n; i++) {
+    t = smoothstep(t);
+  }
+  return t;
+}

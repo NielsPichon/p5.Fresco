@@ -214,3 +214,26 @@ function normalizedPerlin(x, y, z) {
   let n = noise(x, y, z);
   return map(n, -sqrt(3) / 4  + 0.5, sqrt(3) / 4 + 0.5, 0, 1);
 }
+
+
+// ridged noise is absolute value of perlin when mapped between -1 and 1
+function ridgedNoise(x, y) {
+  return Math.abs(map(noise(x, y), 0, 1, -1, 1));
+}
+
+
+function ridgedNoise(x, y, z) {
+  return Math.abs(map(noise(x, y, z), 0, 1, -1, 1));
+}
+
+
+// normalized ridged noise
+function normalizedRidgedNoise(x, y) {
+  return Math.abs(map(normalizedPerlin(x, y), 0, 1, -1, 1));
+}
+
+
+// normalized ridged noise
+function normalizedRidgedNoise(x, y, z) {
+  return Math.abs(map(normalizedPerlin(x, y, z), 0, 1, -1, 1));
+}

@@ -36,6 +36,19 @@ function PVertex(p1) {
   vertex(p1.x + width / 2, -p1.y + height / 2);
 }
 
+// Helper function to draw a bezier curve from some p5.vector
+// Note that everything is shifted so that 0,0 is 
+// always the center of the Canvas
+// p1 and p4 are the anchor points, p2, and p3 the control ones
+function PBezier(p1, p2, p3, p4) {
+  bezier(
+    p1.x + width / 2, -p1.y + height / 2,
+    p2.x + width / 2, -p2.y + height / 2,
+    p3.x + width / 2, -p3.y + height / 2,
+    p4.x + width / 2, -p4.y + height / 2
+  );
+}
+
 function PText(str, pos) {
   text(str, pos.x + width / 2, -pos.y + height / 2);
 }
