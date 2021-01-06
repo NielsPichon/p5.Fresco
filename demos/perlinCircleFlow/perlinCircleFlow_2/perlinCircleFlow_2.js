@@ -28,7 +28,7 @@ function step() {
   let nrm = circleShape.normals();
   for (let i = 0; i < circleShape.vertices.length; i++) {
     // get noise at vertex
-    let n = remappedNoise(
+    let n = normalizedPerlin(
       (width / 2 + circleShape.vertices[i].x) * noiseFreq,
       (height / 2 + circleShape.vertices[i].y) * noiseFreq);
 
@@ -65,7 +65,7 @@ function step() {
     if (circleConstrain) {
       // constrain inside noisy circle
       let inter = circleShape.vertices[i].copy().normalize().mult(maxRadius);
-      let rad = maxRadius + remappedNoise(noiseFreq * inter.x, noiseFreq * inter.y) * outterNoise;
+      let rad = maxRadius + normalizedPerlin(noiseFreq * inter.x, noiseFreq * inter.y) * outterNoise;
       if (circleShape.vertices[i].mag() > rad) {
         circleShape.vertices[i].normalize().mult(rad);
       }
@@ -78,28 +78,3 @@ function step() {
     }
   }
 }
-
-
-function remappedNoise(x, y) {
-  let n = noise(x, y);
-  return map(n, (-1 + sqrt(2)) / (2 * sqrt(2)), (1 + sqrt(2)) / (2 * sqrt(2)), 0, 1);
-}
-
-function keyPressed() {
-  if (key == 'p' || key == ' ') {
-    if (isLooping()) {
-      noLoop();
-    }
-    else { 
-      loop();
-    }
-  }
-  if (key == 's') {
-    saveCanvas('canvas', 'png');
-  }
-  if (key == 'r') {
-    setup();
-    loop();
-  }
-}
-

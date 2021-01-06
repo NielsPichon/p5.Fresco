@@ -44,14 +44,3 @@ function draw() {
 
   simulationStep(false, dT);
 }
-
-function keyPressed() {
-  if (key == 'p') {
-    if (isLooping()) {
-      noLoop();
-    }
-    else {
-      loop();
-    }
-  }
-}

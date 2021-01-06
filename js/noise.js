@@ -197,3 +197,20 @@ class Voronoi {
     return minDist * 255;    
   }
 }
+
+
+// Perlin noise normally leaves in the [-sqrt(N/4), sqrt(N/4)] range.
+// The p5.js implementation has naively shifted it to the [0, 1] range
+// assuming it was originally mapped to [-1, 1].
+// this function renormalizes the noise to actually have values in [0, 1];
+// see https://digitalfreepen.com/2017/06/20/range-perlin-noise.html
+function normalizedPerlin(x, y) {
+  let n = noise(x, y);
+  return map(n, (-1 + sqrt(2)) / (2 * sqrt(2)), (1 + sqrt(2)) / (2 * sqrt(2)), 0, 1);
+}
+
+// same as above for the 3D version
+function normalizedPerlin(x, y, z) {
+  let n = noise(x, y, z);
+  return map(n, -sqrt(3) / 4  + 0.5, sqrt(3) / 4 + 0.5, 0, 1);
+}

@@ -19,31 +19,10 @@ function draw() {
 
 function step() {
   for (let i = 0; i < c.vertices.length; i++) {
-    let angle = remappedNoise(
+    let angle = normalizedPerlin(
       c.vertices[i].x * noiseFreq,
       c.vertices[i].y * noiseFreq) * angleMultipler * PI;
     let vel = p5.Vector.fromAngle(angle, noiseAmplitude);
     c.vertices[i].add(vel);
   }
 }
-
-
-function remappedNoise(x, y) {
-  let n = noise(x, y);
-  return map(n, (-1 + sqrt(2)) / (2 * sqrt(2)), (1 + sqrt(2)) / (2 * sqrt(2)), 0, 1);
-}
-
-function keyPressed() {
-  if (key == 'p' || key == ' ') {
-    if (isLooping()) {
-      noLoop();
-    }
-    else { 
-      loop();
-    }
-  }
-  if (key == 's') {
-    saveCanvas('canvas', 'png');
-  }
-}
-
