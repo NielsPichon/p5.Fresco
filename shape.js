@@ -603,7 +603,10 @@ class Shape {
     let p2;
     let p3;
     let nu_nrm;
-    let a, b, c, d;
+    let a;
+    let b; 
+    let c;
+    let d;
     for (let i = 0; i < l - 1; i++) {
       p0 = this.vertices[max([i - 1, 0])];
       p1 = this.vertices[i + 1];
