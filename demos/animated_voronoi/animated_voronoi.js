@@ -1,5 +1,5 @@
 const num_cells = 25;
-const speed = 10;
+const speed = 1;
 const freq = 0.1;
 
 let voronoi;

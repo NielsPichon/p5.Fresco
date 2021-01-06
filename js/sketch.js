@@ -5,7 +5,7 @@ const margin = 150;
 const maxRadius = 300;
 const outterNoise = 200;
 let angleMultiplier = 180;
-const noisyAmplitude = false;
+const modulateAmplitude = false;
 const circleConstrain = true;
 const boxConstrain = false;
 
@@ -51,7 +51,7 @@ function step() {
     
     // scale the displacement
     let amplitude;
-    if (noiseAmplitude) {
+    if (modulateAmplitude) {
      amplitude = n * noiseAmplitude;
     }
     else {

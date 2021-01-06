@@ -6,9 +6,9 @@ const minFireCount = 3;
 const maxFireCount = 5;
 
 const colors = [
-  [119, 118, 188],
-  [252, 122, 87],
-  [255, 251, 219]
+  [119, 118, 188, 255],
+  [252, 122, 87, 255],
+  [255, 251, 219, 255]
 ]
 
 function setup() {
@@ -49,7 +49,13 @@ function firework(x, y) {
     p.burst = true;
     p.leaveTrail = true;
     let t = Math.floor(random(0, colors.length));
-    p.colorOverLife = [colors[t], colors[t]];
+    
+    // fade the color toward the end of life
+    let endCol = new Array(4);
+    arrayCopy(colors[t], endCol);
+    endCol[3] = 0;
+    p.colorOverLife = [colors[t], endCol];
+    p.colorOverLifeTime = [0, p.maxLife];
   }
 }
 
