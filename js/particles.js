@@ -64,6 +64,11 @@ function solveCollision(particle, dt) {
 }
 
 
+// utility to create a basic particle at specified position
+function createParticle(x, y, z = null) {
+    return new Particle(createPoint(x, y));
+}
+
 // class for handling particles. 
 // particles are Points which also have a velocity, a mass,
 // a life time, and possibly varying color and transform over life.
@@ -183,15 +188,18 @@ class Particle extends Point {
         // if the particle is to leave a trail, add the current 
         // position to the trail shape vertices (or create it)
         if (this.leaveTrail) {
-            if (this.trail) {
-                append(this.trail.vertices, this.asPoint());
-            }
-            else {
-                this.trail = new Shape([this.asPoint()]);
-            }
+            addCurrentPositionToTrail()
         }
     }
 
+    addCurrentPositionToTrail() {
+        if (this.trail) {
+            append(this.trail.vertices, this.asPoint());
+        }
+        else {
+            this.trail = new Shape([this.asPoint()]);
+        }
+    }
 
     draw() {
         if (this.leaveTrail) {
@@ -217,6 +225,19 @@ class Particle extends Point {
         else {
             stroke(this.color);
             PPoint(this);
+        }
+    }
+
+    drawLastMove() {
+        if (this.trail) {
+            if (this.trail.vertices.length > 1) {
+                stroke(this.color);
+                print(this.color);
+                PLine(
+                    this.trail.vertices[this.trail.vertices.length - 1],
+                    this.trail.vertices[this.trail.vertices.length - 2]
+                );
+            }
         }
     }
 }

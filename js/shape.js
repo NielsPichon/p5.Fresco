@@ -7,7 +7,7 @@
 // Helper function to draw a line from 2 p5.vectors
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function PLine(p1, p2) { 
+function PLine(p1, p2) {
   line(p1.x + width / 2, -p1.y + height / 2,
     p2.x + width / 2, -p2.y + height / 2);
 }
@@ -279,7 +279,7 @@ class Shape {
 
   // draws multiple lines on top of one another
   // with a bit of noise. 
-  noisyDraw(num_lines, diffusivity = 5, line_opacity = 128, close = true) {
+  drawNoisy(num_lines=5, diffusivity = 5, line_opacity = 128, close = true) {
     let tmp_s = this.copy();
     tmp_s.color[3] = line_opacity;
     let j;
@@ -297,6 +297,17 @@ class Shape {
       }
 
       tmp_s.draw();
+    }
+  }
+
+  // defines the scale of the shape. If only x is specified,
+  // a uniform scale witll be used
+  setScale(x, y = null) {
+    if (y) {
+      this.scale = createVector(x, y);
+    }
+    else {
+      this.scale = createVector(x, x);
     }
   }
 
@@ -761,8 +772,8 @@ class sCircle extends Shape {
     const angleIncr = 2 * PI / resolution;
     let angle = 0;
     for (let i = 0; i < resolution; i++) {
-      append(this.vertices, new Point(
-        createVector(this.radius * cos(angle), this.radius * sin(angle))));
+      append(this.vertices,
+        createPoint(this.radius * cos(angle), this.radius * sin(angle)));
       angle += angleIncr;
     }
     append(this.vertices, new Point(
@@ -792,8 +803,8 @@ class sRect extends Shape {
 
 // Square
 class sSquare extends sRect {
-  constructor() {
-    super(100, 100);
+  constructor(size = 100) {
+    super(size, size);
   }
 }
 

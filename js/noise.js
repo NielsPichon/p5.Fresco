@@ -204,36 +204,25 @@ class Voronoi {
 // assuming it was originally mapped to [-1, 1].
 // this function renormalizes the noise to actually have values in [0, 1];
 // see https://digitalfreepen.com/2017/06/20/range-perlin-noise.html
-function normalizedPerlin(x, y) {
-  let n = noise(x, y);
-  return map(n, (-1 + sqrt(2)) / (2 * sqrt(2)), (1 + sqrt(2)) / (2 * sqrt(2)), 0, 1);
-}
-
-// same as above for the 3D version
-function normalizedPerlin(x, y, z) {
-  let n = noise(x, y, z);
-  return map(n, -sqrt(3) / 4  + 0.5, sqrt(3) / 4 + 0.5, 0, 1);
+function normalizedPerlin(x, y, z = null) {
+  if (z) {
+    let n = noise(x, y, z);
+    return map(n, -sqrt(3) / 4  + 0.5, sqrt(3) / 4 + 0.5, 0, 1);
+  }
+  else {
+    let n = noise(x, y);
+    return map(n, (-1 + sqrt(2)) / (2 * sqrt(2)), (1 + sqrt(2)) / (2 * sqrt(2)), 0, 1);
+  }
 }
 
 
 // ridged noise is absolute value of perlin when mapped between -1 and 1
-function ridgedNoise(x, y) {
-  return Math.abs(map(noise(x, y), 0, 1, -1, 1));
-}
-
-
-function ridgedNoise(x, y, z) {
+function ridgedNoise(x, y, z = null) {
   return Math.abs(map(noise(x, y, z), 0, 1, -1, 1));
 }
 
 
 // normalized ridged noise
-function normalizedRidgedNoise(x, y) {
-  return Math.abs(map(normalizedPerlin(x, y), 0, 1, -1, 1));
-}
-
-
-// normalized ridged noise
-function normalizedRidgedNoise(x, y, z) {
+function normalizedRidgedNoise(x, y, z = null) {
   return Math.abs(map(normalizedPerlin(x, y, z), 0, 1, -1, 1));
 }
