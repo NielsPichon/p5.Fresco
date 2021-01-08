@@ -114,6 +114,8 @@ class Particle extends Point {
                              // we cannot simply kill a particle upon update. Instead
                              // we flag it as dead and will remove it before drawing 
 
+        this.stopSimulate = false; // if true the particle will not be updated anymore, and
+                                   // drawLastMove will return without doing anything
         // register this particle in the simulation
         append(particles, this);
     }
@@ -138,57 +140,59 @@ class Particle extends Point {
 
 
     update() {
-        // time since last update
-        const dt = T - this.lastUpdate;
-        // time since birth
-        const t = T - this.birthDate;
+        if (!this.stopSimulate) {
+            // time since last update
+            const dt = T - this.lastUpdate;
+            // time since birth
+            const t = T - this.birthDate;
 
-        // If the particle has lived too long, destroy
-        if (this.lifetime > 0 &&  t > this.lifetime) {
-            this.isDead = true;
-            return;
-        }
+            // If the particle has lived too long, destroy
+            if (this.lifetime > 0 &&  t > this.lifetime) {
+                this.isDead = true;
+                return;
+            }
 
-        // update color and transform
-        this.color = rampInterpolation(
-            t, this.colorOverLifeTime,
-            this.colorOverLife, this.colorInterolation
-        );
-        this.scale = rampInterpolation2D(
-            t, this.scaleOverLifeTime,
-            this.scaleOverLife, this.scaleInterpolation
-        );
-        this.rotation = rampInterpolation(
-            t, this.rotationOverLifeTime,
-            this.rotationOverLife, this.rotationInterpolation
-        );
+            // update color and transform
+            this.color = rampInterpolation(
+                t, this.colorOverLifeTime,
+                this.colorOverLife, this.colorInterolation
+            );
+            this.scale = rampInterpolation2D(
+                t, this.scaleOverLifeTime,
+                this.scaleOverLife, this.scaleInterpolation
+            );
+            this.rotation = rampInterpolation(
+                t, this.rotationOverLifeTime,
+                this.rotationOverLife, this.rotationInterpolation
+            );
 
-        // resolve position
-        if (this.simulatePhysics) {
-            // update the acceleration
-            this.updateAcceleration();
-            // update position based on the acceleration
-            this.velocity.add(this.acceleration.copy().mult(dt));
+            // resolve position
+            if (this.simulatePhysics) {
+                // update the acceleration
+                this.updateAcceleration();
+                // update position based on the acceleration
+                this.velocity.add(this.acceleration.copy().mult(dt));
 
-            // solve for collisions if relevant
-            if (this.handleCollisions) {
-                solveCollision(this, dt);
+                // solve for collisions if relevant
+                if (this.handleCollisions) {
+                    solveCollision(this, dt);
+                }
+                else {
+                    // else move the particle based on velocity
+                    this.add(this.velocity.copy().mult(dt));
+                }
+                
             }
             else {
-                // else move the particle based on velocity
+                // else move the particle based on velocity only
                 this.add(this.velocity.copy().mult(dt));
             }
-            
-        }
-        else {
-            // else move the particle based on velocity only
-            this.add(this.velocity.copy().mult(dt));
-        }
 
-        // if the particle is to leave a trail, add the current 
-        // position to the trail shape vertices (or create it)
-        if (this.leaveTrail) {
-            addCurrentPositionToTrail()
+            // if the particle is to leave a trail, add the current 
+            // position to the trail shape vertices (or create it)
+            if (this.leaveTrail) {
+                this.addCurrentPositionToTrail()
+            }
         }
     }
 
@@ -229,14 +233,16 @@ class Particle extends Point {
     }
 
     drawLastMove() {
-        if (this.trail) {
-            if (this.trail.vertices.length > 1) {
-                stroke(this.color);
-                print(this.color);
-                PLine(
-                    this.trail.vertices[this.trail.vertices.length - 1],
-                    this.trail.vertices[this.trail.vertices.length - 2]
-                );
+        if (!this.stopSimulate) {
+            if (this.trail) {
+                if (this.trail.vertices.length > 1) {
+                    stroke(this.color);
+                    print(this.color);
+                    PLine(
+                        this.trail.vertices[this.trail.vertices.length - 1],
+                        this.trail.vertices[this.trail.vertices.length - 2]
+                    );
+                }
             }
         }
     }
@@ -476,7 +482,7 @@ class ShapeEmitter extends Emitter {
         let nu_pos;
         let nrmV;
         for (let i = 0; i < this.spawnRate; i++) {
-            if (random() > this.spawnProbability) {
+            if (random() <= this.spawnProbability) {
                 nu_pos = scatter(this.shape, 1, true);
                 let nu_particle = new Particle(nu_pos[0]);
 
@@ -487,7 +493,7 @@ class ShapeEmitter extends Emitter {
                 nu_particle.velocity.y = (1 - t) * this.minV.y + t * this.maxV.y
 
                 // add the normal velocity
-                nrmV = this.shape.normalAtPoint(nu_pos);
+                nrmV = this.shape.normalAtPoint(nu_particle, 1e-1);
                 t = random();
                 nrmV.mult((1 - t) * this.minNormalV + t * this.maxNormalV);
                 nu_particle.velocity.add(nrmV);

@@ -98,3 +98,12 @@ function border(thickness, color) {
   line(thickness / 2, 0, thickness / 2, height);
   line(width - thickness / 2, 0, width - thickness / 2, height);
 }
+
+
+// computes the squared distance between to vectors. This allows for 
+// faster length comparison over the non-squared version
+function distSq(pt1, pt2) {
+  const dx = pt1.x - pt2.x;
+  const dy = pt1.y - pt2.y;
+  return dx * dx + dy * dy;
+}

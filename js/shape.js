@@ -615,6 +615,113 @@ class Shape {
   }
 
 
+  // Retrieve the normal at a given point
+  // For the non-polygonal case, each edge will be split in `resolution` segments
+  // and each point checked against the supplied point 
+  normalAtPoint(pt, epsilon = 1e-8, resolution = 128) {
+    if (this.isPolygonal) {
+      let c;
+      let vec;
+      let l;
+      let edge;
+      // first retrieve which edge the point belongs to 
+      for (let i = 0; i < this.vertices.length - 1; i++) {
+        // compute the cross product of the vector from the first vertex
+        // to the point with the edges vector.
+        vec = pt.copy().sub(this.vertices[i]);
+        edge = this.vertices[i + 1].position().sub(this.vertices[i]);
+        c = p5.Vector.cross(vec, edge);
+        // if c is the zero vector, this means the 2 vectors are 
+        // colinear and thus the point may belong to the edge
+        // Note: we compare the magnitude to some espilon to avoid 
+        // false negatives, e.g. the point near misses
+        // because of numerical issues.
+        if (c.magSq() < epsilon) {
+          l = vec.dot(edge);
+          // if 0 < AC.AB < AB.AB wher A and B are the edges ends and C the point to test,
+          // this means the point belongs to the vector
+          if (l >= 0 && l <= edge.magSq()) {
+            edge = edge.normalize();
+            // the normal is the orthogonal vector to the edge, which orientation depends
+            // on whether the shape is described clockwise or anticlockwise
+            if (this.isClockwise()) {
+              return createVector(-edge.y, edge.x);
+            }
+            else {
+              return createVector(edge.y, -edge.x);
+            }
+          }
+        }
+      }
+      console.log("[in getNormalAtPoint] Some error may have " +
+        "occured as the specified point was not found to belong to the shape");
+    }
+    else {
+      let a, b, c, d;
+      let j;
+      let t0;
+      let t00;
+      let t01;
+      let t1;
+      let p1, p2;
+      const incr = 1 / (resolution - 1);
+      let vertex;
+      for (let i = 0; i < this.vertices.length - 1; i++) {
+        // retrieve the edge spline equation coefficients
+        [a, b, c, d] = catmullRom(...this.controlPoints(i));
+
+        t0 = 0;
+        t1 = 1;
+        // we proced by simple dichotomy. We stop early if one the points is already within the tolerance threshold
+        for (j = 1; Math.pow(2, j) <= resolution; j++) {
+          // compute the position of the first and 2nd thirds of the sub spline
+          t00 = t0 + (t1 - t0) / 3;
+          t01 = t0 + 2 * (t1 - t0) / 3;
+          p1 = a.copy().mult(t00 * t00 * t00).add(b.copy().mult(
+            t00 * t00)).add(c.copy().mult(t00)).add(d);
+          p2 = a.copy().mult(t01 * t01 * t01).add(b.copy().mult(
+            t01 * t01)).add(c.copy().mult(t01)).add(d);
+
+          // move the bounds such that we restrict the spline to the closest half
+          if(distSq(pt, p1) <= distSq(pt, p2)) {
+            t1 = (t1 + t0) * 0.5;
+            // if the closest half is already at less than epsilon, return
+            if (distSq(pt, p1) <= epsilon) {
+              let tangent = a.mult(3 * t00 * t00).add(
+                b.mult(2 * t00)).add(c).normalize();
+              // return the orthogonal to the tangent, with the orientation chosen based
+              // on whether the shape is discribed in a clockwise fashion
+              if (this.isClockwise()) {
+                return createVector(-tangent.y, tangent.x);
+              }
+              else {
+                return createVector(tangent.y, -tangent.x);
+              }
+            }            
+          }
+          else {
+            t0 = (t1 + t0) * 0.5;
+            // if the closest half is already at less than epsilon, return
+            if (distSq(pt, p2) <= epsilon) {
+              let tangent = a.mult(3 * t01 * t01).add(
+                b.mult(2 * t01)).add(c).normalize();
+              // return the orthogonal to the tangent, with the orientation chosen based
+              // on whether the shape is discribed in a clockwise fashion
+              if (this.isClockwise()) {
+                return createVector(-tangent.y, tangent.x);
+              }
+              else {
+                return createVector(tangent.y, -tangent.x);
+              }
+            }     
+          }
+        }
+      }
+      console.log("[in getNormalAtPoint] Some error may have " +
+        "occured as the specified point was not found to belong to the shape");
+    }
+  }
+
   // returns normals to points in local coordinates.
   // If the shape is open, the first and last points will use the only
   // connected edge to compute the normal
@@ -715,7 +822,6 @@ class Shape {
         nrm[i].mult(-1);
       }
     }
-
     return nrm;
   }
   
