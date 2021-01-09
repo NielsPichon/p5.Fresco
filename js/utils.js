@@ -69,7 +69,10 @@ function steeperStep(t, n) {
 
 // interpolate linearly between as many colors as provided
 function colorInterp (t, colors) {
-  if (t == 1) {
+  if (t <= 0) {
+    return colors[0];
+  }
+  if (t >= 1) {
     return colors[colors.length - 1];
   }
 
@@ -80,8 +83,8 @@ function colorInterp (t, colors) {
   // get interpolant
   t -= idx;
 
-  let color = [0, 0, 0, leaveOpacity];
-  for (let i = 0; i < 3; i++) {
+  let color = [0, 0, 0, 0];
+  for (let i = 0; i < 4; i++) {
     color[i] = (1 - t) * colors[idx][i] + t * colors[idx + 1][i];
   }
 
