@@ -258,13 +258,42 @@ function moduloNoise(noiseFunc, levels, x, y, z=null) {
 }
 
 
-// distorts some noise (only supports noise types which take only x, y, z as input)
-function distortedNoise(noiseFunc, amount, x, y, z=null) {
+// returns a unit vector which orientation depends
+// on the underlying noise 
+function noiseVector(noiseFunc, x, y, z=null) {
   // get random angle from noise at location
   let n = map(noiseFunc(x, y, z), 0, 1, 0, 10 * PI);
   // convert to 2D displacement vector
-  n = p5.Vector.fromAngle(n).mult(amount);
+  return p5.Vector.fromAngle(n);
+}
+
+
+// distorts some noise (only supports noise types which take only x, y, z as input)
+function distortedNoise(noiseFunc, amount, x, y, z=null) {
+  // get displacement vector
+  let n = noiseVector(boisFunc, x, y, z).mult(amount);
 
   // return noise value at displaced location
   return noiseFunc(x + n.x, y + n.y, z);
+}
+
+
+// Returns the 2D curl noise from the specified noise function.
+// step is the differenciation step.
+// This is indeed an approximation of the curl noise
+function curlNoise2D(noiseFunc, step, x, y, z=null) {
+  // retrieve the noise gradient at location
+  let n = gradient(noiseFunc, step, x, y, z);
+
+  // return the orthogonal to the noise
+  return createVector(-n.y, n.x);
+}
+
+// returns the 3D curl noise from the specified noise function
+function curlNoise3D(noiseFunc, step, x, y, z=null) {
+  function vec(x0, y0, z0) {return noiseVector(noiseFunc, x0, y0, z0)};
+  let grad = gradientVec(vec, step, x, y, z);
+  let n = vec(x, y, z);
+
+  return grad.cross(n);
 }

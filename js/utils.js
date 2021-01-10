@@ -112,10 +112,19 @@ function distSq(pt1, pt2) {
 }
 
 
-// returns the 2D gradient at a given point with the
-// specified discrete derivation step 
+// returns the 2D gradient at a given point of the specified 1D function,
+// with the specified discrete derivation step 
 function gradient(func, step, x, y, z=null) {
   let dx = (func(x + step, y, z) - func(x - step, y, z)) / step; 
   let dy = (func(x, y + step, z) - func(x, y - step, z)) / step;
   return createVector(dx, dy); 
+}
+
+
+// returns the 2D/3D gradient at a given point of the specified 2D function,
+// with the specified discrete derivation step 
+function gradientVec(func, step, x, y, z=null) {
+  let dx = func(x + step, y, z).sub(func(x - step, y, z)).div(step); 
+  let dy = func(x, y + step, z).sub(func(x, y - step, z)).div(step);
+  return dx.add(dy); 
 }
