@@ -917,20 +917,24 @@ class Geometry {
     }
   }
 
-  // attahces a new object to this geometry.
+  // attaches a new object to this geometry.
   // This will also automatically compute the
   // transform of the new object relative to this
   // Geometry and store it.
   attach(object) {
     this.objects.push(object);
-    this.objectsScale.push(object.scale.copy().div(this.scale));
+    let relativeScale = object.scale.copy();
+    relativeScale.x /= this.scale.x;
+    relativeScale.y /= this.scale.y;
+    this.objectsScale.push(relativeScale);
     this.objectsRotation.push(object.rotation - this.rotation);
     // apply this geometry inverse transform to the object position
     // to retrieve its relative position 
     let relativePosition = object.position.copy();
     relativePosition.rotate(-this.rotation);
-    relativePosition.div(this.scale);
-    this.objectsPosition.push(relative_position);
+    relativePosition.x /= this.scale.x;
+    relativePosition.y /= this.scale.y;
+    this.objectsPosition.push(relativePosition);
   }
 
   // simply remove all references to the object and return it
