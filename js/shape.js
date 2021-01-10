@@ -82,6 +82,15 @@ class Point extends p5.Vector{
     this.owner;
   }
 
+  draw() {
+    stroke(this.color);
+    if (owner) {
+      PPoint(owner.applyTransform(this.position));
+    }
+    else {
+      PPoint(this.position);
+    }
+  }
 
   // Returns a value between 0 and 1 based on the distance to the point
   falloff(vtx, decay_power) {
@@ -870,30 +879,69 @@ class Geometry {
     this.objectsPosition = []; //stores the initial position of the objects
   }
 
+  // draw all objects
   draw() {
     for (let i = 0; i < this.objects.length; i++) {
       this.objects[i].draw();
     }
   }
 
-  setPosition() {
 
+  setPosition(position) {
+    this.position = position;
+    this.setobjectsTransform();
   }
 
-  setRotation() {
-
+  setRotation(rotation) {
+    this.rotation = rotation;
+    this.setobjectsTransform();
   }
 
-  setScale() {
-
+  setScale(scale) {
+    this.scale = scale;
+    this.setobjectsTransform();
   }
 
+  // applies this geometry instance transform to its objects
+  setobjectsTransform() {
+    for (let i = 0; i < this.objects.length; i++) {
+      // set rotation
+      this.objects[i].rotation = this.objectsRotation[i] + this.rotation;
+      // set scale
+      this.objects[i].scale = this.objectsScale[i].copy().mult(this.scale);
+      // set position using this scale, rotation and position
+      this.objects[i].position =
+        this.objectsPosition[i].copy().mult(this.scale); //scale
+      this.objects[i].position.rotate(this.rotation); // rotate
+      this.objects[i].position.add(this.position); // offset
+    }
+  }
+
+  // attahces a new object to this geometry.
+  // This will also automatically compute the
+  // transform of the new object relative to this
+  // Geometry and store it.
   attach(object) {
-
+    this.objects.push(object);
+    this.objectsScale.push(object.scale.copy().div(this.scale));
+    this.objectsRotation.push(object.rotation - this.rotation);
+    // apply this geometry inverse transform to the object position
+    // to retrieve its relative position 
+    let relativePosition = object.position.copy();
+    relativePosition.rotate(-this.rotation);
+    relativePosition.div(this.scale);
+    this.objectsPosition.push(relative_position);
   }
 
-  detach(object) {
+  // simply remove all references to the object and return it
+  detach(objectIdx) {
+    // remove the original transform references
+    this.objectsPosition.splice(objectIdx, 1);
+    this.objectsScale.splice(objectIdx, 1);
+    this.objectsRotation.splice(objectIdx, 1);
 
+    // remove the object from this geometry and return it
+    return this.objects.splice(objectIdx, 1);
   }
 }
 
