@@ -24,7 +24,7 @@ function setup() {
 
   // convert colors to rgba
   for (let i = 0; i < colors.length; i++) {
-    colors[i] = colorFromHex(colors[i]);
+    colors[i] = colorFromHex(colors[i], leaveOpacity);
   }
 
   // create a square with a fill, and specified
