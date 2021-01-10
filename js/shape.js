@@ -84,6 +84,7 @@ class Point extends p5.Vector{
 
   draw() {
     stroke(this.color);
+    strokeWeight(this.radius);
     if (owner) {
       PPoint(owner.applyTransform(this.position));
     }

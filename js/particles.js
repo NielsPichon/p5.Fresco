@@ -202,6 +202,7 @@ class Particle extends Point {
         }
         else {
             this.trail = new Shape([this.asPoint()]);
+            this.trail.strokeWeight = this.radius;
         }
     }
 
@@ -212,10 +213,12 @@ class Particle extends Point {
             }
             else {
                 stroke(this.color);
+                strokeWeight(this.radius);
                 PPoint(this);
             }
         }
         else {
+            strokeWeight(this.radius);
             stroke(this.color);
             PPoint(this);
         }
@@ -228,6 +231,7 @@ class Particle extends Point {
         }
         else {
             stroke(this.color);
+            strokeWeight(this.radius);
             PPoint(this);
         }
     }
@@ -237,7 +241,8 @@ class Particle extends Point {
             if (this.trail) {
                 if (this.trail.vertices.length > 1) {
                     stroke(this.color);
-                    print(this.color);
+                    strokeWeight(this.radius);
+                    print(this.radius);
                     PLine(
                         this.trail.vertices[this.trail.vertices.length - 1],
                         this.trail.vertices[this.trail.vertices.length - 2]
@@ -369,6 +374,9 @@ class Emitter {
         this.minScale = createVector(.1, .1);
         this.maxScale = createVector(1, 1);
 
+        // radius of the particles (constant for now)
+        this.radius = 1;
+
         // Particles properties over time. These will be the same for all
         // particles, except for the scale which will be multiplied by the particle
         // overall scale
@@ -457,6 +465,8 @@ class PointEmitter extends Emitter {
                 nu_particle.simulatePhysics = this.simulatePhysics;
                 nu_particle.handleCollisions = this.handleCollisions;
                 nu_particle.leaveTrail = this.leaveTrail;
+
+                nu_particle.radius = this.radius;
             }
         }
 
@@ -529,6 +539,8 @@ class ShapeEmitter extends Emitter {
                 nu_particle.simulatePhysics = this.simulatePhysics;
                 nu_particle.handleCollisions = this.handleCollisions;
                 nu_particle.leaveTrail = this.leaveTrail;
+
+                nu_particle.radius = this.radius;
             }
         }
 

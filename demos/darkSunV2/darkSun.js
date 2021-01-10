@@ -3,16 +3,17 @@ const partNum = 10;
 const noiseFreq = 0.02;
 const noiseAmplitude = 2.5;
 const circleRadius = 400;
-const maxPartCount = 7000;
+const maxPartCount = 15000;
 const circleModulation = 50;
 const circleModFreq = 0.1;
+const particlesRadius = 0.1;
 
 let e;
 let partCount = 0;
 
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(window.innerWidth, window.innerHeight);
   background(0);
 
   e = new ShapeEmitter(new sCircle(24,  150));
@@ -25,6 +26,7 @@ function setup() {
   e.burst = false;
   e.spawnRate = partNum;
   e.colorOverLife = [[255, 255, 255, 50], [255, 255, 255, 50]];
+  e.radius = particlesRadius;
 }
 
 function draw() {
@@ -37,7 +39,7 @@ function draw() {
     let radius_i = circleRadius + noise((particles[i].x + width / 2) * circleModFreq, (particles[i].y  + height / 2) * circleModFreq) * circleModulation;
     if (particles[i].magSq() > radius_i * radius_i) {
       particles[i].velocity = createVector(0, 0); 
-      particles[i].stopSimulate = true;
+      particles[i].isDead = true;
     } 
     else {
       // We add to the particle's velocity based on the underlying noise which is remapped to an angle 
