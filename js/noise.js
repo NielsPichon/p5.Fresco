@@ -226,3 +226,45 @@ function ridgedNoise(x, y, z = null) {
 function normalizedRidgedNoise(x, y, z = null) {
   return Math.abs(map(normalizedPerlin(x, y, z), 0, 1, -1, 1));
 }
+
+
+// a discretized noise function
+// noiseFunc is the function, levels is the number of levels
+function leveledNoise(noiseFunc, levels, x, y, z = null) {
+  return Math.floor(noiseFunc(x, y, z) * (levels + 1)) / (levels + 1);
+}
+
+
+// returns the iso lines for a noise map. 0 means same height region,
+// 1 means changing region.
+function isoLine(noiseFunc, levels, step, x, y, z=null) {
+  // compute leveled noise gradient 
+  let dx = leveledNoise(noiseFunc, levels, x + step, y) -
+    leveledNoise(noiseFunc, levels, x - step, y);
+  let dy = leveledNoise(noiseFunc, levels, x, y + step) -
+    leveledNoise(noiseFunc, levels, x, y - step);
+  if (dx !=0 || dy !=0) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+
+// multiplies the noise by `levels` and return the non integer part
+function moduloNoise(noiseFunc, levels, x, y, z=null) {
+  return (noiseFunc(x, y, z) * levels % 1);
+}
+
+
+// distorts some noise (only supports noise types which take only x, y, z as input)
+function distortedNoise(noiseFunc, amount, x, y, z=null) {
+  // get random angle from noise at location
+  let n = map(noiseFunc(x, y, z), 0, 1, 0, 10 * PI);
+  // convert to 2D displacement vector
+  n = p5.Vector.fromAngle(n).mult(amount);
+
+  // return noise value at displaced location
+  return noiseFunc(x + n.x, y + n.y, z);
+}

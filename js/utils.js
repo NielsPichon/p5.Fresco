@@ -110,3 +110,12 @@ function distSq(pt1, pt2) {
   const dy = pt1.y - pt2.y;
   return dx * dx + dy * dy;
 }
+
+
+// returns the 2D gradient at a given point with the
+// specified discrete derivation step 
+function gradient(func, step, x, y, z=null) {
+  let dx = (func(x + step, y, z) - func(x - step, y, z)) / step; 
+  let dy = (func(x, y + step, z) - func(x, y - step, z)) / step;
+  return createVector(dx, dy); 
+}
