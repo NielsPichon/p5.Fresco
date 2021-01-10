@@ -859,6 +859,45 @@ class Shape {
 }
 
 
+class Geometry {
+  constructor() {
+    this.scale = createVector(1, 1);
+    this.rotation = 0;
+    this.position = createVector(0, 0);
+    this.objects = [];
+    this.objectsRotation = []; //stores the initial rotation of the objects
+    this.objectsScale = []; //stores the initial scale of the objects
+    this.objectsPosition = []; //stores the initial position of the objects
+  }
+
+  draw() {
+    for (let i = 0; i < this.objects.length; i++) {
+      this.objects[i].draw();
+    }
+  }
+
+  setPosition() {
+
+  }
+
+  setRotation() {
+
+  }
+
+  setScale() {
+
+  }
+
+  attach(object) {
+
+  }
+
+  detach(object) {
+
+  }
+}
+
+
 function deepcopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
@@ -886,6 +925,24 @@ class sCircle extends Shape {
       createVector(this.radius, 0)));
     this.updateLengths = true;
     this.updateBounds = true;
+  }
+}
+
+
+class sArc extends Shape {
+  constructor(angle = Math.PI, radius = 50, resolution = 12, close = false) {
+    super([]);
+    this.radius = radius;
+    const angleIncr = angle / (resolution - 1);
+    let theta = - angle * 0.5 - PI / 2; //center the arc on the bottom vertical
+    for (let i = 0; i < resolution; i++) {
+      append(this.vertices,
+        createPoint(radius * cos(theta), radius * sin(theta)));
+      theta += angleIncr;
+    }
+    if (close) {
+      this.vertices.push(this.vertices[0]);
+    }
   }
 }
 
