@@ -199,6 +199,11 @@ class Voronoi {
 }
 
 
+//simple friendlier noise function which calls the perlin noise by its actual name
+function perlin(x, y=null, z=null) {
+  return noise(x, y, z);
+}
+
 // Perlin noise normally leaves in the [-sqrt(N/4), sqrt(N/4)] range.
 // The p5.js implementation has naively shifted it to the [0, 1] range
 // assuming it was originally mapped to [-1, 1].
@@ -271,7 +276,7 @@ function noiseVector(noiseFunc, x, y, z=null) {
 // distorts some noise (only supports noise types which take only x, y, z as input)
 function distortedNoise(noiseFunc, amount, x, y, z=null) {
   // get displacement vector
-  let n = noiseVector(boisFunc, x, y, z).mult(amount);
+  let n = noiseVector(noiseFunc, x, y, z).mult(amount);
 
   // return noise value at displaced location
   return noiseFunc(x + n.x, y + n.y, z);
