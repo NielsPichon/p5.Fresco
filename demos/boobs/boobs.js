@@ -55,7 +55,7 @@ function draw() {
 }
 
 function makeBoob(X, Y) {
-  let nu_geo = new Geometry();
+  let nu_geo = new Scatter.Geometry();
 
   // generate breast parameters
   const cupRadius = random(minCupRadius, maxCupRadius);
@@ -63,7 +63,7 @@ function makeBoob(X, Y) {
   const heightToWidthRatio = random(minHeightToWidthRatio, maxHeightToWidthRatio);
   
   // create cup
-  let cup = new SArc(Math.PI, cupRadius);
+  let cup = new Scatter.Arc(Math.PI, cupRadius);
   if (cupContours) {
     cup.color = colorFromHex(cupColors[Math.floor(random(cupColors.length))]);
     cup.strokeWeight = lineWeight;
@@ -78,7 +78,7 @@ function makeBoob(X, Y) {
   let cupHeight = cupRadius * heightToWidthRatio;
 
   // create tit
-  let tit = new SCircle(titRadius, 12);
+  let tit = new Scatter.Circle(titRadius, 12);
   tit.position.add(createVector(0, -cupHeight - random(minTitOffset * titRadius, maxTitOffset * titRadius)));
 
   if (titContours) {

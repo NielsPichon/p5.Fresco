@@ -78592,13 +78592,13 @@
               return areaTriangle(a, b, c) === 0;
             }
 
-            if (typeof collinear.tmpPoint1 === 'undefined') {
-              collinear.tmpPoint1 = [];
-              collinear.tmpPoint2 = [];
+            if (typeof collinear.tmdrawPoint1 === 'undefined') {
+              collinear.tmdrawPoint1 = [];
+              collinear.tmdrawPoint2 = [];
             }
 
-            var ab = collinear.tmpPoint1,
-              bc = collinear.tmpPoint2;
+            var ab = collinear.tmdrawPoint1,
+              bc = collinear.tmdrawPoint2;
             ab.x = b.x - a.x;
             ab.y = b.y - a.y;
             bc.x = c.x - b.x;

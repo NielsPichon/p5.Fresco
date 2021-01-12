@@ -27,7 +27,7 @@ function debugDrawCatmullRom(A, resolution) {
       let nu_pt = a.copy().mult(t * t * t).add(
         b.copy().mult(t * t)).add(
         c.copy().mult(t)).add(d);
-      pPoint(nu_pt);
+      drawPoint(nu_pt);
     }
   }
 }
@@ -35,7 +35,7 @@ function debugDrawCatmullRom(A, resolution) {
 
 function setup() {
   createCanvas(400, 400);
-  s = new SSquare();
+  s = new Scatter.Square();
   s.isPolygonal = false
   s2 = s.copy();
   s2.scale.mult(1.2);

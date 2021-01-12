@@ -5,7 +5,7 @@ let nrm2;
 
 function setup() {
   createCanvas(400, 400);
-  s = new SPolygon(50, 8);
+  s = new Scatter.Polygon(50, 8);
   s2 = s.copy();
   s2.scale.mult(createVector(1.2, 2));
   s2.position.add(50, 50);
@@ -30,12 +30,12 @@ function draw() {
   let n;
   for (let i = 0; i < nrm.length; i++) {
     n = drawNormal(nrm[i], s.vertices[i], s);
-    pLine(s.applyTransform(s.vertices[i]), n);
+    drawLine(s.applyTransform(s.vertices[i]), n);
   }
   
   for (let i = 0; i < nrm2.length; i++) {
     n = drawNormal(nrm2[i], s2.vertices[i], s2);
-    pLine(s2.applyTransform(s2.vertices[i]), n);
+    drawLine(s2.applyTransform(s2.vertices[i]), n);
   }
   
   noLoop();

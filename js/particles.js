@@ -74,7 +74,7 @@ function createParticle(x, y, z = null) {
 // a life time, and possibly varying color and transform over life.
 // Particles may be handled in a cinematic fashion or with a physics
 // system
-class Particle extends Point {
+class Particle extends Scatter.Point {
     constructor(position) {
         super(position);
 
@@ -121,7 +121,7 @@ class Particle extends Point {
     }
 
     asPoint() {
-        let nu_point = new Point(this.position());
+        let nu_point = new Scatter.Point(this.position());
         nu_point.color = this.color;
         nu_point.rotation = this.rotation;
         nu_point.radius = this.radius;
@@ -201,7 +201,7 @@ class Particle extends Point {
             append(this.trail.vertices, this.asPoint());
         }
         else {
-            this.trail = new Shape([this.asPoint()]);
+            this.trail = new Scatter.Shape([this.asPoint()]);
             this.trail.strokeWeight = this.radius;
         }
     }
@@ -214,13 +214,13 @@ class Particle extends Point {
             else {
                 stroke(this.color);
                 strokeWeight(this.radius);
-                pPoint(this);
+                drawPoint(this);
             }
         }
         else {
             strokeWeight(this.radius);
             stroke(this.color);
-            pPoint(this);
+            drawPoint(this);
         }
     }
 
@@ -232,7 +232,7 @@ class Particle extends Point {
         else {
             stroke(this.color);
             strokeWeight(this.radius);
-            pPoint(this);
+            drawPoint(this);
         }
     }
 
@@ -242,7 +242,7 @@ class Particle extends Point {
                 if (this.trail.vertices.length > 1) {
                     stroke(this.color);
                     strokeWeight(this.radius);
-                    pLine(
+                    drawLine(
                         this.trail.vertices[this.trail.vertices.length - 1],
                         this.trail.vertices[this.trail.vertices.length - 2]
                     );

@@ -113,7 +113,7 @@ function draw() {
         drawCount ++;
         if (drawPoints) {
           stroke(particles[i].color);
-          pPoint(particles[i]);
+          drawPoint(particles[i]);
         }
         else {
           particles[i].drawLastMove();

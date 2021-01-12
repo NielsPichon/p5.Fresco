@@ -38,7 +38,7 @@ function firework(x, y) {
   let fireCount = Math.floor(random(minFireCount, maxFireCount + 1));
   for (let  i = 0; i < fireCount; i++) {
     // create point emiter
-    p = new PointEmitter(new Point(createVector(x, y)));
+    p = new PointEmitter(createPoint(x, y));
     p.simulatePhysics = true;
     p.minV = createVector(-0.5, 0.2).mult(50);
     p.maxV = createVector(0.5, 1).mult(50);

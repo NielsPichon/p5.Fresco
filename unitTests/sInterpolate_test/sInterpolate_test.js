@@ -5,7 +5,7 @@ let  t = 0;
 
 function setup() {
   createCanvas(400, 400);
-  s = new SSquare();
+  s = new Scatter.Square();
   s2 = s.copy();
   s2.scale.mult(1.2);
   s2.position.add(10, 10);

@@ -6,7 +6,7 @@ function setup() {
   createCanvas(1000, 1000);
 
   // create point emiter
-  p = new PointEmitter(new Point(createVector(0, 0)));
+  p = new PointEmitter(createPoint(0, 0));
   p.simulatePhysics = true;
   p.minV = createVector(-0.5, 1).mult(50);
   p.maxV = createVector(0.5, 1).mult(50);

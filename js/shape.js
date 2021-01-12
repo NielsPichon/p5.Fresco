@@ -1,13 +1,18 @@
+/**
+ * Defines the namespace for all classes of the Scatter.js library
+ * @namespace
+ */
+var Scatter = {};
+
 // WARNING: to make everything consistent, the x axis goes from left to right
 // and the y axis from bottom to top.
 // Also, the center of the coordinate system (0,0) is in the center of the
 // canvas.
 
-
 // Helper function to draw a line from 2 p5.vectors
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function pLine(p1, p2) {
+function drawLine(p1, p2) {
   line(p1.x + width / 2, -p1.y + height / 2,
     p2.x + width / 2, -p2.y + height / 2);
 }
@@ -16,7 +21,7 @@ function pLine(p1, p2) {
 // Helper function to draw a point from a p5.vector
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function pPoint(p1) {
+function drawPoint(p1) {
   point(p1.x + width / 2, -p1.y + height / 2);
 }
 
@@ -24,7 +29,7 @@ function pPoint(p1) {
 // Helper function to add a Vertex to a curve from a p5.vector
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function pCurveVertex(p1) {
+function drawCurveVertex(p1) {
   curveVertex(p1.x + width / 2, -p1.y + height / 2);
 }
 
@@ -32,7 +37,7 @@ function pCurveVertex(p1) {
 // Helper function to add a Vertex to a curve from a p5.vector
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function pVertex(p1) {
+function drawVertex(p1) {
   vertex(p1.x + width / 2, -p1.y + height / 2);
 }
 
@@ -40,7 +45,7 @@ function pVertex(p1) {
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
 // p1 and p4 are the anchor points, p2, and p3 the control ones
-function pBezier(p1, p2, p3, p4) {
+function drawBezier(p1, p2, p3, p4) {
   bezier(
     p1.x + width / 2, -p1.y + height / 2,
     p2.x + width / 2, -p2.y + height / 2,
@@ -49,12 +54,12 @@ function pBezier(p1, p2, p3, p4) {
   );
 }
 
-function pText(str, pos) {
+function drawText(str, pos) {
   text(str, pos.x + width / 2, -pos.y + height / 2);
 }
 
 
-function pCircle(center, radius) {
+function drawCircle(center, radius) {
   circle(center.x + width / 2, -center.y + height / 2, 2 * radius);
 }
 
@@ -65,14 +70,14 @@ function pCircle(center, radius) {
 function drawNormal(nrm, pt, s, l = 10) {
   let n = s.applyTransform(pt.position().add(
     nrm.copy()));
-  n.sub(s.applyTransform(pt.position())).normalize().mult(10).add(
+  n.sub(s.applyTransform(pt.position())).normalize().mult(l).add(
     s.applyTransform(pt.position()));
   return n;
 }
 
 // container class describing a Point object. A point object is a p5.Vector with a color,
 // a radius, a transform and a potential owner
-class Point extends p5.Vector{
+Scatter.Point = class extends p5.Vector{
   constructor(position) {
     super(position.x, position.y, position.z);
     this.rotation = 0;
@@ -86,10 +91,10 @@ class Point extends p5.Vector{
     stroke(this.color);
     strokeWeight(this.radius);
     if (owner) {
-      pPoint(owner.applyTransform(this.position));
+      drawPoint(owner.applyTransform(this.position));
     }
     else {
-      pPoint(this.position);
+      drawPoint(this.position);
     }
   }
 
@@ -137,7 +142,7 @@ class Point extends p5.Vector{
   copy() {
     // ugly but avoids issues with cyclic references
     // when using JSON serialization
-    let nu_pt = new Point(this.position());
+    let nu_pt = new Scatter.Point(this.position());
     nu_pt.rotation = this.rotation;
     nu_pt.radius = this.radius;
     nu_pt.scale = this.scale.copy();
@@ -150,7 +155,7 @@ class Point extends p5.Vector{
 
 // simple utility to create a point from coordinates
 function createPoint(x, y, z=0) {
-  return new Point(createVector(x, y, z));
+  return new Scatter.Point(createVector(x, y, z));
 }
 
 // Container for all point based shapes
@@ -158,7 +163,7 @@ function createPoint(x, y, z=0) {
 // the class has no understanding of closed shapes.
 // To make a closed shape, simply add the first point back at the end
 // of the vertices list
-class Shape {
+Scatter.Shape = class {
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
     // set this shape as owner of the vertices
@@ -166,7 +171,7 @@ class Shape {
       this.vertices[i].owner = this;
     }
     
-    this.isPolygonal = false; //Whether to use lines or splines to connect vertices
+    this.isPolygonal = false; //Whether to use lines or sdrawLines to connect vertices
     this.position = createVector(0, 0);
     this.rotation = 0;
     this.scale = createVector(1, 1);
@@ -207,7 +212,7 @@ class Shape {
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
-        pVertex(vtx);
+        drawVertex(vtx);
       }
     } else {
       // we add the first and last vertex twice to make sure all points
@@ -225,13 +230,13 @@ class Shape {
         stroke(this.vertices[0].color);
       }
 
-      pCurveVertex(vtx);
+      drawCurveVertex(vtx);
       for (let i = 0; i < this.vertices.length; i++) {
         vtx = this.applyTransform(this.vertices[i]);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
-        pCurveVertex(vtx);
+        drawCurveVertex(vtx);
       }
       vtx = this.applyTransform(
         this.vertices[this.vertices.length - 1]);
@@ -248,7 +253,7 @@ class Shape {
          stroke(this.vertices[this.vertices.length - 1].color);
         }
       }
-      pCurveVertex(vtx);
+      drawCurveVertex(vtx);
     }
     endShape();
   }
@@ -261,7 +266,7 @@ class Shape {
 
     for (let i = 0; i < this.vertices.length; i++) {
       stroke(this.vertices[i].color);
-      pPoint(this.applyTransform(this.vertices[i]));
+      drawPoint(this.applyTransform(this.vertices[i]));
     }
   }
 
@@ -282,7 +287,7 @@ class Shape {
       p[i].y += r * Math.sin(theta);
 
       strokeWeight(random(minWeight, maxWeight));
-      pPoint(p[i]);
+      drawPoint(p[i]);
     }
   }
 
@@ -324,14 +329,14 @@ class Shape {
   numberVertices() {
     let nrm = this.normals();
     for (let i = 0; i < this.vertices.length - 1; i++) {
-      pText(i, this.applyTransform(
+      drawText(i, this.applyTransform(
         this.vertices[i].position().add(
           nrm[i].copy().mult(10))));
     }
 
     if(! this.vertices[0].equals(
       this.vertices[this.vertices.length - 1])) {
-      pText(i, this.applyTransform(
+      drawText(i, this.applyTransform(
         this.vertices[this.vertices.length - 1].position().add(
         nrm[this.vertices.length - 1].copy().mult(20))));
     }
@@ -411,7 +416,7 @@ class Shape {
     else {
       let p1 = this.vertices[idx];
       if (idx + 1 > this.vertices.length - 1) {
-        throw "Cannot provide spline control points starting from last vertex";
+        throw "Cannot provide sdrawLine control points starting from last vertex";
       }
       let p2 = this.vertices[idx + 1];
       let p0;
@@ -465,7 +470,7 @@ class Shape {
       let l = 0;
 
       // We discretize the integration by taking resolution points along
-      // the spline and drawing lines between them
+      // the sdrawLine and drawing lines between them
       let a2 = d;
       let a1;
       for (let i = 0; i < resolution; i++) {
@@ -531,11 +536,11 @@ class Shape {
       }
     } 
     else {
-      //for a spline there is no exact expression. Instead we integrate the
+      //for a sdrawLine there is no exact expression. Instead we integrate the
       // edge length until we reach the desired value
       let [p0, p1, p2, p3] = this.controlPoints(edge_idx);
       
-      // For non uniform scales, deducing the transformed spline edge length
+      // For non uniform scales, deducing the transformed sdrawLine edge length
       // from the local one is non trivial. We compute everything in world
       // lengths and transform the point back to local coordinates if required
       p0 = this.applyTransform(p0);
@@ -550,7 +555,7 @@ class Shape {
         let l = 0;
 
         // We discretize the integration by taking resolution points along
-        // the spline and drawing lines between them
+        // the sdrawLine and drawing lines between them
         let a2 = d;
         let a1;
         for (let  t = 0; t < 1; t += dt) {
@@ -677,14 +682,14 @@ class Shape {
       const incr = 1 / (resolution - 1);
       let vertex;
       for (let i = 0; i < this.vertices.length - 1; i++) {
-        // retrieve the edge spline equation coefficients
+        // retrieve the edge sdrawLine equation coefficients
         [a, b, c, d] = catmullRom(...this.controlPoints(i));
 
         t0 = 0;
         t1 = 1;
         // we proced by simple dichotomy. We stop early if one the points is already within the tolerance threshold
         for (j = 1; Math.pow(2, j) <= resolution; j++) {
-          // compute the position of the first and 2nd thirds of the sub spline
+          // compute the position of the first and 2nd thirds of the sub sdrawLine
           t00 = t0 + (t1 - t0) / 3;
           t01 = t0 + 2 * (t1 - t0) / 3;
           p1 = a.copy().mult(t00 * t00 * t00).add(b.copy().mult(
@@ -692,7 +697,7 @@ class Shape {
           p2 = a.copy().mult(t01 * t01 * t01).add(b.copy().mult(
             t01 * t01)).add(c.copy().mult(t01)).add(d);
 
-          // move the bounds such that we restrict the spline to the closest half
+          // move the bounds such that we restrict the sdrawLine to the closest half
           if(distSq(pt, p1) <= distSq(pt, p2)) {
             t1 = (t1 + t0) * 0.5;
             // if the closest half is already at less than epsilon, return
@@ -825,7 +830,7 @@ class Shape {
       append(nrm, nu_nrm.normalize());
     }
     
-    // Shapes may be numbered clockwise or anticlockwise.
+    // Scatter.Shapes may be numbered clockwise or anticlockwise.
     // if the shape is clockwise we reverse the normals
     if (this.isClockwise()) {
       for (let i = 0; i < nrm.length; i++) {
@@ -853,7 +858,7 @@ class Shape {
     for (let i = 0; i < this.vertices.length; i++) {
       append(vertexCopy, this.vertices[i].copy());
     }
-    let nu_shape = new Shape(vertexCopy);
+    let nu_shape = new Scatter.Shape(vertexCopy);
     nu_shape.isPolygonal = this.isPolygonal;
     nu_shape.position = this.position.copy();
     nu_shape.rotation = this.rotation;
@@ -869,7 +874,7 @@ class Shape {
 }
 
 
-class Geometry {
+Scatter.Geometry = class {
   constructor() {
     this.scale = createVector(1, 1);
     this.rotation = 0;
@@ -960,7 +965,7 @@ function deepcopy(obj) {
  * A class representing a line
  * @class
  */
-class SLine extends Shape {
+Scatter.Line = class extends Scatter.Shape {
   /**
    * @constructor
    * @param {Point} pt1 First extremity Point
@@ -988,7 +993,7 @@ class SLine extends Shape {
 
 
 // Polygonal sphere
-class SCircle extends Shape {
+Scatter.Circle = class extends Scatter.Shape {
   constructor(radius = 50, resolution = 24) {
     super([]);
     this.radius = radius;
@@ -1005,15 +1010,14 @@ class SCircle extends Shape {
         createPoint(this.radius * cos(angle), this.radius * sin(angle)));
       angle += angleIncr;
     }
-    append(this.vertices, new Point(
-      createVector(this.radius, 0)));
+    append(this.vertices, createPoint(this.radius, 0));
     this.updateLengths = true;
     this.updateBounds = true;
   }
 }
 
 
-class SArc extends Shape {
+Scatter.Arc = class extends Scatter.Shape {
   constructor(angle = Math.PI, radius = 50, resolution = 12, close = false) {
     super([]);
     this.radius = radius;
@@ -1032,14 +1036,14 @@ class SArc extends Shape {
 
 
 // Rectangle
-class SRect extends Shape {
+Scatter.Rect = class extends Scatter.Shape {
   constructor(w = 100, h = 50) {
     let vertices = [];
-    append(vertices, new Point(createVector(-w / 2, -h / 2)));
-    append(vertices, new Point(createVector(-w / 2, h / 2)));
-    append(vertices, new Point(createVector(w / 2, h / 2)));
-    append(vertices, new Point(createVector(w / 2, -h / 2)));
-    append(vertices, new Point(createVector(-w / 2, -h / 2)));
+    append(vertices, createPoint(-w / 2, -h / 2));
+    append(vertices, createPoint(-w / 2, h / 2));
+    append(vertices, createPoint(w / 2, h / 2));
+    append(vertices, createPoint(w / 2, -h / 2));
+    append(vertices, createPoint(-w / 2, -h / 2));
 
     super(vertices);
 
@@ -1049,7 +1053,7 @@ class SRect extends Shape {
 
 
 // Square
-class SSquare extends SRect {
+Scatter.Square = class extends Scatter.Rect {
   constructor(size = 100) {
     super(size, size);
   }
@@ -1057,7 +1061,7 @@ class SSquare extends SRect {
 
 
 // Regular polygon
-class SPolygon extends SCircle {
+Scatter.Polygon = class extends Scatter.Circle {
   constructor(radius = 50, resolution = 24) {
     super(radius, resolution);
     this.isPolygonal = true;
@@ -1084,7 +1088,7 @@ function windingNumber(pt, vertices) {
 }
 
 
-// Returns the catmull rom centripetal spline eq coefficients given 4 points position
+// Returns the catmull rom centripetal sdrawLine eq coefficients given 4 points position
 // This is usefull as the vertexCurve in p5 uses Catmull-Rom
 function catmullRom(p0, p1, p2, p3) {
   a = p1.copy().mult(3).sub(p0).add(
@@ -1280,7 +1284,7 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
 // computes the intersection of 2 lines of the form p = origin + direction * t. Returns false if
 // the 2 lines are parallel, else returns the value of t for which the 2 lines intersect
 // Note: the directions should be normalized 
-function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
+function lineSdrawLineIntersection(pt, dir, p0, p1, p2, p3) {
   // retrieve the line equation as x + by + c = 0
   let a1 = 1;
   let b1;
@@ -1296,12 +1300,12 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
     c1 = -pt.y;
   }
 
-  // retrieve the spline equation at^3 + bt^2 + ct + d
+  // retrieve the sdrawLine equation at^3 + bt^2 + ct + d
   let [a2, b2, c2, d2] = catmullRom(p0, p1, p2, p3);
 
   // Essentially we solve for a 3rd order polynomial roots. The polynomial
   // is obtained from substituting x and y in the line equation by their values
-  // computed from t in the spline equation
+  // computed from t in the sdrawLine equation
   let A = a1 * a2.x + b1 * a2.y;
   let B = a1 * b2.x + b1 * b2.y;
   let C = a1 * c2.x + b1 * c2.y;
@@ -1335,13 +1339,13 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
 }
 
 
-// Check if a ray intersects a spline
+// Check if a ray intersects a sdrawLine
 // Inputs are 6 vectors representing the ray origin,
 // its direction and the 4 control points
 // Returns [false, false, false] if the ray does not intersect, otherwise returns
 // [intersectionPoint, edge interpolent1, edge interpolent2]
-function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
-  let t = lineSplineIntersection(rayOri, rayDir, p0, p1, p2, p3);
+function raySdrawLineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
+  let t = lineSdrawLineIntersection(rayOri, rayDir, p0, p1, p2, p3);
   
   let t2 = [];
   for (let i = 0; i < t.length; i++) {
@@ -1359,7 +1363,7 @@ function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
 
 // uses the even-odd rule to check whether a point is inside a shape.
 // if approx is set to true, the polygonal mesh will be used even if 
-// the mesh normally uses splines.
+// the mesh normally uses sdrawLines.
 function isInside(vtx, shape, approx = true) {
   let isIn = false;
   let l = shape.vertices.length;
@@ -1400,9 +1404,9 @@ function isInside(vtx, shape, approx = true) {
       }
     }
     else {
-      // for the spline case we solve for the roots 
+      // for the sdrawLine case we solve for the roots 
       // of the intersection
-      // or the horizontal line with each spline
+      // or the horizontal line with each sdrawLine
       [p0, p1, p2, p3] = shape.controlPoints(i)
       
       p0 = shape.applyTransform(p0);
@@ -1410,7 +1414,7 @@ function isInside(vtx, shape, approx = true) {
       p2 = shape.applyTransform(p2);
       p3 = shape.applyTransform(p3);
 
-      intersections = raySplineIntersection(
+      intersections = raySdrawLineIntersection(
         vtx, xVec, p0, p1, p2, p3)
       
       for (k = 0; k < intersections.length; k++) {
@@ -1451,17 +1455,17 @@ function isInside(vtx, shape, approx = true) {
 // true and the shape is closed, the first vertex will be moved on the contour
 // by a half increment
 // For polygonal shapes, for even less distortion a good method 
-// is converting to spline first and only then resample. 
-// The spline_resample option enables that. It is recommended 
+// is converting to sdrawLine first and only then resample. 
+// The sdrawLine_resample option enables that. It is recommended 
 // to always have it on.
 function resample(shape, num_points = 0, offset=true, approx=false,
-                   spline_resample = true) {
+                   sdrawLine_resample = true) {
   if (shape.vertices.length <= 1) {
     return shape.copy();
   }
   
   let isPolygonal = shape.isPolygonal;
-  if (spline_resample) {
+  if (sdrawLine_resample) {
     shape.isPolygonal = false;
   }
 
@@ -1508,7 +1512,7 @@ function resample(shape, num_points = 0, offset=true, approx=false,
     t /= shape.edgeLengths[j];
     t = 1 - t;
     
-    pt = new Point(
+    pt = createPoint(
       shape.edgeInterpolation(t, j, 100,
                      approx, false));
     
@@ -1652,7 +1656,7 @@ function scatter(shape, num_points = 100,
 
   let pts = [];
   for (let i = 0; i < vtx.length; i++) {
-    append(pts, new Point(vtx[i]));
+    append(pts, new Scatter.Point(vtx[i]));
   }
 
   return pts;

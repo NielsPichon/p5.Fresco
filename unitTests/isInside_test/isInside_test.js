@@ -4,7 +4,7 @@ let s2;
 
 function setup() {
   createCanvas(200, 200);
-  s = new SPolygon(50, 10);
+  s = new Scatter.Polygon(50, 10);
   s.scale.mult(0.5);
   
   s1 = s.copy();
@@ -32,7 +32,7 @@ function draw() {
      else {
        stroke(255, 0, 0);
      }
-     pPoint(createVector(i, j));
+     drawPoint(createVector(i, j));
    }
   }
 

@@ -46,7 +46,7 @@ function draw() {
 
   for (let i = 0; i < numLines; i++) {
     stroke(lines[i].color);
-    pBezier(...lines[i]);
+    drawBezier(...lines[i]);
   }
 
   // create a frame around the drawing

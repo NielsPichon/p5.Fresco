@@ -14,7 +14,7 @@ function setup() {
   createCanvas(500, 500);
 
   // create source circle
-  const s = new SCircle(200, 24);
+  const s = new Scatter.Circle(200, 24);
 
   // scatter points inside
   p = scatter(s, numParticles, false, true);
@@ -30,7 +30,7 @@ function setup() {
     p[i].velocity = createVector(-p[i].y, p[i].x).normalize();
   }
 
-  f = new Attractor(new Point(createVector(0, 0)),
+  f = new Attractor(createPoint(0, 0),
                     intensity, 300, falloff);
 }
 

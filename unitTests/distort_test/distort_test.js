@@ -14,12 +14,12 @@ function setup() {
 
   // create a grid of lines
   for (let  i = 0; i < num_lines; i++) {
-    lines.push(new SLine(createPoint(
+    lines.push(new Scatter.Line(createPoint(
       -width / 2, - height / 2 + (i + 1) * height / (num_lines + 1)),
       createPoint(width / 2, -height / 2 + (i + 1) * height / (num_lines + 1)),
       lines_resolution)
     );
-    lines.push(new SLine(createPoint(
+    lines.push(new Scatter.Line(createPoint(
       -width / 2 + (i + 1) * width / (num_lines + 1), - height / 2),
       createPoint(-width / 2 + (i + 1) * width / (num_lines + 1), height / 2),
       lines_resolution)
@@ -44,7 +44,7 @@ function draw() {
   for (let x = -width / 2; x < width / 2; x++) {
     for (let y = -height / 2; y < height / 2; y++) {
       stroke(funcHeight(x, y) * 255);
-      pPoint(createVector(x, y));
+      drawPoint(createVector(x, y));
     }
   }
 

@@ -28,9 +28,9 @@ class Voronoi {
         }
         append(
           this.seeds,
-          new Point(createVector(
+          createPoint(
             random(-width / 2, width / 2),
-            random(-height / 2, height / 2), z)));
+            random(-height / 2, height / 2), z));
       }
     }
     else {
