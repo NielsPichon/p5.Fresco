@@ -1,7 +1,7 @@
 /**
  * Overide of the p5 keyPressed fucntion which handles pausing with
  * the p and space keys, and saving the current frame to png
- * with the s key.
+ * with the s key. Pressing the right arrow key will draw one frame.
  */
 function keyPressed() {
     // pause/unpause
@@ -17,6 +17,10 @@ function keyPressed() {
     // save current frame to png
     if (key == 's') {
       saveCanvas('canvas', 'png');
+    }
+
+    if (key == 'ArrowRight') {
+      redraw();
     }
 }
 
