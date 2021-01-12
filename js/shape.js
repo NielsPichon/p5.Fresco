@@ -956,10 +956,41 @@ function deepcopy(obj) {
 }
 
 
+/**
+ * A class representing a line
+ * @class
+ */
+class sLine extends Shape {
+  /**
+   * @constructor
+   * @param {Point} pt1 First extremity Point
+   * @param {Point} pt2 Second extremity Point
+   * @param {number} resolution number of points subdividing the 
+   * line (min 2, the extremities).
+   */
+  constructor(pt1, pt2, resolution = 2) {
+    if (resolution < 2) {
+      throw "A line should at least have 2 points"
+    }
+    super([]);
+    let t = 0;
+    const incr = 1 / (resolution - 1);
+    // add resolution points
+    for (let i = 0; i < resolution; i++) {
+      this.vertices.push(createPoint(
+        pt1.x * (1 - t) + pt2.x * t,
+        pt1.y * (1 - t) + pt2.y * t,
+        pt1.z * (1 - t) + pt2.z * t));
+      t += incr;
+    }
+  }
+}
+
+
 // Polygonal sphere
 class sCircle extends Shape {
   constructor(resolution = 24, radius = 50) {
-    super();
+    super([]);
     this.radius = radius;
     this.resetResolution(resolution);
   }
