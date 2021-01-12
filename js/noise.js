@@ -1,15 +1,18 @@
-// a class for 2D/3D cellular noise
-// If gridBased is true, numCells x numCells square
-// boxes are generated and one seed per cell is placed.
-// This will prevent animating the seeds themselves,
-// but will result in a nicer looking noise, which will 
-// scale better with the number of seeds.
-// Else, numCells seeds are randomly placed in the canvas.
-// If is3D is set, the points will be scattered in the
-// z direction as well (numCells of them if using grid_based noise)
-// and the z direction will also be used for computing the noise
-// value, allowing for animating the z direction if the noise
+/**
+ * A class for 2D/3D cellular noise
+*/
 class Voronoi {
+  /**
+   * 
+   * @constructor
+   * @param {number} numCells Number of cells to create within the canvas.
+   * If `gridBased` is true, this is interpreted as the number of cell in each axis.
+   * (including the z axis if `is3D` is also true). Otherwise this is the number of points to scatter to generate cells
+   * @param {boolean} [gridBased] Whether to use a grid based approach.
+   * This will prevent animating individual cell centers but is much faster to compute.
+   * @param {boolean} [is3D] Whether to generate 3D noise. This will allow
+   * animating the z coordinate but is much slower
+   */
   constructor(numCells, gridBased = false, is3D=false) {
     this.gridBased = gridBased;
     this.numCells = numCells;
@@ -65,8 +68,16 @@ class Voronoi {
     }
   }
 
-  // given a point position (as a vector), returns the value
-  // of the voronoi noise at the specified location.
+
+  /**
+   * Given a point position (as a vector), returns the value
+   * of the voronoi noise at the specified location.
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} z 
+   * @returns {number} Value of the voronoi noise at the specified location.
+   * In practice this is the distance to the closest cell center remapped to [0, 1];
+   */
   get(x, y, z=null) {
     position = createVector(x, y, z);
     if (this.gridBased) {
@@ -130,7 +141,7 @@ class Voronoi {
           }
         }
       }
-      return minDist / this.cellSize.mag() * 255;
+      return minDist / this.cellSize.mag();
     }
     else {
       let minDist = width * width + height * height;
@@ -160,13 +171,22 @@ class Voronoi {
           minDist = dist;
         }
       }
-      return minDist * 255;
+      return minDist;
     }
   }
   
-  // a symetrical spherically mapped version of the
-  // voronoi noise which is somewhat trippy. Works best
-  // with non-cell noise
+
+  /**
+   * a symetrical spherically mapped version of the
+   * voronoi noise which is somewhat trippy. Works best
+   * with non-cell noise
+   * @param {number} x X-coordinate of the point where to query the noise
+   * @param {number} y Y-coordinate of the point where to query the noise 
+   * @param {number} [z] Z-coordinate of the point where to query
+   * the noise. Will only be read if `this.is3D` is `true`
+   * @returns {number} Value of the voronoi noise at the specified location,
+   * in the [0, 1] range.
+   */
   trippy(x, y, z=null) {
     psition = createVector(x, y, z=null)
     let minDist = width * width + height * height;
@@ -202,15 +222,31 @@ class Voronoi {
 
 
 //simple friendlier noise function which calls the perlin noise by its actual name
+/**
+ * Simple friendlier p5.noise function which calls the perlin noise by its actual name
+ * @param {number} x X-coordinate of the point where to query the noise 
+ * @param {number} y Y-coordinate of the point where to query the noise  
+ * @param {number} [z] Z-coordinate of the point where to query 
+ * @returns {number} Value of the perlin noise at the specified location,
+ * in the [0, 1] range.
+ */
 function perlin(x, y=null, z=null) {
   return noise(x, y, z);
 }
 
-// Perlin noise normally leaves in the [-sqrt(N/4), sqrt(N/4)] range.
-// The p5.js implementation has naively shifted it to the [0, 1] range
-// assuming it was originally mapped to [-1, 1].
-// this function renormalizes the noise to actually have values in [0, 1];
-// see https://digitalfreepen.com/2017/06/20/range-perlin-noise.html
+
+/**
+ * Perlin noise normally leaves in the [-sqrt(N/4), sqrt(N/4)] range.
+ * The p5.js implementation has naively shifted it to the [0, 1] range
+ * assuming it was originally mapped to [-1, 1].
+ * this function renormalizes the noise to actually have values in [0, 1];
+ * see https://digitalfreepen.com/2017/06/20/range-perlin-noise.html
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query
+ * @returns {number} Value of the normalized perlin noise at the specified
+ * location, in the [0, 1] range.
+ */
 function normalizedPerlin(x, y, z = null) {
   if (z) {
     let n = noise(x, y, z);
@@ -223,34 +259,67 @@ function normalizedPerlin(x, y, z = null) {
 }
 
 
-// ridged noise is absolute value of perlin when mapped between -1 and 1
+/**
+ * Ridged noise is absolute value of Perlin when mapped between -1 and 1
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} Value of the ridged perlin noise at the specified location,
+ * in the [0, 1] range.
+ */
 function ridgedNoise(x, y, z = null) {
   return Math.abs(map(noise(x, y, z), 0, 1, -1, 1));
 }
 
 
-// normalized ridged noise
+/**
+ * Ridged noise is absolute value of normalized Perlin noise when mapped between -1 and 1
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} Value of the ridged perlin noise at the specified location,
+ * in the [0, 1] range.
+ */
 function normalizedRidgedNoise(x, y, z = null) {
   return Math.abs(map(normalizedPerlin(x, y, z), 0, 1, -1, 1));
 }
 
 
-// a discretized noise function
-// noiseFunc is the function, levels is the number of levels
+/**
+ * A discretized noise function which creates "levels".
+ * Essentially we snap each noise value to the closest level.
+ * @param {Function} noiseFunc A function which takes x, y, z as argument
+ * and returns a noise value in the [0, 1] range
+ * @param {number} levels Number of levels
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} Value of the leveled noise at the specified location, in the [0, 1] range.
+ */
 function leveledNoise(noiseFunc, levels, x, y, z = null) {
   return Math.floor(noiseFunc(x, y, z) * (levels + 1)) / (levels + 1);
 }
 
 
-// returns the iso lines for a noise map. 0 means same height region,
-// 1 means changing region.
+/**
+ * Computes the iso lines for a noise map.
+ * @param {Function} noiseFunc A function which takes x, y, z as argument
+ * and returns a noise value in the [0, 1] range
+ * @param {number} levels Number of iso-heights
+ * @param {number} step Differentiation step for detecting level changes
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} 1 if there is a level change, which is to say an iso-line,
+ * 0 otherwise.
+ */
 function isoLine(noiseFunc, levels, step, x, y, z=null) {
   // compute leveled noise gradient 
   let dx = leveledNoise(noiseFunc, levels, x + step, y) -
     leveledNoise(noiseFunc, levels, x - step, y);
   let dy = leveledNoise(noiseFunc, levels, x, y + step) -
     leveledNoise(noiseFunc, levels, x, y - step);
-  if (dx !=0 || dy !=0) {
+  if (dx != 0 || dy != 0) {
     return 1;
   }
   else {
@@ -259,14 +328,38 @@ function isoLine(noiseFunc, levels, step, x, y, z=null) {
 }
 
 
-// multiplies the noise by `levels` and return the non integer part
+/**
+ * Computes modulo noise at the specified location. This is done by multiplying the
+ * provided noise function by the number of levels and return the non-integer part.
+ * @param {Function} noiseFunc A function which takes x, y, z as argument
+ * and returns a noise value in the [0, 1] range
+ * @param {number} levels Number of levels
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} Value of the modulo noise at the specified location, in the [0, 1] range.
+ */
 function moduloNoise(noiseFunc, levels, x, y, z=null) {
   return (noiseFunc(x, y, z) * levels % 1);
 }
 
 
 // returns a unit vector which orientation depends
-// on the underlying noise 
+// on the underlying noise
+/**
+ * Computes a unit vector which orientation depends on the underlying noise.
+ * This is achieved by remapping the noise at the specified location to 
+ * [0, 5 * 2PI]. The value of 5 is arbirtrarily chosen, but larger than 1 or 2.
+ * This is because Perlin noise, as well as Simplex noise are most of the time around
+ * 0.5 which would result in the generated vector often pointing in the same direction.
+ * By multiplying the number of "turns" by 5, we spread the directions of the vectors.
+ * @param {Function} noiseFunc A function which takes x, y, z as argument
+ * and returns a noise value in the [0, 1] range
+ * @param {number} x X-coordinate of the point where to query the noise
+ * @param {number} y Y-coordinate of the point where to query the noise 
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {p5.Vector} p5.Vector of unit length pointing in the noise "direction".
+ */
 function noiseVector(noiseFunc, x, y, z=null) {
   // get random angle from noise at location
   let n = map(noiseFunc(x, y, z), 0, 1, 0, 10 * PI);
@@ -276,6 +369,19 @@ function noiseVector(noiseFunc, x, y, z=null) {
 
 
 // distorts some noise (only supports noise types which take only x, y, z as input)
+/**
+ * Distorts the noise map by displacing the query location in a direction based on the
+ * noise itself (#noiseCeption!).
+ * @param {Function} noiseFunc A function which takes x, y, z as argument
+ * and returns a noise value in the [0, 1] range
+ * @param {number} amount Amount of distortion in pixels, which is to say the number
+ * of pixels the query will be displaced by.
+ * @param {number} x X-coordinate of the point where to query the noise
+ * @param {number} y Y-coordinate of the point where to query the noise
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} Value of the distorted noise at the specified location,
+ * in the [0, 1] range.
+ */
 function distortedNoise(noiseFunc, amount, x, y, z=null) {
   // get displacement vector
   let n = noiseVector(noiseFunc, x, y, z).mult(amount);
@@ -285,9 +391,16 @@ function distortedNoise(noiseFunc, amount, x, y, z=null) {
 }
 
 
-// Returns the 2D curl noise from the specified noise function.
-// step is the differenciation step.
-// This is indeed an approximation of the curl noise
+/**
+ * Computes the 2D curl noise from the specified noise function. This is a purely 2D approximation.
+ * @param {Function} noiseFunc A function which takes x, y, z as argument
+ * and returns a noise value in the [0, 1] range
+ * @param {number} step Differenciation step used to compute the gradient at the query point
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} p5.Vector representing the rotational of the noise, which is to say the "curl" noise.
+ */
 function curlNoise2D(noiseFunc, step, x, y, z=null) {
   // retrieve the noise gradient at location
   let n = gradient(noiseFunc, step, x, y, z);
@@ -296,11 +409,24 @@ function curlNoise2D(noiseFunc, step, x, y, z=null) {
   return createVector(-n.y, n.x);
 }
 
-// returns the 3D curl noise from the specified noise function
-function curlNoise3D(noiseFunc, step, x, y, z=null) {
-  function vec(x0, y0, z0) {return noiseVector(noiseFunc, x0, y0, z0)};
-  let grad = gradientVec(vec, step, x, y, z);
-  let n = vec(x, y, z);
 
+/**
+ * Computes the 3D curl noise from the specified noise function.
+ * @param {Function} noiseFunc A function which takes x, y, z as argument
+ * and returns a noise value in the [0, 1] range
+ * @param {number} step Differenciation step used to compute the gradient at the query point
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise   
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} p5.Vector representing the rotational of the noise, which is to say the "curl" noise.
+ */
+function curlNoise3D(noiseFunc, step, x, y, z=null) {
+  // declare fucntion to compute the noise vector of the noise field
+  function vec(x0, y0, z0) {return noiseVector(noiseFunc, x0, y0, z0)};
+  // compute the gradient of the noise vector
+  let grad = gradientVec(vec, step, x, y, z);
+  //compute the noise vector
+  let n = vec(x, y, z);
+  // compute the cross product of the gradient with the noise
   return grad.cross(n);
 }
