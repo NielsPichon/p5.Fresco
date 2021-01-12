@@ -14,7 +14,7 @@ function setup() {
   createCanvas(500, 500);
 
   // create source circle
-  const s = new sCircle(24, 200);
+  const s = new SCircle(200, 24);
 
   // scatter points inside
   p = scatter(s, numParticles, false, true);

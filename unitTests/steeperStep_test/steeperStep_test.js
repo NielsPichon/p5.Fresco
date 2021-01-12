@@ -20,7 +20,7 @@ function draw() {
   line(width/2, 0, width / 2, height);
   
   for (let i = 0; i < pts.length; i++) {
-    PPoint(pts[i])
+    pPoint(pts[i])
   }
   
   noLoop();

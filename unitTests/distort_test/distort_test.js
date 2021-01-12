@@ -14,17 +14,21 @@ function setup() {
 
   // create a grid of lines
   for (let  i = 0; i < num_lines; i++) {
-    append(lines, new Shape([createPoint(-width / 2, - height / 2 + (i + 1) * height / (num_lines + 1)),
-      createPoint(width / 2, -height / 2 + (i + 1) * height / (num_lines + 1))]));
-    append(lines, new Shape([createPoint(
+    lines.push(new SLine(createPoint(
+      -width / 2, - height / 2 + (i + 1) * height / (num_lines + 1)),
+      createPoint(width / 2, -height / 2 + (i + 1) * height / (num_lines + 1)),
+      lines_resolution)
+    );
+    lines.push(new SLine(createPoint(
       -width / 2 + (i + 1) * width / (num_lines + 1), - height / 2),
-      createPoint(-width / 2 + (i + 1) * width / (num_lines + 1), height / 2)]));
+      createPoint(-width / 2 + (i + 1) * width / (num_lines + 1), height / 2),
+      lines_resolution)
+    );
   }
 
   // resample the lines and set them red, and then distort there respective positions
   let k;
   for (let i = 0; i < lines.length; i++) {
-    lines[i] = resample(lines[i], lines_resolution);
     lines[i].color = [255, 0, 0, 255];
     lines[i].isPolygonal = poly;
     for (k = 0; k < lines[i].vertices.length; k++) {
@@ -40,7 +44,7 @@ function draw() {
   for (let x = -width / 2; x < width / 2; x++) {
     for (let y = -height / 2; y < height / 2; y++) {
       stroke(funcHeight(x, y) * 255);
-      PPoint(createVector(x, y));
+      pPoint(createVector(x, y));
     }
   }
 

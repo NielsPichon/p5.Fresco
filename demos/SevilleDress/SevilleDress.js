@@ -19,7 +19,7 @@ function setup() {
 
 function draw() {
   // Create circle
-  let c = new sCircle(1000, r);
+  let c = new SCircle(r, 1000);
 
   // Distort circle
   for (let i = 0; i < c.vertices.length; i++) {

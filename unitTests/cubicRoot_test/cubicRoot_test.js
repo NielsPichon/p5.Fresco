@@ -62,7 +62,7 @@ function draw() {
   for (let  i = 0; i < roots1.length; i++) {
     let x = roots1[i];
     let y = a1 * x * x * x + b1 * x * x + c1 * x + d1;
-    PPoint(createVector(x, y));
+    pPoint(createVector(x, y));
   }
     
   s2.draw();
@@ -71,7 +71,7 @@ function draw() {
   for (let  i = 0; i < roots2.length; i++) {
     let x = roots2[i];
     let y = a2 * x * x * x + b2 * x * x + c2 * x + d2;
-    PPoint(createVector(x, y));
+    pPoint(createVector(x, y));
   }
   
   s3.draw();
@@ -80,7 +80,7 @@ function draw() {
   for (let  i = 0; i < roots3.length; i++) {
     let x = roots3[i];
     let y = a3 * x * x * x + b3 * x * x + c3 * x + d3;
-    PPoint(createVector(x, y));
+    pPoint(createVector(x, y));
   }
   
   noLoop();

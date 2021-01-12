@@ -63,7 +63,7 @@ function makeBoob(X, Y) {
   const heightToWidthRatio = random(minHeightToWidthRatio, maxHeightToWidthRatio);
   
   // create cup
-  let cup = new sArc(Math.PI, cupRadius);
+  let cup = new SArc(Math.PI, cupRadius);
   if (cupContours) {
     cup.color = colorFromHex(cupColors[Math.floor(random(cupColors.length))]);
     cup.strokeWeight = lineWeight;
@@ -78,7 +78,7 @@ function makeBoob(X, Y) {
   let cupHeight = cupRadius * heightToWidthRatio;
 
   // create tit
-  let tit = new sCircle(12, titRadius);
+  let tit = new SCircle(titRadius, 12);
   tit.position.add(createVector(0, -cupHeight - random(minTitOffset * titRadius, maxTitOffset * titRadius)));
 
   if (titContours) {

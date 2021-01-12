@@ -6,7 +6,7 @@ const num_samples = 5000;
 
 function setup() {
   createCanvas(200, 200);
-  s = new sSquare();
+  s = new SSquare();
   s.scale.mult(2);
   pts = scatter(s, num_pts, contour = false);
   for (let i = 0; i < pts.length; i++) {
@@ -21,10 +21,10 @@ function draw() {
   stroke(255, 0 ,0);
   for (let i = 0; i < pts.length; i++) {
     strokeWeight(5);
-    PPoint(pts[i]);
+    pPoint(pts[i]);
     strokeWeight(1);
     noFill();
-    PCircle(pts[i], pts[i].radius);
+    pCircle(pts[i], pts[i].radius);
   }
   
   relax(pts, 1, num_samples);

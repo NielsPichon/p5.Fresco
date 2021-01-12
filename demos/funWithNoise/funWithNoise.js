@@ -8,7 +8,7 @@ const colors = ['6B2D5C', 'F0386B', 'FF5376', 'F8C0C8', 'E2C290'];
 const addIsoLines = true;
 const isoLinesClr = 0;
 const useModulo = false;
-const levelNoise = false;
+const levelNoise = true;
 const noiseOctaves = 4;
 
 function setup() {
@@ -64,8 +64,7 @@ function draw() {
         let iso = isoLine(noiseType, numLevels, noiseFreq, x * noiseFreq, y * noiseFreq);
 
         if (iso == 0) {
-          // stroke(colorInterp(n, colors));
-          stroke(255);
+          stroke(colorInterp(n, colors));
         }
         else {
           stroke(isoLinesClr);

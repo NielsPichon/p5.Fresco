@@ -27,7 +27,7 @@ function debugDrawCatmullRom(A, resolution) {
       let nu_pt = a.copy().mult(t * t * t).add(
         b.copy().mult(t * t)).add(
         c.copy().mult(t)).add(d);
-      PPoint(nu_pt);
+      pPoint(nu_pt);
     }
   }
 }
@@ -35,12 +35,12 @@ function debugDrawCatmullRom(A, resolution) {
 
 function setup() {
   createCanvas(400, 400);
-  s = new sSquare();
+  s = new SSquare();
   s.isPolygonal = false
   s2 = s.copy();
   s2.scale.mult(1.2);
   s2.position.add(10, 10);
-  s2.rotation = PI/4;
+  s2.rotation = PI / 4;
   s2.stroke = [255, 0, 0, 255];
   s2.isPolygonal = false;
 }

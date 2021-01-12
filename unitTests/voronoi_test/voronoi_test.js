@@ -23,8 +23,8 @@ function draw() {
     let pt = createVector(i, 0, t);
     for (j = -height / 2; j < height / 2; j++) {
       pt.y = j;
-      stroke(voronoi.get(pt));
-      PPoint(pt);
+      stroke(voronoi.get(pt.x, pt.y) * 255);
+      pPoint(pt);
     }
   }
   

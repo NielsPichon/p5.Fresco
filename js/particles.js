@@ -214,13 +214,13 @@ class Particle extends Point {
             else {
                 stroke(this.color);
                 strokeWeight(this.radius);
-                PPoint(this);
+                pPoint(this);
             }
         }
         else {
             strokeWeight(this.radius);
             stroke(this.color);
-            PPoint(this);
+            pPoint(this);
         }
     }
 
@@ -232,7 +232,7 @@ class Particle extends Point {
         else {
             stroke(this.color);
             strokeWeight(this.radius);
-            PPoint(this);
+            pPoint(this);
         }
     }
 
@@ -242,8 +242,7 @@ class Particle extends Point {
                 if (this.trail.vertices.length > 1) {
                     stroke(this.color);
                     strokeWeight(this.radius);
-                    print(this.radius);
-                    PLine(
+                    pLine(
                         this.trail.vertices[this.trail.vertices.length - 1],
                         this.trail.vertices[this.trail.vertices.length - 2]
                     );

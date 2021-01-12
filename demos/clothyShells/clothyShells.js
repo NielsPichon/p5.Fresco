@@ -19,7 +19,7 @@ function setup() {
   let n;
   // create the specified amount of rings
   for (let i = 1; i < numRings + 1; i++) {
-    append(rings, new sCircle(numSegments, i * radiusIncrement));
+    append(rings, new SCircle(i * radiusIncrement, numSegments));
     
     // if distortShape, each ring sees each of its vertices displaced based on perlin noise. The value of the noise will tell
     // how much to move along the normal/radius. The amount is also proportional to the actual radius of the ring

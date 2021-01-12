@@ -14,7 +14,7 @@ let circleShape;
 function setup() {
   createCanvas(1000, 1000);
   background(0);
-  circleShape = new sCircle(resolution, 100);
+  circleShape = new SCircle(100, resolution);
   circleShape.color = [255, 255, 255, 128];
   angleMultiplier = radians(angleMultiplier);
 }

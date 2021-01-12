@@ -7,7 +7,7 @@
 // Helper function to draw a line from 2 p5.vectors
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function PLine(p1, p2) {
+function pLine(p1, p2) {
   line(p1.x + width / 2, -p1.y + height / 2,
     p2.x + width / 2, -p2.y + height / 2);
 }
@@ -16,7 +16,7 @@ function PLine(p1, p2) {
 // Helper function to draw a point from a p5.vector
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function PPoint(p1) {
+function pPoint(p1) {
   point(p1.x + width / 2, -p1.y + height / 2);
 }
 
@@ -24,7 +24,7 @@ function PPoint(p1) {
 // Helper function to add a Vertex to a curve from a p5.vector
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function PCurveVertex(p1) {
+function pCurveVertex(p1) {
   curveVertex(p1.x + width / 2, -p1.y + height / 2);
 }
 
@@ -32,7 +32,7 @@ function PCurveVertex(p1) {
 // Helper function to add a Vertex to a curve from a p5.vector
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
-function PVertex(p1) {
+function pVertex(p1) {
   vertex(p1.x + width / 2, -p1.y + height / 2);
 }
 
@@ -40,7 +40,7 @@ function PVertex(p1) {
 // Note that everything is shifted so that 0,0 is 
 // always the center of the Canvas
 // p1 and p4 are the anchor points, p2, and p3 the control ones
-function PBezier(p1, p2, p3, p4) {
+function pBezier(p1, p2, p3, p4) {
   bezier(
     p1.x + width / 2, -p1.y + height / 2,
     p2.x + width / 2, -p2.y + height / 2,
@@ -49,12 +49,12 @@ function PBezier(p1, p2, p3, p4) {
   );
 }
 
-function PText(str, pos) {
+function pText(str, pos) {
   text(str, pos.x + width / 2, -pos.y + height / 2);
 }
 
 
-function PCircle(center, radius) {
+function pCircle(center, radius) {
   circle(center.x + width / 2, -center.y + height / 2, 2 * radius);
 }
 
@@ -86,10 +86,10 @@ class Point extends p5.Vector{
     stroke(this.color);
     strokeWeight(this.radius);
     if (owner) {
-      PPoint(owner.applyTransform(this.position));
+      pPoint(owner.applyTransform(this.position));
     }
     else {
-      PPoint(this.position);
+      pPoint(this.position);
     }
   }
 
@@ -207,7 +207,7 @@ class Shape {
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
-        PVertex(vtx);
+        pVertex(vtx);
       }
     } else {
       // we add the first and last vertex twice to make sure all points
@@ -225,13 +225,13 @@ class Shape {
         stroke(this.vertices[0].color);
       }
 
-      PCurveVertex(vtx);
+      pCurveVertex(vtx);
       for (let i = 0; i < this.vertices.length; i++) {
         vtx = this.applyTransform(this.vertices[i]);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
-        PCurveVertex(vtx);
+        pCurveVertex(vtx);
       }
       vtx = this.applyTransform(
         this.vertices[this.vertices.length - 1]);
@@ -248,7 +248,7 @@ class Shape {
          stroke(this.vertices[this.vertices.length - 1].color);
         }
       }
-      PCurveVertex(vtx);
+      pCurveVertex(vtx);
     }
     endShape();
   }
@@ -261,7 +261,7 @@ class Shape {
 
     for (let i = 0; i < this.vertices.length; i++) {
       stroke(this.vertices[i].color);
-      PPoint(this.applyTransform(this.vertices[i]));
+      pPoint(this.applyTransform(this.vertices[i]));
     }
   }
 
@@ -282,7 +282,7 @@ class Shape {
       p[i].y += r * Math.sin(theta);
 
       strokeWeight(random(minWeight, maxWeight));
-      PPoint(p[i]);
+      pPoint(p[i]);
     }
   }
 
@@ -324,14 +324,14 @@ class Shape {
   numberVertices() {
     let nrm = this.normals();
     for (let i = 0; i < this.vertices.length - 1; i++) {
-      PText(i, this.applyTransform(
+      pText(i, this.applyTransform(
         this.vertices[i].position().add(
           nrm[i].copy().mult(10))));
     }
 
     if(! this.vertices[0].equals(
       this.vertices[this.vertices.length - 1])) {
-      PText(i, this.applyTransform(
+      pText(i, this.applyTransform(
         this.vertices[this.vertices.length - 1].position().add(
         nrm[this.vertices.length - 1].copy().mult(20))));
     }
@@ -960,7 +960,7 @@ function deepcopy(obj) {
  * A class representing a line
  * @class
  */
-class sLine extends Shape {
+class SLine extends Shape {
   /**
    * @constructor
    * @param {Point} pt1 First extremity Point
@@ -988,8 +988,8 @@ class sLine extends Shape {
 
 
 // Polygonal sphere
-class sCircle extends Shape {
-  constructor(resolution = 24, radius = 50) {
+class SCircle extends Shape {
+  constructor(radius = 50, resolution = 24) {
     super([]);
     this.radius = radius;
     this.resetResolution(resolution);
@@ -1013,7 +1013,7 @@ class sCircle extends Shape {
 }
 
 
-class sArc extends Shape {
+class SArc extends Shape {
   constructor(angle = Math.PI, radius = 50, resolution = 12, close = false) {
     super([]);
     this.radius = radius;
@@ -1032,7 +1032,7 @@ class sArc extends Shape {
 
 
 // Rectangle
-class sRect extends Shape {
+class SRect extends Shape {
   constructor(w = 100, h = 50) {
     let vertices = [];
     append(vertices, new Point(createVector(-w / 2, -h / 2)));
@@ -1049,7 +1049,7 @@ class sRect extends Shape {
 
 
 // Square
-class sSquare extends sRect {
+class SSquare extends SRect {
   constructor(size = 100) {
     super(size, size);
   }
@@ -1057,9 +1057,9 @@ class sSquare extends sRect {
 
 
 // Regular polygon
-class sPolygon extends sCircle {
-  constructor(resolution = 24, radius = 50) {
-    super(resolution, radius);
+class SPolygon extends SCircle {
+  constructor(radius = 50, resolution = 24) {
+    super(radius, resolution);
     this.isPolygonal = true;
   }
 }
