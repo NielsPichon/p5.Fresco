@@ -67,7 +67,8 @@ class Voronoi {
 
   // given a point position (as a vector), returns the value
   // of the voronoi noise at the specified location.
-  get(position) {
+  get(x, y, z=null) {
+    position = createVector(x, y, z);
     if (this.gridBased) {
       // Retrieve the position modulo the window size
       let inCellPos = position.copy();
@@ -166,7 +167,8 @@ class Voronoi {
   // a symetrical spherically mapped version of the
   // voronoi noise which is somewhat trippy. Works best
   // with non-cell noise
-  trippy(position) {
+  trippy(x, y, z=null) {
+    psition = createVector(x, y, z=null)
     let minDist = width * width + height * height;
     let dist = 0;
     let seed;
