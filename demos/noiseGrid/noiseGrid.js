@@ -20,12 +20,19 @@ function setup() {
 
   // create a grid of lines
   for (let  i = 0; i < num_lines; i++) {
-    append(lines, new Shape([createPoint(-width / 2, - height / 2 + (i + 1) * height / (num_lines + 1)),
-      createPoint(width / 2, -height / 2 + (i + 1) * height / (num_lines + 1))]));
+    lines.push(
+      new Scatter.Line(createPoint(
+        -width / 2, - height / 2 + (i + 1) * height / (num_lines + 1)),
+        createPoint(width / 2, -height / 2 + (i + 1) * height / (num_lines + 1)),
+      lines_resolution)
+    );
     if (useVertLines) {
-      append(lines, new Shape([createPoint(
-        -width / 2 + (i + 1) * width / (num_lines + 1), - height / 2),
-        createPoint(-width / 2 + (i + 1) * width / (num_lines + 1), height / 2)]));
+      lines.push(
+        new Scatter.Line(createPoint(
+          -width / 2 + (i + 1) * width / (num_lines + 1), - height / 2),
+          createPoint(-width / 2 + (i + 1) * width / (num_lines + 1), height / 2),
+        lines_resolution)
+      );
     }
   }
 
@@ -33,7 +40,6 @@ function setup() {
   let k;
   let t;
   for (let i = 0; i < lines.length; i++) {
-    lines[i] = resample(lines[i], lines_resolution);
     lines[i].isPolygonal = poly;
     t = Math.floor(random(0, colors.length));
     lines[i].color = colors[t];

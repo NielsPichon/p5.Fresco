@@ -7,7 +7,7 @@ let approx = false;
 
 function setup() {
   createCanvas(200, 200);
-  s = new sPolygon(resolution=5);
+  s = new Scatter.Polygon(50, 5);
   for (let i = 0; i < s.vertices.length; i++) {
     s.vertices[i].color = [255, 0, 0, 255];
   }
@@ -21,14 +21,14 @@ function setup() {
   s0 = s.copy();
   
   
-  vtx = [new Point(createVector(10 , 0))];
-  append(vtx, new Point(createVector(-10 , 30)));
-  append(vtx, new Point(createVector(20 , 60)));
-  append(vtx, new Point(createVector(-40 , 40)));
-  append(vtx, new Point(createVector(-40 , 10)));
-  append(vtx, new Point(createVector(10 , 0)));
+  vtx = [createPoint(10 , 0)];
+  append(vtx, createPoint(-10 , 30));
+  append(vtx, createPoint(20 , 60));
+  append(vtx, createPoint(-40 , 40));
+  append(vtx, createPoint(-40 , 10));
+  append(vtx, createPoint(10 , 0));
   
-  s3 = new Shape(vtx);
+  s3 = new Scatter.Shape(vtx);
   s3.isPolygonal = true;
   
   for (let i = 0; i < s3.vertices.length; i++) {

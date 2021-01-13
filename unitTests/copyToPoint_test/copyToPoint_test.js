@@ -4,10 +4,10 @@ copies = [];
 
 function setup() {
   createCanvas(400, 400);
-  s = new sSquare();
+  s = new Scatter.Square();
   s.scale.mult(1.2);
   s.rotation = 45;
-  s2 = new sSquare();
+  s2 = new Scatter.Square();
   for (let i = 0; i < s.vertices.length; i++) {
     s.vertices[i].scale = createVector(0.1, 0.1);
   }

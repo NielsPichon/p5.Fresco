@@ -46,16 +46,11 @@ function draw() {
 
   for (let i = 0; i < numLines; i++) {
     stroke(lines[i].color);
-    PBezier(...lines[i]);
+    drawBezier(...lines[i]);
   }
 
   // create a frame around the drawing
-  strokeWeight(margin);
-  stroke(colorFromHex(backgroundClr));
-  line(0, margin / 2, width, margin / 2);
-  line(0, height - margin / 2, width, height - margin / 2);
-  line(margin / 2, 0, margin / 2, height);
-  line(width - margin / 2, 0, width - margin / 2, height);
+  border(margin, backgroundClr);
 
 
   noLoop();

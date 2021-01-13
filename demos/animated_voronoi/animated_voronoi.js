@@ -7,8 +7,7 @@ let voronoi;
 function setup() {
   createCanvas(200, 200);
 
-  voronoi = new Voronoi(num_cells, false, false);
-  
+  voronoi = new Scatter.Voronoi(num_cells, false, false);
 }
 
 function draw() {
@@ -42,8 +41,8 @@ function draw() {
     let pt = createVector(i, 0);
     for (j = -height / 2; j < height / 2; j++) {
       pt.y = j;
-      stroke(voronoi.get(pt));
-      PPoint(pt);
+      stroke(voronoi.get(pt.x, pt.y) * 255);
+      drawPoint(pt);
     }
   }
 }

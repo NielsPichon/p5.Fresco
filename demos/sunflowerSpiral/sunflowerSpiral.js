@@ -29,7 +29,7 @@ function setup() {
 
   // create a square with a fill, and specified
   //stroke color and weight
-  s = new sSquare(600);
+  s = new Scatter.Square(600);
   s.noFill = false;
   s.color = colorFromHex(strokeColor);
   s.isPolygonal = true;

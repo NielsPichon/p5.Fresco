@@ -1,7 +1,7 @@
 /**
  * A class for 2D/3D cellular noise
 */
-class Voronoi {
+Scatter.Voronoi = class {
   /**
    * 
    * @constructor
@@ -28,9 +28,9 @@ class Voronoi {
         }
         append(
           this.seeds,
-          new Point(createVector(
+          createPoint(
             random(-width / 2, width / 2),
-            random(-height / 2, height / 2), z)));
+            random(-height / 2, height / 2), z));
       }
     }
     else {
@@ -79,7 +79,7 @@ class Voronoi {
    * In practice this is the distance to the closest cell center remapped to [0, 1];
    */
   get(x, y, z=null) {
-    position = createVector(x, y, z);
+    let position = createVector(x, y, z);
     if (this.gridBased) {
       // Retrieve the position modulo the window size
       let inCellPos = position.copy();
@@ -188,7 +188,7 @@ class Voronoi {
    * in the [0, 1] range.
    */
   trippy(x, y, z=null) {
-    psition = createVector(x, y, z=null)
+    let position = createVector(x, y, z=null)
     let minDist = width * width + height * height;
     let dist = 0;
     let seed;

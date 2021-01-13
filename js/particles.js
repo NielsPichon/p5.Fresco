@@ -1,20 +1,33 @@
-const g = -9.81; // gravity acceleration
-const linear = true; // linear interpolation type
-const constant = false; // constant interpolation type
+/** gravity acceleration */
+const g = -9.81;
 
 
-// reverserved variables which hold the objects of the simulations
+const linear = true;
+const constant = false;
+
+
+/** reverserved variable which holds the particles in the simulation */
 let particles = [];
+/** reverserved variable which holds the forces in the simulation */
 let forces = [];
+/** reverserved variable which holds the colliders in the simulation */
 let colliders = [];
+/** reverserved variable which holds the emitters in the simulation */
 let emitters = [];
 
 
-// simulated time
+/** simulated time */
 let T = 0;
 
 
-// interpolation along a ramp, either constant or linear
+/**
+ * Time interpolation along a ramp, either constant or linear for a 1D value
+ * @param {number} t Current time, to use in the interpolation
+ * @param {Array.<number>} time Array of time stamps at which a given value is reached
+ * @param {Array.<number>} values Array of values to interpolate among
+ * @param {boolean} linear Whether to use linear interpolation or not
+ * @returns {number} The interpolated value
+ */
 function rampInterpolation(t, time, values, linear = true) {
     let interp = 0;
     while (interp < time.length - 1 && time[interp + 1] > t) {
@@ -35,7 +48,14 @@ function rampInterpolation(t, time, values, linear = true) {
 }
 
 
-// interpolation along a ramp, either constant or linear
+/**
+ * Time interpolation along a ramp, either constant or linear for a p5.Vector
+ * @param {number} t Current time, to use in the interpolation
+ * @param {Array.<number>} time Array of time stamps at which a given value is reached
+ * @param {Array.<number>} values Array of values to interpolate among
+ * @param {boolean} linear Whether to use linear interpolation or not
+ * @returns {number} The interpolated value
+ */
 function rampInterpolation2D(t, time, values, linear = true) {
     let interp = 0;
     while (interp < time.length - 1 && time[interp + 1] > t) {
@@ -57,24 +77,38 @@ function rampInterpolation2D(t, time, values, linear = true) {
 }
 
 
-// Checks whether a particle will collide with another particle
-// or a collider and resolves the collision accordingly
+/**
+ * Checks whether a particle will collide with another particle
+ * or a collider and resolves the collision accordingly.
+ * WARNING: Not yet implemented
+ * @param {Scatter.Particle} particle A particle to check the collisons for
+ * @param {number} dt Timestep between frames
+ */
 function solveCollision(particle, dt) {
     throw "collision is not yet implemented";
 }
 
 
-// utility to create a basic particle at specified position
+/**
+ * Utility to create a basic particle at specified position
+ * @param {number} x X-coordinate of the new particle
+ * @param {number} y Y-coordinate of the new particle
+ * @param {number} [z] Z-coordinate of the new particle
+ */
 function createParticle(x, y, z = null) {
-    return new Particle(createPoint(x, y));
+    return new Scatter.Particle(createPoint(x, y));
 }
 
-// class for handling particles. 
-// particles are Points which also have a velocity, a mass,
-// a life time, and possibly varying color and transform over life.
-// Particles may be handled in a cinematic fashion or with a physics
-// system
-class Particle extends Point {
+
+/**
+ * Class for handling particles.
+ * Particles are Points which also have a velocity, a mass,
+ * a life time, and possibly varying color and transform over life.
+ * Particles may be handled in a cinematic fashion or with a physics
+ * system
+ * @class
+ */
+Scatter.Particle = class extends Scatter.Point {
     constructor(position) {
         super(position);
 
@@ -120,8 +154,13 @@ class Particle extends Point {
         append(particles, this);
     }
 
+    /**
+     * Manually casts the particle to a Point
+     * @returns {Scatter.Point} The particle reinterpreted (hand "casted") 
+     * to a Scatter.Point
+     */
     asPoint() {
-        let nu_point = new Point(this.position());
+        let nu_point = new Scatter.Point(this.position());
         nu_point.color = this.color;
         nu_point.rotation = this.rotation;
         nu_point.radius = this.radius;
@@ -129,7 +168,9 @@ class Particle extends Point {
         return nu_point;
     }
 
-    // reads the forces buffer and computes the acceleration accordingly
+    /**
+     * Updates the particle accelration base don the various forces and its mass.
+     */
     updateAcceleration() {
         this.acceleration = createVector(0, 0);
         for (let i = 0; i < forces.length; i++) {
@@ -139,6 +180,9 @@ class Particle extends Point {
     }
 
 
+    /**
+     * Update the properties of a particle based on the current simulation time
+     */
     update() {
         if (!this.stopSimulate) {
             // time since last update
@@ -196,16 +240,23 @@ class Particle extends Point {
         }
     }
 
+    /**
+     * If the particle is to leave a trail, add a copy of this particle as a `Scatter.Point`
+     * to the trail `Scatter.Shape`
+     */
     addCurrentPositionToTrail() {
         if (this.trail) {
             append(this.trail.vertices, this.asPoint());
         }
         else {
-            this.trail = new Shape([this.asPoint()]);
+            this.trail = new Scatter.Shape([this.asPoint()]);
             this.trail.strokeWeight = this.radius;
         }
     }
 
+    /**
+     * Draws the particle or its full trail if it is to leave a trail
+     */
     draw() {
         if (this.leaveTrail) {
             if (this.trail && this.trail.vertices.length > 1) {
@@ -214,36 +265,42 @@ class Particle extends Point {
             else {
                 stroke(this.color);
                 strokeWeight(this.radius);
-                PPoint(this);
+                drawPoint(this);
             }
         }
         else {
             strokeWeight(this.radius);
             stroke(this.color);
-            PPoint(this);
+            drawPoint(this);
         }
     }
 
 
+    /**
+     * Draws all the points in the trail if this particle leaves a trail, or this particle only
+     */
     drawPoints() {
-        if (this.leaveTrail) {
+        if (this.leaveTrail && this.trail && this.trail.vertices.length > 1) {
             this.trail.drawPoints();
         }
         else {
             stroke(this.color);
             strokeWeight(this.radius);
-            PPoint(this);
+            drawPoint(this);
         }
     }
 
+    /**
+     * If this particle leaves a trail, draws a line form the last but one 
+     * position in the trail to the current one.
+     */
     drawLastMove() {
         if (!this.stopSimulate) {
             if (this.trail) {
                 if (this.trail.vertices.length > 1) {
                     stroke(this.color);
                     strokeWeight(this.radius);
-                    print(this.radius);
-                    PLine(
+                    drawLine(
                         this.trail.vertices[this.trail.vertices.length - 1],
                         this.trail.vertices[this.trail.vertices.length - 2]
                     );
@@ -254,32 +311,50 @@ class Particle extends Point {
 }
 
 
-// generic class for a force
-class Force {
+/**
+ * Generic class for a force, enforcing the API
+ * @class
+ */
+Scatter.Force = class {
     constructor() {
         append(forces, this);
         this.isDead = false; // whether the force should be de-referenced
     }
 
+    /**
+     * Returns the force applied to a given particle
+     * @param {Scatter.Particle} particle Particle to apply the force to
+     */
     applyForce(particle) {
     }
 }
 
 
-// gravitational force
-class Gravity extends Force {
+/**
+ * Gravitational force
+ * @class
+ */
+Scatter.Gravity = class extends Scatter.Force {
     constructor() {
         super();
     }
 
+    /** 
+     * Returns the weight of a particle, which is to say the 
+     * gravitational froce appled by the earth on this particle
+     * @param {Scatter.Particle} particle Particle to apply the force to
+     */
     applyForce(particle) {
         return createVector(0, 1).mult(g * particle.mass);
     }
 }
 
 
-// attractor
-class Attractor extends Force {
+/**
+ * Attractor force.
+ * @class
+ */
+Scatter.Attractor = class extends Scatter.Force {
     constructor(position, intensity, cutoff, falloff = -2) {
         super();
         this.position = position; // attraction center.
@@ -288,6 +363,11 @@ class Attractor extends Force {
         this.falloff = falloff; // power of decay with distance to the enter
     }
 
+    /**
+     * Returns the attraction force on a given particle. The intensity depeds on
+     * the distance of the particle to center of the attractor.
+     * @param {Scatter.Particle} particle Particle to apply the force to
+     */
     applyForce(particle) {
         let direction = this.position.sub(particle);
         let magnitude = direction.mag();
@@ -306,10 +386,13 @@ class Attractor extends Force {
 }
 
 
-// Simulates a burst of force which can be used to simulate explosions.
-// All particles within the radius of impact will be affected.
-// The force burst will decay linearly over life
-class Burst extends Force {
+/**
+ * Simulates a burst of force which can be used to simulate explosions.
+ * All particles within the radius of impact will be affected.
+ * The force burst will decay linearly over life.
+ * @class
+ */
+Scatter.Burst = class extends Scatter.Force {
     constructor(position, intensity, radius, decayTime=1e-3) {
         super();
         this.position = position;
@@ -318,6 +401,10 @@ class Burst extends Force {
         this.decayTime = decayTime;
     }
 
+    /**
+     * Returns the burst force appied onto a particle
+     * @param {Scatter.Particle} particle Particle to apply the force to
+     */
     applyForce(particle) {
         if (T > this.decayTime) {
             this.isDead = true;
@@ -341,12 +428,20 @@ class Burst extends Force {
 }
 
 
-class Drag extends Force {
-    constructor(intensity) {
+/**
+ * Simulates kinetic drag
+ * @class
+ */
+Scatter.Drag = class extends Scatter.Force {
+    constructor(intensity = 1) {
         super();
         this.intensity = intensity;
     }
 
+    /**
+     * Retuns the drag applied to a particle which is equal -mu.mv^2
+     * @param {Scatter.Particle} particle Particle to apply the force to
+     */
     applyForce(particle) {
         // - mu * v^2
         return this.velocity.copy().mult(this.velocity).mult(- this.intensity);
@@ -354,7 +449,12 @@ class Drag extends Force {
 }
 
 
-class Emitter {
+/**
+ * A template emitter class, which is to say a class which will create particles over time
+ * following some set rules
+ * @class
+ */
+Scatter.Emitter = class {
     constructor() {
         // particles will be spawned with a random initial velocity
         // where x and y are randomly selected independentyl between
@@ -412,21 +512,30 @@ class Emitter {
         append(emitters, this);
     }
 
+    /**
+     * Creates some particles
+     */
     spawn() {}
 }
 
 
-class PointEmitter extends Emitter {
+/**
+ * A punctual emitter.
+ */
+Scatter.PointEmitter = class extends Scatter.Emitter {
     constructor(position) {
         super();
         this.position = position;
     }
 
+    /**
+     * Create particles.
+     */
     spawn() {
         let t;
         for (let i = 0; i < this.spawnRate; i++) {
             if (random() <= this.spawnProbability) {
-                let nu_particle = new Particle(this.position);
+                let nu_particle = new Scatter.Particle(this.position);
 
                 // assign random velocity in range
                 t = random();
@@ -476,7 +585,12 @@ class PointEmitter extends Emitter {
     }
 }
 
-class ShapeEmitter extends Emitter {
+
+/**
+ * Emitter which creates particles along the contour of a shape
+ * @class
+ */
+Scatter.ShapeEmitter = class extends Scatter.Emitter {
     constructor(shape) {
         super();
         this.shape = shape;
@@ -487,6 +601,9 @@ class ShapeEmitter extends Emitter {
         this.maxNormalV = 1;
     }
 
+    /**
+     * Create particles
+     */
     spawn() {
         let t;
         let nu_pos;
@@ -494,7 +611,7 @@ class ShapeEmitter extends Emitter {
         for (let i = 0; i < this.spawnRate; i++) {
             if (random() <= this.spawnProbability) {
                 nu_pos = scatter(this.shape, 1, true);
-                let nu_particle = new Particle(nu_pos[0]);
+                let nu_particle = new Scatter.Particle(nu_pos[0]);
 
                 // assign random velocity in range
                 t = random();
@@ -550,7 +667,14 @@ class ShapeEmitter extends Emitter {
     }
 }
 
-// simulates a single step
+/**
+ * Simulate a single simulation step. In order, update global time, spawn particles,
+ * update particles, remove dead particles, forces and emitters
+ * @param {boolean} [real_time] Whether to use real time or simulated time. Using real time
+ * is not recommended given the time between 2 calls to this function ay vary, and ths may
+ * affect the precision of the simulation
+ * @param {number} dT Timestep when using simulated time
+ */
 function simulationStep(real_time = false, dT = 0.01) {
     // update current simulation time, either using real time
     // (may lead to reproducibility issues), or a set time step

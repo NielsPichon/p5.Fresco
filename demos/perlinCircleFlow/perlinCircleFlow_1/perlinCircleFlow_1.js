@@ -8,7 +8,7 @@ let c;
 function setup() {
   createCanvas(1000, 1000);
   background(0);
-  c = new sCircle(resolution, 100);
+  c = new Scatter.Circle(100, resolution);
   c.color = [255, 255, 255, 128];
 }
 
