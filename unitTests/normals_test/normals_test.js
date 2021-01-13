@@ -30,12 +30,10 @@ function draw() {
   let n;
   for (let i = 0; i < nrm.length; i++) {
     n = drawNormal(nrm[i], s.vertices[i], s);
-    drawLine(s.applyTransform(s.vertices[i]), n);
   }
   
   for (let i = 0; i < nrm2.length; i++) {
     n = drawNormal(nrm2[i], s2.vertices[i], s2);
-    drawLine(s2.applyTransform(s2.vertices[i]), n);
   }
   
   noLoop();

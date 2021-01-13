@@ -10,42 +10,66 @@ var Scatter = {};
 // Also, the center of the coordinate system (0,0) is in the center of the
 // canvas.
 
-// Helper function to draw a line from 2 p5.vectors
-// Note that everything is shifted so that 0,0 is 
-// always the center of the Canvas
+/**
+ * Helper function to draw a line from 2 p5.vectors.
+ * Note that everything is shifted so that 0,0 is 
+ * always the center of the Canvas and the y axis is
+ * pointing upwards
+ * @param {p5.Vector} p1 first line extremity 
+ * @param {p5.Vector} p2 second line extremity
+ */
 function drawLine(p1, p2) {
   line(p1.x + width / 2, -p1.y + height / 2,
     p2.x + width / 2, -p2.y + height / 2);
 }
 
 
-// Helper function to draw a point from a p5.vector
-// Note that everything is shifted so that 0,0 is 
-// always the center of the Canvas
+/**
+ * Helper function to draw a point from a p5.vector
+ * Note that everything is shifted so that 0,0 is 
+ * always the center of the Canvas and the y axis is
+ * pointing upwards
+ * @param {p5.Vector} p1 Point to draw 
+ */
 function drawPoint(p1) {
   point(p1.x + width / 2, -p1.y + height / 2);
 }
 
 
-// Helper function to add a Vertex to a curve from a p5.vector
-// Note that everything is shifted so that 0,0 is 
-// always the center of the Canvas
+/**
+ * Helper function to add a Vertex to a curve from a p5.vector.
+ * Note that everything is shifted so that 0,0 is 
+ * always the center of the Canvas and the y axis is
+ * pointing upwards
+ * @param {p5.Vector} p1 Vertex position 
+ */
 function drawCurveVertex(p1) {
   curveVertex(p1.x + width / 2, -p1.y + height / 2);
 }
 
 
-// Helper function to add a Vertex to a curve from a p5.vector
-// Note that everything is shifted so that 0,0 is 
-// always the center of the Canvas
+/**
+ * Helper function to add a Vertex to a curve from a p5.vector.
+ * Note that everything is shifted so that 0,0 is 
+ * always the center of the Canvas and the y axis is
+ * pointing upwards
+ * @param {p5.Vector} p1 Vertex position 
+ */
 function drawVertex(p1) {
   vertex(p1.x + width / 2, -p1.y + height / 2);
 }
 
-// Helper function to draw a bezier curve from some p5.vector
-// Note that everything is shifted so that 0,0 is 
-// always the center of the Canvas
-// p1 and p4 are the anchor points, p2, and p3 the control ones
+
+/**
+ * Helper function to draw a bezier curve from some p5.vector
+ * Note that everything is shifted so that 0,0 is 
+ * always the center of the Canvas and the y axis is
+ * pointing upwards
+ * @param {p5.Vector} p1 First anchor point
+ * @param {p5.Vector} p2 First control point
+ * @param {p5.Vector} p3 Second control point
+ * @param {p5.Vector} p4 Second anchor point
+ */
 function drawBezier(p1, p2, p3, p4) {
   bezier(
     p1.x + width / 2, -p1.y + height / 2,
@@ -55,30 +79,63 @@ function drawBezier(p1, p2, p3, p4) {
   );
 }
 
+
+/**
+ * Helper to draw text at a position specified from a p5.Vector
+ * Note that everything is shifted so that 0,0 is 
+ * always the center of the Canvas and the y axis is
+ * pointing upwards
+ * @param {string} str Text to write 
+ * @param {p5.Vector} pos Position of the text
+ */
 function drawText(str, pos) {
   text(str, pos.x + width / 2, -pos.y + height / 2);
 }
 
 
+/**
+ * Helper function to draw a circle centered on a p5.Vector.
+ * Note that everything is shifted so that 0,0 is 
+ * always the center of the Canvas and the y axis is
+ * pointing upwards 
+ * @param {p5.Vector} center Position of the circle center
+ * @param {number} radius Radius of the circle in pixels
+ */
 function drawCircle(center, radius) {
   circle(center.x + width / 2, -center.y + height / 2, 2 * radius);
 }
 
-// Helper function to draw the normal to a point
-// nrm is the normalized normal, pt is the point to which the normal is,
-// shape is the shape to which this normal belongs
-// and l is the length to draw the normal
-function drawNormal(nrm, pt, s, l = 10) {
-  let n = s.applyTransform(pt.position().add(
-    nrm.copy()));
-  n.sub(s.applyTransform(pt.position())).normalize().mult(l).add(
-    s.applyTransform(pt.position()));
-  return n;
+
+/**
+ * Helper function which draws a normal to a vertex of a shape.
+ * 
+ * @param {p5.Vector} normal Normal we want to draw. It should be 
+ * normalized and expressed in the shape referential
+ * @param {p5.Vector} pt Point at which the normal was computed,
+ * in the shape referential
+ * @param {Scatter.Shape} shape Shape to which the point belongs
+ * @param {number} length Lenght we want to draw the normal at 
+ */
+function drawNormal(normal, pt, shape, length = 10) {
+  let n = shape.applyTransform(pt.position().add(
+    normal.copy()));
+  n.sub(shape.applyTransform(pt.position())).normalize().mult(length).add(
+    shape.applyTransform(pt.position()));
+  drawLine(shape.applyTransform(pt), n);
 }
 
 // container class describing a Point object. A point object is a p5.Vector with a color,
 // a radius, a transform and a potential owner
+/**
+ * Class describing a Point object. A point object is a p5.Vector with a color,
+ * a radius, a transform and a potential owner.
+ * @class
+ */
 Scatter.Point = class extends p5.Vector{
+  /**
+   * @constructor
+   * @param {p5.Vector} position Position of the point 
+   */
   constructor(position) {
     super(position.x, position.y, position.z);
     this.rotation = 0;
@@ -88,6 +145,10 @@ Scatter.Point = class extends p5.Vector{
     this.owner;
   }
 
+  /**
+   * Utility function which draws the point on the canvas. It will use 
+   * the point color for the `stroke` and its radius for the `strokeWeight`
+   */
   draw() {
     stroke(this.color);
     strokeWeight(this.radius);
@@ -99,18 +160,31 @@ Scatter.Point = class extends p5.Vector{
     }
   }
 
-  // Returns a value between 0 and 1 based on the distance to the point
-  falloff(vtx, decay_power) {
+  /**
+   * Computes a falloff value based on the distance to the point. The falloff
+   * will reach zero when reaching the radius of  the particle.
+   * @param {p5.Vector} vtx Point to evaluate the falloff at 
+   * @param {number} decayPower How fast the falloff decays. The distance will be
+   * put at the the specified power. For example a value of 1 means linear decay,
+   * 2 quadratic decay and so on...
+   * @returns {number} Falloff value in the [0, 1] range, where 0 means we are out
+   * of particle range, and 1 at the particle
+   */
+  falloff(vtx, decayPower) {
     let distance = (this.position().sub(vtx)).mag();
     let r = distance / this.radius;
-    return pow(r, decay_power);
+    return 1 - pow(r, decayPower);
   }
 
 
-  // Checks whether all properties are equal. Is so, the other point
-  // is considered the same as this one.
-  // This ignores ownership so 2 points belonging to 2 different shapes will
-  // still be detected as one and only
+  /**
+   * Checks whether all properties are equal. Is so, the other point
+   * is considered the same as this one.
+   * This ignores ownership so 2 points belonging to 2 different shapes will
+   * still be detected as one and only
+   * @param {Scatter.Point} pt Point to compare this one with
+   * @returns {boolean} True is the provided point is found to be the same as this one 
+   */
   equals(pt) {
     return this.position().equals(pt.position()) &&
       this.rotation == pt.rotation &&
@@ -123,15 +197,21 @@ Scatter.Point = class extends p5.Vector{
   }
 
 
-  // returns a copy of the position of the point as a
-  // p5.Vector
+  /**
+   * Returns a copy of the position of the point as a
+   * `p5.Vector`.
+   * @returns {p5.Vector} Copyof the position of this Point.
+   */
   position() {
     return createVector(this.x, this.y, this.z);
   }
   
 
-  // set a provided p5.Vector as the new position of this
-  // point
+  /**
+   * Set a provided p5.Vector as the new position of this
+   * point
+   * @param {p5.Vector} nu_pos New position to set this point at 
+   */
   setPosition(nu_pos) {
     this.x = nu_pos.x;
     this.y = nu_pos.y;
@@ -140,6 +220,16 @@ Scatter.Point = class extends p5.Vector{
   
 
   // returns a deepcopy of this point
+  /**
+   * Copies this point. 
+   * This behaves as a deepcopy so the new point can be messed with
+   * without fear of backpropagating changes to this one.
+   * To avoid cyclic references due to the
+   * point possible ownership by a shape, we stayed away from
+   * using JSON Serialization-Deserialization an manually copied
+   * over properties instead.
+   * @returns {Scatter.Point} Deepcopy of this point
+   */
   copy() {
     // ugly but avoids issues with cyclic references
     // when using JSON serialization
@@ -155,16 +245,32 @@ Scatter.Point = class extends p5.Vector{
 
 
 // simple utility to create a point from coordinates
-function createPoint(x, y, z=0) {
+/**
+ * Utility function which creates a `Scatter.Point`
+ * from x, y, and z coordinates
+ * @param {number} x X-coordinate of the new Point
+ * @param {number} y Y-coordinate of the new Point
+ * @param {number} [z] Z-coordinate of the new Point
+ */
+function createPoint(x, y, z=null) {
   return new Scatter.Point(createVector(x, y, z));
 }
 
-// Container for all point based shapes
-// Note that for easier handling in functions,
-// the class has no understanding of closed shapes.
-// To make a closed shape, simply add the first point back at the end
-// of the vertices list
+
+/**
+ * Container for all point based 2D shapes.
+ */
 Scatter.Shape = class {
+  /**
+   * @constructor
+   * @param {Array.<Scatter.Point>} vertices Vertices of this shape.
+   * For this shape to behave properly, it is important to use  `Scatter.Point` and not simple  `p5.Vector`.
+   * Note that for easier handling in functions,
+   * the class has no understanding of closed shapes.
+   * To make a closed shape, simply add a copy of the first point
+   * back at the end
+   * of the vertices list
+   */
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
     // set this shape as owner of the vertices
@@ -190,6 +296,14 @@ Scatter.Shape = class {
 
 
   // draws the shape
+  /**
+   * Utility to draw the shape
+   * @param {boolean} [usePointColor] Whether to use  the shape color or the
+   * individual vertices color.
+   * At the current time, p5.js does not support drawing shapes with
+   * multiple vertices color so this will
+   * most likely result in drawing the sahpe  with the last vertex's color.
+   */
   draw(usePointColor = false) {
     if (this.noStroke && !usePointColor) {
       noStroke();
@@ -260,24 +374,34 @@ Scatter.Shape = class {
   }
 
 
-  // draws only the vertices of the shape
+  /**
+   * Draws each and  every point of the shape
+   */
   drawPoints() {
-    stroke(this.color);
-    strokeWeight(this.strokeWeight + 2);
-
     for (let i = 0; i < this.vertices.length; i++) {
-      stroke(this.vertices[i].color);
-      drawPoint(this.applyTransform(this.vertices[i]));
+      this.vertices[i].draw();
     }
   }
 
 
-  // draw scattered points along contour.
+  // 
   // diffusivity defines how far from the original
   // line points may be moved
-  drawScattered(num_points = 1000, diffusivity = 5, minWeight = .5, maxWeight = 2) {
+  /**
+   * Draws scattered points along contour. The  goal is to give  some organic
+   * effect and as such point  will not necessarily land  on the contour.
+   * How far they are allowed
+   * to land is controled by the  diffusivity.
+   * Each point  will have a different `strokeWeight` which will be randomly
+   * chosen within the user specified interval.
+   * @param {number} [numPoints] Number of points  to scatter.
+   * @param {number} [diffusivity] How far form the original contour, in pixels, a point can land 
+   * @param {number} [minWeight] Minimum random stroke weight with which a point  can be  drawn
+   * @param {number} [maxWeight] Maximum random stroke weight with which a point  can be  drawn
+   */
+  drawScattered(numPoints = 1000, diffusivity = 5, minWeight = .5, maxWeight = 2) {
     stroke(this.color);
-    let p = scatter(this, num_points);
+    let p = scatter(this, numPoints);
 
     let theta = 0;
     let r = 0;
@@ -295,13 +419,23 @@ Scatter.Shape = class {
 
   // draws multiple lines on top of one another
   // with a bit of noise. 
-  drawNoisy(num_lines=5, diffusivity = 5, line_opacity = 128, close = true) {
+  /**
+   * Draws multiple contours on top of one another,
+   * Each one of   them being displaced by some noise,
+   * to  give some organic feel to the  drawing.
+   * @param {number} [numLines] Number of line to draw
+   * @param {number} [diffusivity] How  far  a contour vertex may be displaced in pixels 
+   * @param {number} [lineOpacity] Opacity of  each contour line
+   * @param {number} [close] Whether to force the displaced line to come back
+   * to the starting point, should the original  shape be closed.
+   */
+  drawNoisy(numLines=5, diffusivity = 5, lineOpacity = 128, close = true) {
     let tmp_s = this.copy();
-    tmp_s.color[3] = line_opacity;
+    tmp_s.color[3] = lineOpacity;
     let j;
     let r;
     let theta;
-    for (let i = 0; i < num_lines; i++) {
+    for (let i = 0; i < numLines; i++) {
       for (j = 0; j < tmp_s.vertices.length; j++) {
         r = random(0, diffusivity);
         theta = random(0, 2 * Math.PI);
@@ -316,8 +450,14 @@ Scatter.Shape = class {
     }
   }
 
-  // defines the scale of the shape. If only x is specified,
-  // a uniform scale witll be used
+
+  /**
+   * Sets the scale of the shape. If only x is specified,
+   * a uniform scale will be used
+   * @param {number} x Scale along the x axis. Will be used  as the
+   * uniform scale if y is not specified  
+   * @param {number} [y] Scale along the y axis 
+   */
   setScale(x, y = null) {
     if (y) {
       this.scale = createVector(x, y);
@@ -327,6 +467,10 @@ Scatter.Shape = class {
     }
   }
 
+  /**
+   * Utility which prints the number of each vertex of the shape 
+   * next to it. This is designed mostly for debug purposes.
+   */
   numberVertices() {
     let nrm = this.normals();
     for (let i = 0; i < this.vertices.length - 1; i++) {
@@ -345,6 +489,18 @@ Scatter.Shape = class {
 
 
   // returns the world position of points
+  /**
+   * Returns a copy of  the specified vertex, which position has
+   * been modified following this shape's transform (position, scale and rotation that is).
+   * This allows to retrieve the position in world coordinates of a point form the position
+   * in the  shape referential. 
+   * @param {p5.Vector} vtx The point to  apply the transform to.
+   * @returns {p5.Vector} The transformed point. Note that because of the way the computation is done,
+   * classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implement
+   * the `copy` method, and usual vector arithmetics (this is the case of `Scatter.Point` and
+   * `Scatter.Particle` for instance). In this case the return type will be  the same
+   * as the input type.
+   */
   applyTransform(vtx) {
     let nu_vtx = vtx.copy();
     nu_vtx.x = cos(this.rotation) * vtx.x + sin(this.rotation) * vtx.y;
@@ -356,7 +512,11 @@ Scatter.Shape = class {
   }
 
 
-  // Freeze the transform of the shape into its vertices
+  // 
+  /**
+   * Freeze the transform of the shape into its vertices. This is to say that the current transform will be applied 
+   * to each vertex and then reset.
+   */
   freezeTransform() {
     for (let i = 0; i < this.vertices.length; i++) {
       this.vertices[i] = 
@@ -373,6 +533,14 @@ Scatter.Shape = class {
 
   // Returns the bounding box (defined as the bottom
   // left and top right corner points position in world coordinates). It will recompute it only if needed.
+  /**
+   * Returns the bounding box (defined as the bottom left and top
+   * right corner points position in world coordinates).
+   * It will recompute it only if needed.
+   * Because of this last statement,  we may have missed so cases where recomputation is required.
+   * Should you run in such case,  please report it so  that we can fix  it accordingly
+   * @returns {Array.<p5.Vector>} Position of  the top left  and  bottom right  corners
+   */
   getBoundingBox() {
     if (this.updateBounds) {
       let xs = [];
@@ -393,8 +561,10 @@ Scatter.Shape = class {
   }
 
 
-  // returns true if the last point is the same as 
-  // the first point, which means the shape is closed
+  /**
+   * Checks whether the  shape is closed, that is if the first and  last point are 
+   * @returns {boolean} True if the  shape is closed
+   */
   isClosed() {
     return this.vertices[0].equals(
       this.vertices[this.vertices.length - 1]);
@@ -402,6 +572,18 @@ Scatter.Shape = class {
 
   
   // returns the control point for an edge starting 
+  /**
+   * Returns the control point  defining an edge starting at a given vertex.
+   * In the case where the shape is polygonal, the edge is a line and
+   * this returns the 2 end vertices of the line.
+   * If  the shape isn't polygonal, this returns the point before the edge start vertex,
+   * the vertex  itself, and  the next to one. Should the first or last vertex extend out of the
+   * vertex array, they will be  dealt with accordingly. If the shape is open, the very first and
+   * very last vertices of the shape are repeated. Otherwise the next vertex in  the shape
+   * (that is reading the vertices array as a circular buffer) is returned. 
+   * @param {number} idx Index of the vertex the  shape starts at.
+   * @returns {Array.<Scatter.Point>} Reference to the edge control points  
+   */
   controlPoints(idx) {
     if (this.isPolygonal) {
       let p0 = this.vertices[idx];
@@ -451,17 +633,24 @@ Scatter.Shape = class {
   }
 
 
-  // Returns the length of an edge. If the index passed is the last one,
-  // it will return the distance of the hypothetic edge to the first vertex,
-  // no matter if the shape is closed or not.
-  // Note that the length is in world units (meaning  all transforms have been applied)
-  edgeLength(start_idx, resolution = 100) {
+  /**
+   * Returns the length of an edge. If the index passed is the last one,
+   * it will return the distance of the hypothetic edge to the first vertex,
+   * no matter if the shape is closed or not.
+   * Note that the length is in world units (meaning all transforms have been applied)
+   * @param {number} startIdx Index of the vertex at the start of the edge.
+   * @param {number} resolution In the case of a non polygonal shape, there is no explicit
+   * expression for computing the length of a 2D spline. We thus use a discrete integration,
+   * splitting the contour in the specified amount of small lines.
+   * @returns {number} Length of the edge
+   */
+  edgeLength(startIdx, resolution = 100) {
     if (this.isPolygonal) {
-      let [p0, p1, p2, p3] = this.controlPoints(start_idx);
+      let [p0, p1, p2, p3] = this.controlPoints(startIdx);
       return p1.copy().sub(p0).mag();
     } 
     else {
-      let [p0, p1, p2, p3] = this.controlPoints(start_idx);
+      let [p0, p1, p2, p3] = this.controlPoints(startIdx);
       let [a, b, c, d] = catmullRom(this.applyTransform(p0),
                                     this.applyTransform(p1),
                                     this.applyTransform(p2),
@@ -488,8 +677,15 @@ Scatter.Shape = class {
   }
 
 
-  // computes the total length of the shape contour
-  // in world scale
+  //
+  /**
+   * Computes the total length of the shape's
+   * contour in world scale. The computation will only
+   * be performed when an update is required.
+   * Because of this last statement,  we may have missed so cases where recomputation is required.
+   * Should you run in such case,  please report it so  that we can fix  it accordingly.
+   * @returns {number} Total length in world referential of the shape's contour.
+   */
   contourLength() {
     if (this.updateLengths) {
       this.edgeLengths = [];
@@ -507,17 +703,32 @@ Scatter.Shape = class {
   }
 
 
-  // returns the position of a point at specified interpolant on a given edge
-  // in world coordinates if world == true or in local coordnates otherwise
-  edgeInterpolation(interp, edge_idx, resolution = 100,
+  /**
+   * Computes the position of a point at specified percentage of a given edge's length.
+   * @param {number} interp  Percentage of the edge at which to compute point position 
+   * @param {number} edgeIdx Index of the starting vertex of the edge
+   * @param {number} resolution In the case where the shape is not polygonal, we will use
+   * a discrete integration
+   * to find the point position, because there is no exact expression  to compute it.
+   * This is the number of small segments to divide the edge into for the integration.  
+   * @param {boolean} approx If true, the position is  approximated  by the spline equation
+   * evaluated at the specified percentage of the edge. In the general case, this will be
+   * somewhat different from the point at the specified percentage of the length of the contour.
+   * This is however much faster to compute, and is recommended for application where the actual
+   * position does not really matter, such as random point scattering for instance. 
+   * @param {boolean} world Whether the point position should be returned in the world or
+   * shape referential
+   * @returns {Scatter.Point} Point at specified percentage of the contour length
+   */
+  edgeInterpolation(interp, edgeIdx, resolution = 100,
                      approx = false, world = true) {
-    if (edge_idx > this.vertices.length - 1) {
+    if (edgeIdx > this.vertices.length - 1) {
       throw "Cannot interpolate edge starting at last point (or more) of shape";
     }
     
     if (this.isPolygonal) {
       // simple linear interpolation
-      let l = edge_idx + 1;
+      let l = edgeIdx + 1;
       if (l > this.vertices.length - 1) {
         if (this.isClosed()) {
           l = 0;
@@ -527,7 +738,7 @@ Scatter.Shape = class {
         }
       }
       
-      let pt = this.vertices[edge_idx].position().mult(1 - interp).add(
+      let pt = this.vertices[edgeIdx].position().mult(1 - interp).add(
         this.vertices[l].position().mult(interp));
       if (world) {
         return this.applyTransform(pt);
@@ -539,7 +750,7 @@ Scatter.Shape = class {
     else {
       //for a sdrawLine there is no exact expression. Instead we integrate the
       // edge length until we reach the desired value
-      let [p0, p1, p2, p3] = this.controlPoints(edge_idx);
+      let [p0, p1, p2, p3] = this.controlPoints(edgeIdx);
       
       // For non uniform scales, deducing the transformed sdrawLine edge length
       // from the local one is non trivial. We compute everything in world
@@ -566,7 +777,7 @@ Scatter.Shape = class {
             b.copy().mult(t * t)).add(
             c.copy().mult(t)).add(d);
           l += (a1.copy().sub(a2)).mag();
-          if (l / this.edgeLengths[edge_idx] >= interp) {
+          if (l / this.edgeLengths[edgeIdx] >= interp) {
             break;
           }
         }
@@ -593,8 +804,15 @@ Scatter.Shape = class {
   }
 
 
-  // convertes a point coordinates (in vector form) 
-  // to the local coordinates system
+  /**
+   * Converts a point coordinates (in vector form)
+   * to the shape local coordinate system 
+   * @param {p5.Vector} pt Point to compute the local coordinates of 
+   * @returns {p5.Vector} Point coordinates the local coordinate system.
+   * The function also supports classes that extend `p5.Vector` as long as they
+   * implement vector arithmetic functions and the `copy` method. The return will
+   * be of the same type
+   */
   toLocalCoordinates(pt) {
     let nu_pt = pt.copy();
     // un-rotate
@@ -614,7 +832,9 @@ Scatter.Shape = class {
   }
 
 
-  // set the center of rotation as the center of the boundingBox
+  /**
+   * Sets the center of rotation as the center of the boundingBox
+   */
   setOriginToGeometricCenter() {
     // make sure the bounding box has been computed
     this.getBoundingBox()
@@ -631,9 +851,31 @@ Scatter.Shape = class {
   }
 
 
-  // Retrieve the normal at a given point
-  // For the non-polygonal case, each edge will be split in `resolution` segments
-  // and each point checked against the supplied point 
+  // 
+  // 
+  // 
+  /**
+   * Retrieve the normal at a given point along the contour.
+   * 
+   * To do so we first need to  find, where the point is on  the edge. To do so, we do a
+   * simple line-point intersection test in the polygonal case.
+   * For the non-polygonal case, each edge will be sudvided in smaller segments,
+   * untill one of such segments end, is either close enough to the specified point
+   * or the max resolution is reached. This is  done this way because of numerical issues
+   * which may make it so a point may only ALMOST be on  the spline but not completely.
+   * In turn, this means that solving the spline equation for the point intersetcion will yield
+   * no solution. The adopted dichotomic solution  allows for a small distance espilon to exist
+   * between the  point and the line.
+   * 
+   * The normal itself is taken as the orthogonal to the tangent at the found point, and is oriented
+   * depending on whether the shape is described in a clockwise fashion, to always face outwards.
+   * @param {p5.Vector} pt 
+   * @param {number} [epsilon] Distance tolerance in the distance of the point to the edge to
+   * consider it is actually on the edge
+   * @param {number} [resolution] Maximum number of subdivisions for a spline edge. Because we add 2
+   * points by sub-edge each iteration, it is  recommended to uses a power of 2.
+   * @returns {p5.Vector} Normal to the shape's contour at the specified poitn
+   */
   normalAtPoint(pt, epsilon = 1e-8, resolution = 128) {
     if (this.isPolygonal) {
       let c;
@@ -741,6 +983,14 @@ Scatter.Shape = class {
   // returns normals to points in local coordinates.
   // If the shape is open, the first and last points will use the only
   // connected edge to compute the normal
+  /**
+   * Computes the normals to each vertex in local coordinates.
+   * If the shape is open, the first and last points will use the only
+   * connected edge to compute the normal, otherwise the computation will
+   * consider both connected edges (in the non polygonal case this does not make 
+   * any difference though, as the shape is supposed to have a continuous curvature).
+   * @returns {Array.<p5.Vector>} Normals at each vertex of the shape
+   */
   normals() {
     let nrm = [];
     let l = this.vertices.length;
@@ -842,7 +1092,14 @@ Scatter.Shape = class {
   }
   
 
-  // returns true if the the shape is clockwise
+  /**
+   * Computes whether the shape is described in a clockwise fashion.
+   * This is achieved by computing the winding number relative to the center
+   * of the bounding box. Note that this method does not check whether the shape
+   * is closed. The resulting boolean will indeed only make sense in the case the
+   * shape actually is.
+   * @returns {boolean} True is the shape is described in a clockwise fashion
+   */
   isClockwise() {
     this.getBoundingBox();
     let center = this.boundingBox[0].copy().add(this.boundingBox[1]).mult(0.5);
@@ -852,7 +1109,16 @@ Scatter.Shape = class {
   }
 
 
-  // return a deep copy of the shape
+  // return a deep copy of the 
+  /**
+   * Returns a "deep-copy" of the shape. This is done manually to avoid
+   * cyclic dependencied issue with the vertices when using JSON
+   * Serialization-Desrialization.
+   * @returns {Scatter.Shape} Deep-copy of this shape, meaning the resulting shape 
+   * can  me modified in any way
+   * wanted without fear of interfering with this one. Even the  vertices are
+   * deep-copied and can be altered at will.  
+   */
   copy() {
     // ugly but avoids cyclic references with JSON deserialization
     let vertexCopy = [];
@@ -875,7 +1141,16 @@ Scatter.Shape = class {
 }
 
 
+/**
+ * Class describing a collection of geometric objects
+ * in the Scatter namespace. This collection has a transform of its own which 
+ * can be used to modify multiple objects at once in a rigid body fashion
+ * (meaning they will keep  their scale , position and  rotation relative to one another).  
+ */
 Scatter.Geometry = class {
+  /**
+   * @constructor
+   */
   constructor() {
     this.scale = createVector(1, 1);
     this.rotation = 0;
@@ -886,7 +1161,10 @@ Scatter.Geometry = class {
     this.objectsPosition = []; //stores the initial position of the objects
   }
 
-  // draw all objects
+
+  /**
+   * Draws all objects. Every object must have a `draw` method of its own.
+   */
   draw() {
     for (let i = 0; i < this.objects.length; i++) {
       this.objects[i].draw();
@@ -894,22 +1172,48 @@ Scatter.Geometry = class {
   }
 
 
+  /**
+   * Set the position of the Geometry.
+   * Use this method rather than setting `this.position`, 
+   * as this will propagate
+   * the position change to the underlying objects 
+   * @param {p5.Vector} position 
+   */
   setPosition(position) {
     this.position = position;
     this.setobjectsTransform();
   }
 
+
+  /**
+   * Set the rotation of the Geometry.
+   * Use this method rather than setting `this.rotation`, 
+   * as this will propagate
+   * the position change to the underlying objects 
+   * @param {number} rotation 
+   */
   setRotation(rotation) {
     this.rotation = rotation;
     this.setobjectsTransform();
   }
 
+  /**
+   * Set the scale of the Geometry.
+   * Use this method rather than setting `this.scale`, 
+   * as this will propagate
+   * the position change to the underlying objects 
+   * @param {p5.Vector} scale 
+   */
   setScale(scale) {
     this.scale = scale;
     this.setobjectsTransform();
   }
 
+
   // applies this geometry instance transform to its objects
+  /**
+   * Applies this Geometry collection's transform to its objects
+   */
   setobjectsTransform() {
     for (let i = 0; i < this.objects.length; i++) {
       // set rotation
@@ -924,10 +1228,15 @@ Scatter.Geometry = class {
     }
   }
 
-  // attaches a new object to this geometry.
-  // This will also automatically compute the
-  // transform of the new object relative to this
-  // Geometry and store it.
+
+  /**
+   * Attaches a new object to this geometry.
+   * This will also automatically compute the
+   * transform of the new object relative to this
+   * Geometry and store it.
+   * @param {object} object Object in the Scatter namespace
+   * to attach to this Geometry 
+   */
   attach(object) {
     this.objects.push(object);
     let relativeScale = object.scale.copy();
@@ -944,7 +1253,11 @@ Scatter.Geometry = class {
     this.objectsPosition.push(relativePosition);
   }
 
-  // simply remove all references to the object and return it
+  /**
+   * Removes all references to the specified object
+   * in this Geometry and returns the object
+   * @param {number} objectIdx Index of the object to detach 
+   */
   detach(objectIdx) {
     // remove the original transform references
     this.objectsPosition.splice(objectIdx, 1);
@@ -957,6 +1270,12 @@ Scatter.Geometry = class {
 }
 
 
+/**
+ * Perfoms a deep copy of an object. This will play poorly with cyclic dependencies.
+ * Use at your own risks
+ * @param {*} obj Object to copy
+ * @returns {*} Deep copy of the input  object 
+ */
 function deepcopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
@@ -993,16 +1312,29 @@ Scatter.Line = class extends Scatter.Shape {
 }
 
 
-// Polygonal sphere
+/**
+ * Class representing a sphere as a collection of splines
+ * @class
+ */
 Scatter.Circle = class extends Scatter.Shape {
+  /**
+   * @constructor
+   * @param {number} radius Radius  of the circle in pixels 
+   * @param {number} resolution Number of vertices
+   * which describe the circle 
+   */
   constructor(radius = 50, resolution = 24) {
     super([]);
     this.radius = radius;
     this.resetResolution(resolution);
   }
 
-  // allows to change the sphere resolution on the fly.
-  // WARNING: this will reset point positions
+
+  /**
+   * Allows to change the sphere resolution on the fly.
+   * WARNING: this will reset point positions
+   * @param {number} resolution New number of points 
+   */
   resetResolution(resolution) {
     const angleIncr = 2 * PI / resolution;
     let angle = 0;
@@ -1017,8 +1349,19 @@ Scatter.Circle = class extends Scatter.Shape {
   }
 }
 
-
+/**
+ * Class describing an Arc from a collection of splines.
+ * By default the arc faces downwards and is centered on the vertical center line 
+ */
 Scatter.Arc = class extends Scatter.Shape {
+  /**
+   * @constructor
+   * @param {number} angle Arc angle in radians
+   * @param {number} radius Radius of the arc in pixels
+   * @param {number} resolution Number of points along the arc
+   * @param {number} close Whether to close the arc or not, linking the last
+   * point to the first
+   */
   constructor(angle = Math.PI, radius = 50, resolution = 12, close = false) {
     super([]);
     this.radius = radius;
@@ -1036,8 +1379,15 @@ Scatter.Arc = class extends Scatter.Shape {
 }
 
 
-// Rectangle
+/**
+ * Rectangle shape, centered
+ */
 Scatter.Rect = class extends Scatter.Shape {
+  /**
+   * @contructor
+   * @param {number} w Width in pixels
+   * @param {number} h Height in pixels
+   */
   constructor(w = 100, h = 50) {
     let vertices = [];
     append(vertices, createPoint(-w / 2, -h / 2));
@@ -1053,16 +1403,29 @@ Scatter.Rect = class extends Scatter.Shape {
 }
 
 
-// Square
+/**
+ * Centered Square
+ */
 Scatter.Square = class extends Scatter.Rect {
+  /**
+   * @constructor
+   * @param {number} size Side length in pixels
+   */
   constructor(size = 100) {
     super(size, size);
   }
 }
 
 
-// Regular polygon
+/**
+ * Centered regular polygon (for example hexagon, octogon...)
+ */
 Scatter.Polygon = class extends Scatter.Circle {
+  /**
+   * @constructor
+   * @param {number} radius Radius of the  polygon 
+   * @param {number} resolution Number of summit vertices
+   */
   constructor(radius = 50, resolution = 24) {
     super(radius, resolution);
     this.isPolygonal = true;
@@ -1071,7 +1434,15 @@ Scatter.Polygon = class extends Scatter.Circle {
 
 
 // computes the winding number of a curve around a point
-// pt is a vector, vertices is a list of Points 
+// pt is a vector, vertices is a list of Points
+/**
+ * Computes the winding number of a curve around a point,
+ * which is to say, in lemmans terms, how many time does the curve
+ * turn around the point. 
+ * @param {p5.Vector} pt Point of observation
+ * @param {Array.<Scatter.Point>} vertices Vertices describing the curve 
+ * @returns {number} The winding number
+ */
 function windingNumber(pt, vertices) {
   let winding_nb = 0;
   let a = (vertices[0].position().sub(pt)).normalize();
@@ -1089,8 +1460,17 @@ function windingNumber(pt, vertices) {
 }
 
 
-// Returns the catmull rom centripetal sdrawLine eq coefficients given 4 points position
-// This is usefull as the vertexCurve in p5 uses Catmull-Rom
+/**
+ * Returns the catmull rom centripetal spline equation (3rd order polynomial)
+ * coefficients given 4 points position.
+ * This is usefull as the vertexCurve in p5 uses Catmull-Rom with its alpha = 0.5.
+ * @param {Scatter.Point} p0 
+ * @param {Scatter.Point} p1 
+ * @param {Scatter.Point} p2 
+ * @param {Scatter.Point} p3
+ * @returns {Array.<Scatter.Point>} 2D coefficients of the 2D Catmull-Rom spline.
+ * This may very well work in 3D as well but is untested
+ */
 function catmullRom(p0, p1, p2, p3) {
   a = p1.copy().mult(3).sub(p0).add(
     p2.copy().mult(-3)).add(p3).mult(0.5); //0.5 * (-p0 + 3 * p1 - 3 * p2 + p3)
@@ -1103,6 +1483,13 @@ function catmullRom(p0, p1, p2, p3) {
 
 
 // returns the roots of a 2nd degree polynomial if they are real
+/**
+ * Finds the real roots of a 2nd order polynomial
+ * @param {number} a 2nd degree coefficient 
+ * @param {number} b 1st degree coefficient 
+ * @param {number} c 0th degree coeeficient
+ * @returns {Array.<number>} Real roots if they exist  
+ */
 function parabolicRoots(a, b, c) {
   let roots = [];
   if (a == 0) {
