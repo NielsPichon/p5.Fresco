@@ -66,7 +66,7 @@ function solveCollision(particle, dt) {
 
 // utility to create a basic particle at specified position
 function createParticle(x, y, z = null) {
-    return new Particle(createPoint(x, y));
+    return new Scatter.Particle(createPoint(x, y));
 }
 
 // class for handling particles. 
@@ -74,7 +74,7 @@ function createParticle(x, y, z = null) {
 // a life time, and possibly varying color and transform over life.
 // Particles may be handled in a cinematic fashion or with a physics
 // system
-class Particle extends Scatter.Point {
+Scatter.Particle = class extends Scatter.Point {
     constructor(position) {
         super(position);
 
@@ -254,7 +254,7 @@ class Particle extends Scatter.Point {
 
 
 // generic class for a force
-class Force {
+Scatter.Force = class {
     constructor() {
         append(forces, this);
         this.isDead = false; // whether the force should be de-referenced
@@ -266,7 +266,7 @@ class Force {
 
 
 // gravitational force
-class Gravity extends Force {
+Scatter.Gravity = class extends Scatter.Force {
     constructor() {
         super();
     }
@@ -278,7 +278,7 @@ class Gravity extends Force {
 
 
 // attractor
-class Attractor extends Force {
+Scatter.Attractor = class extends Scatter.Force {
     constructor(position, intensity, cutoff, falloff = -2) {
         super();
         this.position = position; // attraction center.
@@ -308,7 +308,7 @@ class Attractor extends Force {
 // Simulates a burst of force which can be used to simulate explosions.
 // All particles within the radius of impact will be affected.
 // The force burst will decay linearly over life
-class Burst extends Force {
+Scatter.Burst = class extends Scatter.Force {
     constructor(position, intensity, radius, decayTime=1e-3) {
         super();
         this.position = position;
@@ -340,7 +340,7 @@ class Burst extends Force {
 }
 
 
-class Drag extends Force {
+Scatter.Drag = class extends Scatter.Force {
     constructor(intensity) {
         super();
         this.intensity = intensity;
@@ -353,7 +353,7 @@ class Drag extends Force {
 }
 
 
-class Emitter {
+Scatter.Emitter = class {
     constructor() {
         // particles will be spawned with a random initial velocity
         // where x and y are randomly selected independentyl between
@@ -415,7 +415,7 @@ class Emitter {
 }
 
 
-class PointEmitter extends Emitter {
+Scatter.PointEmitter = class extends Scatter.Emitter {
     constructor(position) {
         super();
         this.position = position;
@@ -425,7 +425,7 @@ class PointEmitter extends Emitter {
         let t;
         for (let i = 0; i < this.spawnRate; i++) {
             if (random() <= this.spawnProbability) {
-                let nu_particle = new Particle(this.position);
+                let nu_particle = new Scatter.Particle(this.position);
 
                 // assign random velocity in range
                 t = random();
@@ -475,7 +475,7 @@ class PointEmitter extends Emitter {
     }
 }
 
-class ShapeEmitter extends Emitter {
+Scatter.ShapeEmitter = class extends Scatter.Emitter {
     constructor(shape) {
         super();
         this.shape = shape;
@@ -493,7 +493,7 @@ class ShapeEmitter extends Emitter {
         for (let i = 0; i < this.spawnRate; i++) {
             if (random() <= this.spawnProbability) {
                 nu_pos = scatter(this.shape, 1, true);
-                let nu_particle = new Particle(nu_pos[0]);
+                let nu_particle = new Scatter.Particle(nu_pos[0]);
 
                 // assign random velocity in range
                 t = random();

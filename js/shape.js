@@ -4,6 +4,7 @@
  */
 var Scatter = {};
 
+
 // WARNING: to make everything consistent, the x axis goes from left to right
 // and the y axis from bottom to top.
 // Also, the center of the coordinate system (0,0) is in the center of the

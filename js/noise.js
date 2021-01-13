@@ -1,7 +1,7 @@
 /**
  * A class for 2D/3D cellular noise
 */
-class Voronoi {
+Scatter.Voronoi = class {
   /**
    * 
    * @constructor

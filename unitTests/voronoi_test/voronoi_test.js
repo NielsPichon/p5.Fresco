@@ -9,7 +9,7 @@ let t = 0;
 function setup() {
   createCanvas(200, 200);
 
-  voronoi = new Voronoi(num_cells, gridBased, is3D);
+  voronoi = new Scatter.Voronoi(num_cells, gridBased, is3D);
 }
 
 function draw() {
