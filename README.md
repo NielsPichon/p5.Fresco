@@ -4,7 +4,7 @@
 ## Documentation
 The documentation is generated using [jsdoc](https://github.com/jsdoc/jsdoc).
 
-Build documentation with
+Build documentation by running `gen_docs.sh` or with
 
 ```
 jsdoc -r ./js -R README.md -d ./docs
