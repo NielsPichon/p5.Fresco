@@ -1,4 +1,10 @@
 /**
+ * @author Niels Pichon
+ * @fileoverview This file contains classes and methods to better
+ * handle 2D shape and points based procedures.
+ */
+
+/**
  * Defines the namespace for all classes of the Scatter.js library
  * @namespace
  */
@@ -128,7 +134,12 @@ function drawNormal(normal, pt, shape, length = 10) {
 Scatter.Point = class extends p5.Vector{
   /**
    * @constructor
-   * @param {p5.Vector} position Position of the point 
+   * @param {p5.Vector} position Position of the point.
+   * @property {number} rotation Rotation of the point. Useful when instancing a shape with this point's transform.
+   * @property {Array.<number>} color Color of the point in RGBA, defined as an array of 4 values in the [0, 255] range.
+   * @property {number} radius Radius of the point. Used as strokeWeight when drawing, as well as for relaxation.
+   * @property {p5.Vector} scale Point scale, useful when instancing a shape with this point's transform.
+   * @property {Scatter.Shape} owner Shape to which this point belongs to.
    */
   constructor(position) {
     super(position.x, position.y, position.z);
@@ -264,6 +275,22 @@ Scatter.Shape = class {
    * To make a closed shape, simply add a copy of the first point
    * back at the end
    * of the vertices list
+   * @property {Array.<Scatter.Point>} vertices The shape's vertices
+   * @property {p5.Vector} position Position of the shape
+   * @property {number} rotation Rotation of the shape
+   * @property {p5.Vector} scale Scale of the shape
+   * @property {Array.<number>} color Color of the contour in RGBA,
+   * described as an array of 4 values in the [0, 255] range.
+   * @property {Array.<number>} fillColor Color of the fill of the shape in RGBA
+   * described as an array of 4 values in the [0, 255] range.
+   * @property {boolean} noStroke Whether to draw the contour of the shape
+   * @property {boolean} noFill Whether to fill in the shape
+   * @property {number} strokeWeight Stroke weight to draw the shape's contour with.
+   * @property {boolean} updateBounds Whether the bounding box of the shape currently needs recomputing.
+   * @property {Array.<p5.Vector>} Bounding box of the shape described as the top left and bottom right corners.
+   * DO NOT CALL DIRECTLY. Use boundingBox() instead.
+   * @property {boolean} updateLengths Whether the edge lengths currently need recomputing.
+   * @property {Array.<number>} edgeLengths Length of the edges of the shape
    */
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
@@ -2136,22 +2163,12 @@ function scatter(shape, numPoints = 100,
 }
 
 
-// Relaxes points towards a position which minimizes points overlap based on 
-// their radii. This is based on Lloyd's algorithm, but using a weighted 
-// voronoi diagram, where the weights are the radii
-// https://en.wikipedia.org/wiki/Lloyd%27s_algorithm
-// For the Voroinoi diagram computation, we use a monte carlo simulation,
-// scattering samples in the canvas randomly. We add the samples to each
-// point's cell centroid estimate, if and only if the said point is the 
-// closest to the sample, and the sample is at less than point.radius away.
-// Once this is done, we move each point to the computed centroids. 
-// Rinse and repeat. The resolution determines how many samples we take. The more samples the more precise it is but the slowest it is to compute. Note that as an optimization, we only sample
-// inside the current boundingBox extended by the max radius in each direction
 /**
  * Relaxes points towards a position which minimizes points overlap based on
- * their respective radii. This is based on Lloyd's algorithm, but using a weighted
+ * their respective radii. This is based on
+ * <a href="https://en.wikipedia.org/wiki/Lloyd%27s_algorithm">Lloyd's algorithm</a>,
+ * but using a weighted
  * voronoi diagram, where the weights are the radii.
- * https://en.wikipedia.org/wiki/Lloyd%27s_algorithm
  * For the Voroinoi diagram computation, we use a monte carlo simulation,
  * scattering samples in the canvas randomly. We add the samples to each
  * point's cell centroid estimate, if and only if the said point is the
@@ -2361,7 +2378,7 @@ function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1)
   // This is done by minimizing the average distance between point pairs
   if (pointMatch < 0) {
     pointMatch = 0;
-    // brute force (see SO question https://preview.tinyurl.com/y26xsngd)
+    // brute force (see <a href "https://preview.tinyurl.com/y26xsngd">SO question</a>)
     let m = Number.MAX_VALUE;
     let d;
     let d1;

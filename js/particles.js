@@ -1,3 +1,10 @@
+/**
+ * @author Niels Pichon
+ * @fileoverview Everything needed to handle particle systems, 
+ * from particle description and emitters to forces, collisions
+ * and simulated time
+ */
+
 /** gravity acceleration */
 const g = -9.81;
 

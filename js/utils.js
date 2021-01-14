@@ -1,4 +1,10 @@
 /**
+ * @author Niels Pichon
+ * @fileoverview Various utility functions to make
+ * procedural art generation easier.
+ */
+
+/**
  * Overide of the p5 keyPressed fucntion which handles pausing with
  * the p and space keys, and saving the current frame to png
  * with the s key. Pressing the right arrow key will draw one frame.
@@ -57,7 +63,7 @@ function colorFromHex(hex, A = 255) {
  * Handmade tailored interpolant between 0 and 1 in an S shaped manner
  * (obtained by solving a 4th order polynomial with 0 derivative in 0
  * and 1 and going through 0 and 1 at these points. Follow the following
- * [link](https://tinyurl.com/y23km6u5) to see what the curve looks like.
+ * <a href="https://tinyurl.com/y23km6u5">link</a> to see what the curve looks like.
  * @param {number} t Value in range [0, 1] to evaluate the S-curve at
  * @returns {number} Value in the [0, 1] range of the S-curve evaluated from the
  * specified value

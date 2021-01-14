@@ -1,4 +1,10 @@
 /**
+ * @author Niels Pichon
+ * @fileoverview Contains utilities to generate
+ * structured noise of various sorts
+ */
+
+/**
  * A class for 2D/3D cellular noise
 */
 Scatter.Voronoi = class {
@@ -11,7 +17,11 @@ Scatter.Voronoi = class {
    * @param {boolean} [gridBased] Whether to use a grid based approach.
    * This will prevent animating individual cell centers but is much faster to compute.
    * @param {boolean} [is3D] Whether to generate 3D noise. This will allow
-   * animating the z coordinate but is much slower
+   * animating the z coordinate but is much slower.
+   * @property {number} gridBased Whether to use a grid based approach.
+   * @property {number} numCells Number of cells to create within the canvas.
+   * @property {boolean} is3D Whether the noise is 3D noise.
+   * @property {Array.<Scatter.Point>} seeds Seed points used to generate the noise
    */
   constructor(numCells, gridBased = false, is3D=false) {
     this.gridBased = gridBased;
@@ -239,8 +249,10 @@ function perlin(x, y=null, z=null) {
  * Perlin noise normally leaves in the [-sqrt(N/4), sqrt(N/4)] range.
  * The p5.js implementation has naively shifted it to the [0, 1] range
  * assuming it was originally mapped to [-1, 1].
- * this function renormalizes the noise to actually have values in [0, 1];
- * see https://digitalfreepen.com/2017/06/20/range-perlin-noise.html
+ * this function renormalizes the noise to actually have values in [0, 1].
+ * See
+ * <a href="https://digitalfreepen.com/2017/06/20/range-perlin-noise.html">
+ * this article</a> on the topic.
  * @param {number} x X-coordinate of the point where to query the noise  
  * @param {number} y Y-coordinate of the point where to query the noise   
  * @param {number} [z] Z-coordinate of the point where to query
