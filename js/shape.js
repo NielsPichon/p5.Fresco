@@ -4,12 +4,6 @@
  */
 var Scatter = {};
 
-
-// WARNING: to make everything consistent, the x axis goes from left to right
-// and the y axis from bottom to top.
-// Also, the center of the coordinate system (0,0) is in the center of the
-// canvas.
-
 /**
  * Helper function to draw a line from 2 p5.vectors.
  * Note that everything is shifted so that 0,0 is 
@@ -1433,8 +1427,6 @@ Scatter.Polygon = class extends Scatter.Circle {
 }
 
 
-// computes the winding number of a curve around a point
-// pt is a vector, vertices is a list of Points
 /**
  * Computes the winding number of a curve around a point,
  * which is to say, in lemmans terms, how many time does the curve
@@ -1482,7 +1474,6 @@ function catmullRom(p0, p1, p2, p3) {
 }
 
 
-// returns the roots of a 2nd degree polynomial if they are real
 /**
  * Finds the real roots of a 2nd order polynomial
  * @param {number} a 2nd degree coefficient 
@@ -1516,7 +1507,14 @@ function parabolicRoots(a, b, c) {
 }
 
 
-// returns the roots of a 3rd degree polynomial if they are real
+/**
+ * Finds the real roots of a 3rd order polynomial
+ * @param {number} a 3rd degree coefficient 
+ * @param {number} b 2nd degree coefficient 
+ * @param {number} c 1st degree coefficient 
+ * @param {number} d 0th degree coefficient
+ * @returns {Array.<number>} Real roots if they exist  
+ */
 function cubicRoots(a, b, c, d) {
   let roots = [];
 
@@ -1584,13 +1582,22 @@ function cubicRoots(a, b, c, d) {
 }
 
 
-// computes the intersection of 2 lines of the form 
-// p = origin + direction * t. 
-// Returns false if
-// the 2 lines are parallel, 
-// else returns the value of t for which the
-// 2 lines intersect
-// Note: the directions should be normalized 
+/**
+ * Computes the intersection of 2 lines. Each line should
+ * be described by its direction and a point
+ * that we call the origin of the line fr simplicity.
+ * In other words, any point p on the line can be described
+ * from a unique t, such that
+ * p = t * drection + origin
+ * @param {p5.Vector} pt1 First line's origin
+ * @param {p5.Vector} dir1 First line's directon
+ * @param {p5.Vector} pt2 Second line's origin
+ * @param {p5.Vector} dir2 Second line's direction
+ * @returns {Array.<number>} [t1, t2] where t1 and t2 are the value
+ * of t at the intersection point for the first and second
+ * line respectively. If the 2 lines are parallel, the array
+ * will instead constain 2 booleans
+ */
 function lineIntersection(pt1, dir1, pt2, dir2) {
   if (dir1.x == 0) {
     if (dir2.x == 0) {
@@ -1608,10 +1615,9 @@ function lineIntersection(pt1, dir1, pt2, dir2) {
   else {
     const v1 = pt1.copy().sub(pt2);
     const v3 = createVector(-dir1.y, dir1.x);
-    // let t1 = (dir2.cross(v1)).mag() / dir2.dot(v3);
     const t2 = v1.dot(v3) / dir2.dot(v3);
     const t1 = ((pt2.x - pt1.x) + dir2.x * t2) / dir1.x;
-    return [t1, t2]; 
+    return [t1, t2];
   }
 }
 
@@ -1619,6 +1625,20 @@ function lineIntersection(pt1, dir1, pt2, dir2) {
 // computes the intersection of 2 segments defined by there extremities
 // if the 2 segments don't intersect return false, else return the intersection
 // coordinates
+/**
+ * Computes the intersection of 2 segments defined by there extremities.
+ * @param {p5.Vector} p0 First end of the first line 
+ * @param {p5.Vector} p1 Second end of the first line 
+ * @param {p5.Vector} p2 First end of the second line 
+ * @param {p5.Vector} p3 Second end of the second line
+ * @returns {p5.Vector} Position of the intersection point.
+ * If the point does not exist,
+ * this method will return false instead. 
+ * Note that this method will work with any class which extends
+ * p5.Vector as long as it implements the `copy` method and the
+ * basic vector arithmetic. The return will have the same type
+ * as the first point input.
+ */
 function segmentIntersection(p0, p1, p2, p3) {
   let dir1 = p1.copy().sub(p0);
   let dir2 = p3.copy().sub(p2);
@@ -1643,11 +1663,16 @@ function segmentIntersection(p0, p1, p2, p3) {
 }
 
 
-// Check if a ray intersects a segment.
-// Inputs are 4 vectors representing the ray origin,
-// its direction and the 2 extremities of the segment
-// Returns [false, false] if the ray does not intersect, otherwise returs
-// [intersectionPoint, edge interpolent]
+/**
+ * Checks if a ray intersects a segment.
+ * @param {p5.Vector} rayOrigin Origin point of the ray
+ * @param {p5.Vector} rayDir Direction of the ray
+ * @param {p5.Vector} p0 First end of the segment
+ * @param {p5.Vector} p1 Second end of the segment
+ * @returns {p5.Vector} Intersection point. False if no intersection.
+ * @returns {number} Line interpolent of the segment, that is `t` such that
+ * intersectionPoint = p1 + t * segmentDirection. False if no intersection.
+ */
 function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
   let dir2 = p1.position().sub(p0);
 
@@ -1671,8 +1696,22 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
 
 // computes the intersection of 2 lines of the form p = origin + direction * t. Returns false if
 // the 2 lines are parallel, else returns the value of t for which the 2 lines intersect
-// Note: the directions should be normalized 
-function lineSdrawLineIntersection(pt, dir, p0, p1, p2, p3) {
+// Note: the directions should be normalized
+/**
+ * Computes the intersection of a line with a spline. The line should
+ * be described by an "origin", which is a point on the line used as reference.
+ * The spline is described by its 4 control points.
+ * @param {p5.Vector} pt Line "origin"
+ * @param {p5.Vector} dir Line direction
+ * @param {p5.Vector} p0 Spline control point
+ * @param {p5.Vector} p1 Spline control point
+ * @param {p5.Vector} p2 Spline control point
+ * @param {p5.Vector} p3 Spline control point
+ * @returns {Array.Array<number>} For each intersection point the interpolent
+ * for the line and the spline are returned. If there is no interesection,
+ * the array will be empty.
+ */
+function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
   // retrieve the line equation as x + by + c = 0
   let a1 = 1;
   let b1;
@@ -1688,12 +1727,12 @@ function lineSdrawLineIntersection(pt, dir, p0, p1, p2, p3) {
     c1 = -pt.y;
   }
 
-  // retrieve the sdrawLine equation at^3 + bt^2 + ct + d
+  // retrieve the spline equation at^3 + bt^2 + ct + d
   let [a2, b2, c2, d2] = catmullRom(p0, p1, p2, p3);
 
   // Essentially we solve for a 3rd order polynomial roots. The polynomial
   // is obtained from substituting x and y in the line equation by their values
-  // computed from t in the sdrawLine equation
+  // computed from t in the spline equation
   let A = a1 * a2.x + b1 * a2.y;
   let B = a1 * b2.x + b1 * b2.y;
   let C = a1 * c2.x + b1 * c2.y;
@@ -1727,13 +1766,20 @@ function lineSdrawLineIntersection(pt, dir, p0, p1, p2, p3) {
 }
 
 
-// Check if a ray intersects a sdrawLine
-// Inputs are 6 vectors representing the ray origin,
-// its direction and the 4 control points
-// Returns [false, false, false] if the ray does not intersect, otherwise returns
-// [intersectionPoint, edge interpolent1, edge interpolent2]
-function raySdrawLineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
-  let t = lineSdrawLineIntersection(rayOri, rayDir, p0, p1, p2, p3);
+/**
+ * Check if a ray intersects a spline edge. For each intersection with the spline,
+ * this function will return true if the intersection is whitin the bounds of the edge,
+ * as well as the interpolent for the ray and the spline
+ * @param {p5.Vector} rayOri Ray origin point
+ * @param {p5.Vector} rayDir Ray direction
+ * @param {p5.Vector} p0 Spline control point
+ * @param {p5.Vector} p1 Spline control point
+ * @param {p5.Vector} p2 Spline control point
+ * @param {p5.Vector} p3 Spline control point
+ * @returns {Array.<boolean, number, number>} For each intersection
+ */
+function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
+  let t = lineSplineIntersection(rayOri, rayDir, p0, p1, p2, p3);
   
   let t2 = [];
   for (let i = 0; i < t.length; i++) {
@@ -1749,9 +1795,17 @@ function raySdrawLineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
 }
 
 
-// uses the even-odd rule to check whether a point is inside a shape.
-// if approx is set to true, the polygonal mesh will be used even if 
-// the mesh normally uses sdrawLines.
+/**
+ * Checks whether a point is inside a givn shape. This uses the even-odd rule.
+ * That is, it counts how many times a ray starting from the point intersects
+ * the contour. If it is odd, the point is inside.
+ * @param {p5.Vector} vtx Point we want to check 
+ * @param {Scatter.Shape} shape Shape we check the point is in
+ * @param {boolean} [approx] If the shape is not polynomial, setting approx 
+ * to true will run the test as if the shape was polygonal which is faster
+ * but less accurate.
+ * @returns {boolean} True if the point is inside the shape
+ */
 function isInside(vtx, shape, approx = true) {
   let isIn = false;
   let l = shape.vertices.length;
@@ -1802,7 +1856,7 @@ function isInside(vtx, shape, approx = true) {
       p2 = shape.applyTransform(p2);
       p3 = shape.applyTransform(p3);
 
-      intersections = raySdrawLineIntersection(
+      intersections = raySplineIntersection(
         vtx, xVec, p0, p1, p2, p3)
       
       for (k = 0; k < intersections.length; k++) {
@@ -1830,42 +1884,47 @@ function isInside(vtx, shape, approx = true) {
 }
 
 
-// resamples a shape's contour to make sure all points are evenly spread on the 
-// curve.
-// If num_points is larger than 0, the specified number of points will be spread.
-// Else, the existing number of points will be redistributed.
-// Warning: This may change the look of the shape (-> smoothing).
-// Note: because this function spreads the points evenly on the existing contour,
-// the resulting shape may have edges of varying lengths: equidistqnce on the
-// contour, does not means equidistance in space. Thus some shape distortion may
-// appear.
-// To try and avoid the shape being skewed towards the first vertex, if offset is
-// true and the shape is closed, the first vertex will be moved on the contour
-// by a half increment
-// For polygonal shapes, for even less distortion a good method 
-// is converting to sdrawLine first and only then resample. 
-// The sdrawLine_resample option enables that. It is recommended 
-// to always have it on.
-function resample(shape, num_points = 0, offset=true, approx=false,
-                   sdrawLine_resample = true) {
+/**
+ * Resamples a shape's contour by spreading evenly a given
+ * amount of points along the shape.
+ * This may change the look of the shape, inducing some amount of smoothing to
+ * some extend, even though each point is spread on the original contour.
+ * Note: Equidistaqnce on the contour may not imply equidistance in space.
+ * Thus some shape distortion may appear, especially for polygonal shapes.
+ * @param {Scatter.Shape} shape The shape to resample
+ * @param {number} [numPoints] Number of points to spread along the shape.
+ * If the number is 0 or less, this will simply re-spread the existing
+ * amount of vertices in the shape
+ * @param {boolean} [offset] If true, the first vertex will be moved on the contour
+ * by half the distance between 2 succesive vertices. This may be handy to avoid
+ * the shape being skewed towards the first vertex.
+ * @param {boolean} [approx] If true, non-polygonal shape edge interpolation
+ * will be be approximated
+ * @param {boolean} [splineResample] To avoid distortion appearing in polygonal shapes,
+ * it is a good idea to first convert it to a spline based shape.
+ * It will indeed be a bit slower, but it is recommended to always leave it on.
+ * @returns {Scatter.Shape} The resampled shape.
+ */
+function resample(shape, numPoints = 0, offset=true, approx=false,
+                   splineResample = true) {
   if (shape.vertices.length <= 1) {
     return shape.copy();
   }
   
   let isPolygonal = shape.isPolygonal;
-  if (sdrawLine_resample) {
+  if (splineResample) {
     shape.isPolygonal = false;
   }
 
-  if (num_points == 0 || num_points == shape.vertices.length) {
-    num_points = shape.vertices.length;
+  if (numPoints == 0 || numPoints == shape.vertices.length) {
+    numPoints = shape.vertices.length;
     offset = false;
   }
   
   let vtx = [];
   
   let totalLength = shape.contourLength();
-  let incr = totalLength / (num_points - 1);
+  let incr = totalLength / (numPoints - 1);
   let l = 0;
   let j = -1;
   let start = 0;
@@ -1880,7 +1939,7 @@ function resample(shape, num_points = 0, offset=true, approx=false,
   let pt;
   let t;
   let k;
-  for (let i = start; i < num_points - 1; i++) {
+  for (let i = start; i < numPoints - 1; i++) {
     // retrieve fraction of the contour
     tgt = i * incr + shift;
     
@@ -1935,8 +1994,16 @@ function resample(shape, num_points = 0, offset=true, approx=false,
 }
 
 
-// Subdivides each edge of a mesh in equal sub edges
-function divide(shape, num_division, approx=false) {
+/**
+ * Subdivides each edge of a mesh in equal sub edges.
+ * @param {Scatter.Shape} shape The Shape to subdivide 
+ * @param {number} numDivision Number of subdivisions to
+ * apply to each edge
+ * @param {boolean} [approx] If the shape is non polygonal, this
+ * will use the approximated version of the edge interpolation.
+ * @returns {Scatter.Shape} The subdivided shape
+ */
+function divide(shape, numDivision, approx=false) {
   let nu_shape = shape.copy();
   let nu_vtx = [];
   let vtx;
@@ -1947,8 +2014,8 @@ function divide(shape, num_division, approx=false) {
   for (let i = 0; i < nu_shape.vertices.length - 1; i++) {
     append(nu_vtx, nu_shape.vertices[i].copy());
     vtx = nu_shape.vertices[i].copy();
-    interp = 1 / (num_division + 1);
-    for (k = 1; k <= num_division; k++) {
+    interp = 1 / (numDivision + 1);
+    for (k = 1; k <= numDivision; k++) {
       t = k * interp;
       // interpolate position and all other point properties
       if (!shape.isPolygonal) {
@@ -1983,7 +2050,25 @@ function divide(shape, num_division, approx=false) {
 
 
 // randomly scatters points over a shape's contour or inner region
-function scatter(shape, num_points = 100,
+/**
+ * Randomly scatters points over a shape's contour or inner region
+ * @param {Scatter.Shape} shape The shape to scatter points over
+ * @param {number} numPoints Number of points to scatter
+ * @param {boolean} [contour] If true, points will be scatter on the 
+ * contour, else they will be scattered inside the shape. The shape 
+ * must be closed for the latter to be permitted.
+ * @param {boolean} [approx] This enables the approximated version of
+ * the edge interpolation and when checking whether a point is inside,
+ * if the shape is not polygonal
+ * @param {number} [safety] When scattering points inside a shape, we
+ * try to spawn points inside the bounding box and only keep those actually
+ * inside the shape. If the shape is very thin but highly curved, a very
+ * high number of attempts may be needed before a single point actually
+ * lands in the shape. To avoid ending in a nearly infinite loop, we set a
+ * maximum safety number of tries before aborting.
+ * @returns {Array.<Scatter.Point>} The scattered points.
+ */
+function scatter(shape, numPoints = 100,
   contour = true, approx = true, safety = 10000) {
   let vtx = [];
   if (contour) {
@@ -1992,7 +2077,7 @@ function scatter(shape, num_points = 100,
     let t;
     let l;
     let j;
-    for (let i = 0; i < num_points; i++) {
+    for (let i = 0; i < numPoints; i++) {
       // generate random fraction of the contour
       t = random(0, totalLength);
       l = 0; // length accumulator
@@ -2024,7 +2109,7 @@ function scatter(shape, num_points = 100,
     let roll;
     let nu_vtx;
     let itr;
-    for (let i = 0; i < num_points; i++) {
+    for (let i = 0; i < numPoints; i++) {
       roll = true;
       itr = 0;
       while (roll) {
@@ -2062,6 +2147,27 @@ function scatter(shape, num_points = 100,
 // Once this is done, we move each point to the computed centroids. 
 // Rinse and repeat. The resolution determines how many samples we take. The more samples the more precise it is but the slowest it is to compute. Note that as an optimization, we only sample
 // inside the current boundingBox extended by the max radius in each direction
+/**
+ * Relaxes points towards a position which minimizes points overlap based on
+ * their respective radii. This is based on Lloyd's algorithm, but using a weighted
+ * voronoi diagram, where the weights are the radii.
+ * https://en.wikipedia.org/wiki/Lloyd%27s_algorithm
+ * For the Voroinoi diagram computation, we use a monte carlo simulation,
+ * scattering samples in the canvas randomly. We add the samples to each
+ * point's cell centroid estimate, if and only if the said point is the
+ * closest to the sample, and the sample is at less than point.radius away.
+ * Once this is done, we move each point to the computed centroids.
+ * Rinse and repeat.
+ * @param {Array.<p5.Vector>} points Points to relax.
+ * @param {number} [iterations] Number of relaxation iterations to perform.
+ * @param {number} [totSamples] Number of samples to use for the Monte Carlo estimation.
+ * @param {Scatter.Shape} [shape] Shape the points may belong to.
+ * @param {number} [minX] Bounds to constrain the relaxed points to.
+ * @param {number} [minY] Bounds to constrain the relaxed points to.
+ * @param {number} [maxX] Bounds to constrain the relaxed points to.
+ * @param {number} [maxY] Bounds to constrain the relaxed points to.
+ * @returns {Array.<p5.Vector>} The relaxed points.
+ */
 function relax(points, 
                 iterations = 1, totSamples = 1000,
                 shape = [],
@@ -2176,10 +2282,15 @@ function relax(points,
 }
 
 
-// copies a shape at specified points
-// the new shape will inheritate the points color,
-// it's shape will be that of the original shape times the that of the point,
-// and it's velocity will be a composition of the velocity of the points,
+/**
+ * Copies a shape at specified points
+ * The new shape will inheritate the points color,
+ * it's shape will be that of the original shape times the that of the point,
+ * and it's velocity will be a composition of the velocity of the points,
+ * @param {Scatter.Shape} shape Shape to copy
+ * @param {Array.<Scatter.Point>} points Points to copy the shape to.
+ * @returns {Array<Scatter.Shape>} The shape copies.
+ */
 // and the shape owning the points
 function copyToPoints(shape, points) {
   shapes = [];
@@ -2210,12 +2321,27 @@ function copyToPoints(shape, points) {
 // returns an intermediary shape between 2 shapes that have the same number of vertices.
 // A boolean allows to keep the appearance of shape A or B
 // If this function is to be called multiple times in a raw, for animation purposes
-// for instance, one can specify the point pairs using point_match to save the computation time
+// for instance, one can specify the point pairs using pointMatch to save the computation time
 // of finding the best vertex matching (and keep it consistant throughout the interpolation),
 // should one of the 2 shapes be switched for the interpolated one on subsequent itterations.
-// The point_match input consist only of the index of the matching vertex in shape B
+// The pointMatch input consist only of the index of the matching vertex in shape B
 // to vertex 0 in A. All other pairs can then be deduced using a circular buffer.
-function sInterpolate(A, B, interp, keepA = true, point_match = -1, match_dir = 1) {
+/**
+ * Computes a shape which vertices is the interpolation between 2 shapes with
+ * the same number of vertices.
+ * @param {Scatter.Shape} A Shape A
+ * @param {Scatter.Shape} B Shape B
+ * @param {number} interp Interpolent
+ * @param {boolean} [keepA] Whether to keep the properties of A
+ * (isPolygonal, color, ...) or those of B
+ * @param {number} [pointMatch] Index of the corresponding index in
+ * shape B to the vertex 0 of shape A. If negative, it will computed to minimize
+ * the average distance between point pairs between shapes.
+ * @param {number} [matchDir] Matching direction between the 2 shapes. `1` means vertex
+ * `i` in shape A matches vertex `i + pointMatch` in shape B, `-1` means it matches vertex `-i - pointMatch`.
+ * @returns {Scatter.Shape} The interpolated shape.
+ */
+function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1) {
   if (A.vertices.length != B.vertices.length) {
     throw "sInterpolate can only interpolate between 2 shapes with the same number of vertices. Consider using resample first";
   }
@@ -2233,8 +2359,8 @@ function sInterpolate(A, B, interp, keepA = true, point_match = -1, match_dir = 
 
   // if no point pair has been provided.
   // This is done by minimizing the average distance between point pairs
-  if (point_match < 0) {
-    point_match = 0;
+  if (pointMatch < 0) {
+    pointMatch = 0;
     // brute force (see SO question https://preview.tinyurl.com/y26xsngd)
     let m = Number.MAX_VALUE;
     let d;
@@ -2255,17 +2381,15 @@ function sInterpolate(A, B, interp, keepA = true, point_match = -1, match_dir = 
 
       if (d < m) {
         m = d;
-        point_match = k;
-        match_dir = 1;
+        pointMatch = k;
+        matchDir = 1;
       }
       if (d1 < m) {
         m = d;
-        point_match = k;
-        match_dir = -1;
+        pointMatch = k;
+        matchDir = -1;
       }
     }
-    // let sum;
-    // [point_match, sum] = matchPoints(A.vertices, B.vertices);
   }
 
   for (let i = 0; i < C.vertices.length; i++) {
@@ -2273,7 +2397,7 @@ function sInterpolate(A, B, interp, keepA = true, point_match = -1, match_dir = 
       A.applyTransform(A.vertices[i]).mult(
       1 - interp).add(
       B.applyTransform(
-        B.vertices[(match_dir * i + match_dir * point_match) %
+        B.vertices[(matchDir * i + matchDir * pointMatch) %
         A.vertices.length]).mult(interp)));
   }
 
@@ -2281,8 +2405,15 @@ function sInterpolate(A, B, interp, keepA = true, point_match = -1, match_dir = 
 }
 
 
-// returns the offset between 2 sets of points to minimize
-// average pair-wise distance
+/**
+ * Computes the offset between 2 sets of points to minimize
+ * average pair-wise distance
+ * WARNING: Currently Non-functional
+ * @param {Scatter.Shape} A Shape A 
+ * @param {Scatter.Shape} B Shape B 
+ * @returns {number} Offset between the 2 points vertices
+ * @returns {number} Matching direction
+ */
 function matchPoints(A, B) {
   // if the length of the list is 2, manually sort it
   if (A.length == 2) {
@@ -2344,6 +2475,16 @@ function matchPoints(A, B) {
 // x and y coordinates as input and returns a value in the [0, 1] range
 // The function also takes as argument the amplitude of the deformation,
 // as well as the derivative step
+/**
+ * Given a function and a set of coordinates, this function returns the
+ * displaced coordinates following the gradient of a 1D function which takes
+ * x and y coordinates as input and returns a value in the [0, 1] range.
+ * @param {p5.Vector} point Point to displace
+ * @param {Function} func Function to use the gradient of to displace the point.
+ * @param {number} amplitude Amount of displacement in pixels
+ * @param {number} [step] Differnetiation step to compute the gradient
+ * @returns {p5.Vector} Displaced point
+ */
 function gradDistort(point, func, amplitude, step = 1) {
   // compute the gradient
   let grad = createVector(
@@ -2361,6 +2502,16 @@ function gradDistort(point, func, amplitude, step = 1) {
 // distorts an image using some simulated depth.
 // This works by stretching the uv coordinates to wrap around the simulated
 // geometry, assuming white means an elevation of "amplitude" and black means 0
+/**
+ * Distorts an image using some simulated depth.
+ * This works by stretching the uv coordinates to wrap around the simulated
+ * geometry, assuming white means an elevation of "amplitude" and black means 0
+ * @param {p5.Vector} point Point to displace
+ * @param {Function} func Function which returns the simulated "depth" of a pixel
+ * @param {number} amplitude Amount of displacement
+ * @param {step} step Integration step for the distance calculation
+ * @returns {p5.Vector} Displaced point
+ */
 function distort(point, func, amplitude, step) {
   // compute the original uv coordinates of the point
   let uv = createVector(point.x / width + 0.5, point.y / height + 0.5);
@@ -2412,29 +2563,47 @@ function distort(point, func, amplitude, step) {
 }
 
 
-// Boolean operation which returns the union of B from A.
-// If either A or B is not closed, the last point will be
-// considered as connected to the first.
-// The resulting shape is closed no matter what.
-// If A and B don't intersect this operation will fail and return A.
+/**
+ * Boolean operation which returns the union of B from A.
+ * If either A or B is not closed, the last point will be
+ * considered as connected to the first.
+ * The resulting shape is closed no matter what.
+ * If A and B don't intersect this operation will fail and return A.
+ * NOT YET IMPLEMENTED
+ * @param {Scatter.Shape} A 
+ * @param {Scatter.Shape} B 
+ * @returns {Scatter.Shape} Shape resulting fron the union.
+ */
 function sUnion(A, B) {
 
 }
 
 
-// Boolean operation which returns the intersection of A and B.
-// If either A or B is not closed, the last point will be
-// considered as connected to the first.
-// The resulting shape is closed no matter what.
+/**
+ * Boolean operation which returns the intersection of B from A.
+ * If either A or B is not closed, the last point will be
+ * considered as connected to the first.
+ * The resulting shape is closed no matter what.
+ * NOT YET IMPLEMENTED
+ * @param {Scatter.Shape} A 
+ * @param {Scatter.Shape} B 
+ * @returns {Scatter.Shape} Shape resulting fron the intersection.
+ */
 function sIntersection(A, B) {
 
 }
 
 
-// Boolean operation which sutracts B from A.
-// If either A or B is not closed, the last point will be
-// considered as connected to the first.
-// The resulting shape is closed no matter what.
+/**
+ * Boolean operation which subtracts B from A.
+ * If either A or B is not closed, the last point will be
+ * considered as connected to the first.
+ * The resulting shape is closed no matter what.
+ * NOT YET IMPLEMENTED
+ * @param {Scatter.Shape} A 
+ * @param {Scatter.Shape} B 
+ * @returns {Scatter.Shape} Shape resulting fron the subtraction.
+ */
 function sSubtract(A, B) {
 
 }
