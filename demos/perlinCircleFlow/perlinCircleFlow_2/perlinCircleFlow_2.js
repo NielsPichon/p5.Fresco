@@ -14,7 +14,7 @@ let circleShape;
 function setup() {
   createCanvas(1000, 1000);
   background(0);
-  circleShape = new Scatter.Circle(100, resolution);
+  circleShape = new Cardioid.Circle(100, resolution);
   circleShape.color = [255, 255, 255, 128];
   angleMultiplier = radians(angleMultiplier);
 }

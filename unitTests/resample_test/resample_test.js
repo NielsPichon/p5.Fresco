@@ -7,7 +7,7 @@ let approx = false;
 
 function setup() {
   createCanvas(200, 200);
-  s = new Scatter.Polygon(50, 5);
+  s = new Cardioid.Polygon(50, 5);
   for (let i = 0; i < s.vertices.length; i++) {
     s.vertices[i].color = [255, 0, 0, 255];
   }
@@ -28,7 +28,7 @@ function setup() {
   append(vtx, createPoint(-40 , 10));
   append(vtx, createPoint(10 , 0));
   
-  s3 = new Scatter.Shape(vtx);
+  s3 = new Cardioid.Shape(vtx);
   s3.isPolygonal = true;
   
   for (let i = 0; i < s3.vertices.length; i++) {

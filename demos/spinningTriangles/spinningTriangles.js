@@ -17,7 +17,7 @@ function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
   background(colorFromHex(backgroundClr));
 
-  s = new Scatter.Polygon(minRadius, numberOfSides);
+  s = new Cardioid.Polygon(minRadius, numberOfSides);
   s.color = colorFromHex(shapeColor);
   s.strokeWeight = shapeThickness;
   s.isPolygonal = false;

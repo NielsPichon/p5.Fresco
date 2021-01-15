@@ -27,10 +27,10 @@ function spline(a, b, c, d, min, max, num_pts) {
   for (let i = 0; i < num_pts; i++) {
     let x = min + (max - min) * i * dx;
     let pt = createVector(x, a * x * x * x + b * x * x + c * x + d);
-    append(pts, new Scatter.Point(pt.copy()));
+    append(pts, new Cardioid.Point(pt.copy()));
   }
   
-  return new Scatter.Shape(pts);
+  return new Cardioid.Shape(pts);
 }
 
 

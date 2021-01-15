@@ -7,7 +7,7 @@ let voronoi;
 function setup() {
   createCanvas(200, 200);
 
-  voronoi = new Scatter.Voronoi(num_cells, false, false);
+  voronoi = new Cardioid.Voronoi(num_cells, false, false);
 }
 
 function draw() {

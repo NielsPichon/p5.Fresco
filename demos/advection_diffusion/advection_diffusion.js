@@ -9,7 +9,7 @@ let aesthetic_artifacts = false;
 function setup() {
   createCanvas(200, 200);
 
-  s = new Scatter.Circle();
+  s = new Cardioid.Circle();
   s.scale.mult(0.5);
   background(0);
 }

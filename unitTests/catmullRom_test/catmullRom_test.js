@@ -35,7 +35,7 @@ function debugDrawCatmullRom(A, resolution) {
 
 function setup() {
   createCanvas(400, 400);
-  s = new Scatter.Square();
+  s = new Cardioid.Square();
   s.isPolygonal = false
   s2 = s.copy();
   s2.scale.mult(1.2);

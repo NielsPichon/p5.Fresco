@@ -15,7 +15,7 @@ function setup() {
   createCanvas(1000, 1000);
 
   // convert points to particles and set tangential velocity
-  f = new Scatter.Gravity();
+  f = new Cardioid.Gravity();
 }
 
 function draw() {
@@ -38,7 +38,7 @@ function firework(x, y) {
   let fireCount = Math.floor(random(minFireCount, maxFireCount + 1));
   for (let  i = 0; i < fireCount; i++) {
     // create point emiter
-    p = new Scatter.PointEmitter(createPoint(x, y));
+    p = new Cardioid.PointEmitter(createPoint(x, y));
     p.simulatePhysics = true;
     p.minV = createVector(-0.5, 0.2).mult(50);
     p.maxV = createVector(0.5, 1).mult(50);

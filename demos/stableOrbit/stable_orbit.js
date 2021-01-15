@@ -14,7 +14,7 @@ function setup() {
   createCanvas(500, 500);
 
   // create source circle
-  const s = new Scatter.Circle(200, 24);
+  const s = new Cardioid.Circle(200, 24);
 
   // scatter points inside
   p = scatter(s, numParticles, false, true);
@@ -22,7 +22,7 @@ function setup() {
   // convert points to particles and set tangential velocity
   let t;
   for (let i = 0; i < p.length; i++) {
-    p[i] = new Scatter.Particle(p[i]);
+    p[i] = new Cardioid.Particle(p[i]);
     p[i].simulatePhysics = true;
     p[i].leaveTrail = true;
     t = Math.floor(random(0, colors.length));
@@ -30,7 +30,7 @@ function setup() {
     p[i].velocity = createVector(-p[i].y, p[i].x).normalize();
   }
 
-  f = new Scatter.Attractor(createPoint(0, 0),
+  f = new Cardioid.Attractor(createPoint(0, 0),
                     intensity, 300, falloff);
 }
 

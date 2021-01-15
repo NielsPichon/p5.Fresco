@@ -19,7 +19,7 @@ function setup() {
 
 function draw() {
   // Create circle
-  let c = new Scatter.Circle(r, 1000);
+  let c = new Cardioid.Circle(r, 1000);
 
   // Distort circle
   for (let i = 0; i < c.vertices.length; i++) {
