@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @author Niels Pichon &lt;niels.pichon@outlook.com>
+ * @fileoverview Various utility functions to make
+ * procedural art generation easier.
+ */
+
+/**
+ * Overide of the p5 keyPressed fucntion which handles pausing with
+ * the p and space keys, and saving the current frame to png
+ * with the s key. Pressing the right arrow key will draw one frame.
+ */
+function keyPressed() {
+    // pause/unpause
+    if (key == 'p' || key == ' ') {
+      if (isLooping()) {
+        noLoop();
+      }
+      else { 
+        loop();
+      }
+    }
+
+    // save current frame to png
+    if (key == 's') {
+      saveCanvas('canvas', 'png');
+    }
+
+    if (key == 'ArrowRight') {
+      redraw();
+    }
+}
+
+
+// 
+// Alpha can be specified independantly if required
+/**
+ * Utility to convert a color hex code string to RGBA
+ * @param {string} hex Hex code 
+ * @param {number} [A] Opacity, between 0 and 255;
+ * @returns {Array.&lt;number>} RGBA color defined as an array of
+ * 4 numbers in the [0, 255] range.
+ */
+function colorFromHex(hex, A = 255) {
+  let R, G, B;
+  if (hex.length == 6) {
+    R = parseInt('0x' + hex[0] + hex[1]);
+    G = parseInt('0x' + hex[2] + hex[3]);
+    B = parseInt('0x' + hex[4] + hex[5]);
+  }
+  else if (hex.length == 3) {
+    R = parseInt('0x' + hex[0] + hex[0]);
+    G = parseInt('0x' + hex[1] + hex[1]);
+    B = parseInt('0x' + hex[2] + hex[2]);
+  }
+  else {
+    throw 'Hex color code expects 6 or 3 characters'
+  }
+  return [R, G, B, A];
+}
+
+
+/**
+ * Handmade tailored interpolant between 0 and 1 in an S shaped manner
+ * (obtained by solving a 4th order polynomial with 0 derivative in 0
+ * and 1 and going through 0 and 1 at these points. Follow the following
+ * &lt;a href="https://tinyurl.com/y23km6u5">link&lt;/a> to see what the curve looks like.
+ * @param {number} t Value in range [0, 1] to evaluate the S-curve at
+ * @returns {number} Value in the [0, 1] range of the S-curve evaluated from the
+ * specified value
+ */
+function sCurve(t) {
+  return (t * t * t * (t * (t * 6 - 15) + 10));
+}
+
+
+/**
+ * A smooth step, implemented from the GLSL smoothstep equation
+ * @param {number} t Value in range [0, 1] to evaluate the smoothstep at
+ * @returns {number} Value in the [0, 1] range of the smoothstep evaluated from the
+ * specified value
+ */
+function smoothstep(t) {
+  return t * t * (3 - 2 * t);
+}
+
+
+/**
+ * Evaluates an invert smoothstep at the specified absciss.
+ * @param {number} t Value in range [0, 1] to evaluate the smoothstep at
+ * @returns {number} Value in the [0, 1] range of the invert smoothstep evaluated from the
+ * specified value
+ */
+function invertSmoothstep(t) {
+  return 0.5 - Math.sin(Math.asin(1.0 - 2.0 * t) / 3.0);
+}
+
+
+/**
+ * A function which calls smoothstep in a loop to get steeper step.
+ * @param {number} t Value in range [0, 1] to evaluate the smoothstep at
+ * @param {number} n Number of iterations. The higher, the steeper the curve
+ * @returns {number} Value in the [0, 1] range of the steeper step evaluated from the
+ * specified value
+ */
+function steeperStep(t, n) {
+  for (let i = 0; i &lt; n; i++) {
+    t = smoothstep(t);
+  }
+  return t;
+}
+
+
+// 
+/**
+ * Linearly interpolates between as many colors as provided
+ * @param {number} t Interpolant, in the [0, 1] range
+ * @param {Array.&lt;Array.&lt;number>>} colors Array of RGBA colors (represented as individual arrays of 4 numbers)
+ * @returns {Array.&lt;number>} RGBA color as an array of 4 numbers in the [0, 255] range
+ */
+function colorInterp (t, colors) {
+  if (colors.length == 1) {
+    return colors[0];
+  }
+  if (t &lt;= 0) {
+    return colors[0];
+  }
+  if (t >= 1) {
+    return colors[colors.length - 1];
+  }
+
+  // retrieve color interval to interpolate into
+  t *= colors.length - 1;
+  let idx = Math.floor(t);
+
+  // get interpolant
+  t -= idx;
+
+  let color = [0, 0, 0, 0];
+  for (let i = 0; i &lt; 4; i++) {
+    color[i] = (1 - t) * colors[idx][i] + t * colors[idx + 1][i];
+  }
+
+  return color;
+}
+
+
+// a function that adds a border of the specified color around the canvas
+/**
+ * Draws some borders on top of the current canvas.
+ * @param {number} thickness Thickness of the borders in pixels. 
+ * @param {Array.&lt;number>} color RGBA color of the border, represented as an
+ * array of 4 numbers in the [0, 255] range
+ */
+function border(thickness, color) {
+  stroke(color);
+  strokeWeight(thickness);
+  line(0, thickness / 2, width, thickness / 2);
+  line(0, height - thickness / 2, width, height - thickness / 2);
+  line(thickness / 2, 0, thickness / 2, height);
+  line(width - thickness / 2, 0, width - thickness / 2, height);
+}
+
+
+/**
+ * Computes the squared distance between to points. This allows for
+ * faster length comparison over the non-squared version
+ * @param {p5.Vector} pt1 point 1 
+ * @param {p5.Vector} pt2 point 2
+ * @returns {number} Distance squared between the 2 points 
+ */
+function distSq(pt1, pt2) {
+  const dx = pt1.x - pt2.x;
+  const dy = pt1.y - pt2.y;
+  return dx * dx + dy * dy;
+}
+
+
+/**
+ * Computes the 2D gradient (in the xy plane) of a given 1D function
+ * @param {Function} func Function to compute the gradient of.
+ * It should take as argument (x, y, [z]) and return a 1D value
+ * @param {number} step Differenciation step
+ * @param {number} x X-coordinate of the point to evaluate the gradient at
+ * @param {number} y Y-coordinate to evaluate the gradient at
+ * @param {number} [z] Z-coordinate to evaluate the gradient at
+ * @returns {p5.Vector} Gradient of the function at the specified point
+ */
+function gradient(func, step, x, y, z=null) {
+  let dx = (func(x + step, y, z) - func(x - step, y, z)) / step; 
+  let dy = (func(x, y + step, z) - func(x, y - step, z)) / step;
+  return createVector(dx, dy); 
+}
+
+
+/**
+ * Computes the 2D gradient (in the xy plane) of a given 1D function
+ * @param {Function} func Function to compute the gradient of.
+ * It should take as argument (x, y, [z]) and return a p5.Vector.
+ * @param {number} step Differenciation step
+ * @param {number} x X-coordinate of the point to evaluate the gradient at
+ * @param {number} y Y-coordinate to evaluate the gradient at
+ * @param {number} [z] Z-coordinate to evaluate the gradient at
+ * @returns {p5.Vector} Gradient of the function at the specified point
+ */
+function gradientVec(func, step, x, y, z=null) {
+  let dx = func(x + step, y, z).sub(func(x - step, y, z)).div(step); 
+  let dy = func(x, y + step, z).sub(func(x, y - step, z)).div(step);
+  return dx.add(dy); 
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Scatter.html">Scatter</a></li></ul><h3>Classes</h3><ul><li><a href="Scatter.Arc.html">Arc</a></li><li><a href="Scatter.Attractor.html">Attractor</a></li><li><a href="Scatter.Burst.html">Burst</a></li><li><a href="Scatter.Circle.html">Circle</a></li><li><a href="Scatter.Drag.html">Drag</a></li><li><a href="Scatter.Emitter.html">Emitter</a></li><li><a href="Scatter.Force.html">Force</a></li><li><a href="Scatter.Geometry.html">Geometry</a></li><li><a href="Scatter.Gravity.html">Gravity</a></li><li><a href="Scatter.Line.html">Line</a></li><li><a href="Scatter.Particle.html">Particle</a></li><li><a href="Scatter.Point.html">Point</a></li><li><a href="Scatter.PointEmitter.html">PointEmitter</a></li><li><a href="Scatter.Polygon.html">Polygon</a></li><li><a href="Scatter.Rect.html">Rect</a></li><li><a href="Scatter.Shape.html">Shape</a></li><li><a href="Scatter.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Scatter.Square.html">Square</a></li><li><a href="Scatter.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 12:38:28 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
