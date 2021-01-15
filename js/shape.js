@@ -130,16 +130,17 @@ function drawNormal(normal, pt, shape, length = 10) {
  * Class describing a Point object. A point object is a p5.Vector with a color,
  * a radius, a transform and a potential owner.
  * @class
+ * @extends p5.Vector
  */
 Scatter.Point = class extends p5.Vector{
   /**
    * @constructor
    * @param {p5.Vector} position Position of the point.
-   * @property {number} rotation Rotation of the point. Useful when instancing a shape with this point's transform.
-   * @property {Array.<number>} color Color of the point in RGBA, defined as an array of 4 values in the [0, 255] range.
-   * @property {number} radius Radius of the point. Used as strokeWeight when drawing, as well as for relaxation.
-   * @property {p5.Vector} scale Point scale, useful when instancing a shape with this point's transform.
-   * @property {Scatter.Shape} owner Shape to which this point belongs to.
+   * @property {number} rotation=0 - Rotation of the point. Useful when instancing a shape with this point's transform.
+   * @property {Array.<number>} color=255,255,255,255 - Color of the point in RGBA, defined as an array of 4 values in the [0, 255] range.
+   * @property {number} radius=1 - Radius of the point. Used as strokeWeight when drawing, as well as for relaxation.
+   * @property {p5.Vector} scale=1,1 - Point scale, useful when instancing a shape with this point's transform.
+   * @property {Scatter.Shape} [owner] - Shape to which this point belongs to.
    */
   constructor(position) {
     super(position.x, position.y, position.z);
@@ -276,21 +277,21 @@ Scatter.Shape = class {
    * back at the end
    * of the vertices list
    * @property {Array.<Scatter.Point>} vertices The shape's vertices
-   * @property {p5.Vector} position Position of the shape
-   * @property {number} rotation Rotation of the shape
-   * @property {p5.Vector} scale Scale of the shape
-   * @property {Array.<number>} color Color of the contour in RGBA,
+   * @property {p5.Vector} position=0,0 - Position of the shape
+   * @property {number} rotation=0 - Rotation of the shape
+   * @property {p5.Vector} scale=1,1 - Scale of the shape
+   * @property {Array.<number>} color=255,255,255,255 Color of the contour in RGBA,
    * described as an array of 4 values in the [0, 255] range.
-   * @property {Array.<number>} fillColor Color of the fill of the shape in RGBA
+   * @property {Array.<number>} fillColor=255,255,255,255 Color of the fill of the shape in RGBA
    * described as an array of 4 values in the [0, 255] range.
-   * @property {boolean} noStroke Whether to draw the contour of the shape
-   * @property {boolean} noFill Whether to fill in the shape
-   * @property {number} strokeWeight Stroke weight to draw the shape's contour with.
-   * @property {boolean} updateBounds Whether the bounding box of the shape currently needs recomputing.
-   * @property {Array.<p5.Vector>} Bounding box of the shape described as the top left and bottom right corners.
+   * @property {boolean} noStroke=false Whether to draw the contour of the shape
+   * @property {boolean} noFill=true Whether to fill in the shape
+   * @property {number} strokeWeight=1 Stroke weight to draw the shape's contour with.
+   * @property {boolean} updateBounds=true Whether the bounding box of the shape currently needs recomputing.
+   * @property {Array.<p5.Vector>} [BoundingBox] of the shape described as the top left and bottom right corners.
    * DO NOT CALL DIRECTLY. Use boundingBox() instead.
-   * @property {boolean} updateLengths Whether the edge lengths currently need recomputing.
-   * @property {Array.<number>} edgeLengths Length of the edges of the shape
+   * @property {boolean} updateLengths=true Whether the edge lengths currently need recomputing.
+   * @property {Array.<number>} [edgeLengths] Length of the edges of the shape
    */
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
@@ -1166,11 +1167,20 @@ Scatter.Shape = class {
  * Class describing a collection of geometric objects
  * in the Scatter namespace. This collection has a transform of its own which 
  * can be used to modify multiple objects at once in a rigid body fashion
- * (meaning they will keep  their scale , position and  rotation relative to one another).  
+ * (meaning they will keep  their scale , position and  rotation relative to one another). 
+ * @class 
  */
 Scatter.Geometry = class {
   /**
    * @constructor
+   * @property {p5.Vector} scale=1,1 - Scale of the geometry collection
+   * @property {number} rotation=0 - Rotation of the geometry collection
+   * @property {p5.Vector} position=0,0 - Position of the geometry collection
+   * @property {Array.<*>} objects Objects in the collection. These must be in the Scatter
+   * namespace and implement the `draw` function as well have a transform of their own.
+   * @property {Array.<number>} objectsRotation Rotation of the individual objects of the collection relative to the collection itself
+   * @property {Array.<p5.Vector>} objectsScale Scale of the individual objects of the collection relative to the collection itself
+   * @property {Array.<p5.Vector>} objectsPosition Position of the individual objects of the collection relative to the collection itself
    */
   constructor() {
     this.scale = createVector(1, 1);
@@ -1305,6 +1315,7 @@ function deepcopy(obj) {
 /**
  * A class representing a line
  * @class
+ * @extends Scatter.Shape
  */
 Scatter.Line = class extends Scatter.Shape {
   /**
@@ -1336,12 +1347,14 @@ Scatter.Line = class extends Scatter.Shape {
 /**
  * Class representing a sphere as a collection of splines
  * @class
+ * @extends Scatter.Shape
  */
 Scatter.Circle = class extends Scatter.Shape {
   /**
    * @constructor
    * @param {number} radius Radius  of the circle in pixels 
    * @param {number} resolution Number of vertices
+   * @property {number} radius Radius of the circle
    * which describe the circle 
    */
   constructor(radius = 50, resolution = 24) {
@@ -1402,6 +1415,7 @@ Scatter.Arc = class extends Scatter.Shape {
 
 /**
  * Rectangle shape, centered
+ * @extends Scatter.Shape
  */
 Scatter.Rect = class extends Scatter.Shape {
   /**
@@ -1426,6 +1440,7 @@ Scatter.Rect = class extends Scatter.Shape {
 
 /**
  * Centered Square
+ * @extends Scatter.Shape
  */
 Scatter.Square = class extends Scatter.Rect {
   /**
@@ -1440,6 +1455,7 @@ Scatter.Square = class extends Scatter.Rect {
 
 /**
  * Centered regular polygon (for example hexagon, octogon...)
+ * @extends Scatter.Circle
  */
 Scatter.Polygon = class extends Scatter.Circle {
   /**

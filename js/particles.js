@@ -5,11 +5,25 @@
  * and simulated time
  */
 
-/** gravity acceleration */
+/**
+ * gravity acceleration
+ * */
 const g = -9.81;
 
 
+/**
+ * @default=true
+ * @constant
+ * Boolean value to use for linear interpolation
+ */
 const linear = true;
+
+
+/**
+ * @default=false
+ * @constant
+ * Boolean value to use for constant interpolation
+ */
 const constant = false;
 
 
@@ -36,6 +50,10 @@ let T = 0;
  * @returns {number} The interpolated value
  */
 function rampInterpolation(t, time, values, linear = true) {
+    if (values.length == 1) {
+        return values[0];
+    }
+
     let interp = 0;
     while (interp < time.length - 1 && time[interp + 1] > t) {
         interp ++;
@@ -64,6 +82,9 @@ function rampInterpolation(t, time, values, linear = true) {
  * @returns {number} The interpolated value
  */
 function rampInterpolation2D(t, time, values, linear = true) {
+    if (values.length == 1) {
+        return values[0];
+    }
     let interp = 0;
     while (interp < time.length - 1 && time[interp + 1] > t) {
         interp ++;
@@ -116,6 +137,58 @@ function createParticle(x, y, z = null) {
  * @class
  */
 Scatter.Particle = class extends Scatter.Point {
+    /**
+     * @constructor
+     * @param {p5.Vector} position Position of the particle when spawned
+     * @property {number} lifetime=-1 - Lifetime of the particle. If negative,
+     * the particle will live forever.
+     * @property {number} mass=1 - Mass of the particle, used when
+     * simulating physics
+     * @property {boolean} leaveTrail=false - Whether the particle
+     * should leave a trail.
+     * If true, the trail will contain a shape in which a new vertex
+     * will be added with this
+     * particle current properties, each time the particle is updated.
+     * This will allow for drawing the whole
+     * trajectory of the particle at once, or simply the displacement
+     * since the previous position.
+     * @property {Array.<Array.<number>>} colorOverLife Colors
+     * to interpolate between during the life of the particles. Each color
+     * should be an array of 4 RGBA values in the range [0, 255].
+     * @property {Array.<number>} colorOverLifeTime Timestamps at
+     * which the particle should reach a given color. This array should
+     * have the same length as the colorOverLife array.
+     * @property {boolean} colorInterpolation=linear - Color interpolation mode,
+     * either `linear` or `constant`
+     * @property {Array.<p5.Vector>} scaleOverLife Scales to interpolate
+     * between over the life of the particle.
+     * @property {Array.<number>} scaleOverLifeTime Timestamps at
+     * which the particle should reach a given scale. This array should
+     * have the same length as the colorOverLife array.
+     * @property {boolean} scaleInterpolation=linear - Scale interpolation mode,
+     * either `linear` or `constant`
+     * @property {Array.<number>} rotationOverLife Rotations to interpolate
+     * between over the life of the particle.
+     * @property {Array.<number>} rotationOverLifeTime Timestamps at
+     * which the particle should reach a given rotation. This array should
+     * have the same length as the colorOverLife array.
+     * @property {boolean} rotationInterpolation=linear - Rotation interpolation mode,
+     * either `linear` or `constant`
+     * @property {boolean} simulatePhysics=false - Whether to simulate physics or use a
+     * purely cinematic approach for handling the particle motion.
+     * @property {boolean} handleCollisions=false - Whether to simulate collisions.
+     * WARNING: Currently not supported
+     * @property {number} lastUpdate Time of last update.
+     * @property {number} birthDate Time at creation of the particle
+     * @property {p5.Vector} acceleration=0,0 - Current acceleration of the particles.
+     * Used only if `simulatePhysics==true`
+     * @property {p5.Vector} velocity=0,0 - Current velocity of the particle
+     * @property {boolean} isDead=false - Whether the particle is dead. If it is it cannot be drawn,
+     * will not be updated and will be removed at the end of the next simulation step. Particles should
+     * not be manually deleted and this boolean should be used instead.
+     * @property {boolean} stopSimulate=false - Prevents the particle from further being updated.
+     * The particle will remain alive and can still be drawn.
+     */
     constructor(position) {
         super(position);
 
@@ -131,14 +204,14 @@ Scatter.Particle = class extends Scatter.Point {
         // note: because the lifetime is infinite, we can just base the
         // control point over a fraction of the lifetime. Instead
         // we define a time for each control point.
-        this.colorOverLife = [this.color, this.color];
-        this.colorOverLifeTime = [0, 10];
-        this.colorInterolation = linear;
-        this.scaleOverLife = [this.scale, this.scale];
-        this.scaleOverLifeTime = [0, 10];
+        this.colorOverLife = [this.color];
+        this.colorOverLifeTime = [0];
+        this.colorInterpolation = linear;
+        this.scaleOverLife = [this.scale];
+        this.scaleOverLifeTime = [0];
         this.scaleInterpolation = linear;
-        this.rotationOverLife = [this.rotation, this.rotation];
-        this.rotationOverLifeTime = [0, 10];
+        this.rotationOverLife = [this.rotation];
+        this.rotationOverLifeTime = [0];
         this.rotationInterpolation = linear;
 
         this.simulatePhysics = false; // whether to simulate physics or not
@@ -206,7 +279,7 @@ Scatter.Particle = class extends Scatter.Point {
             // update color and transform
             this.color = rampInterpolation(
                 t, this.colorOverLifeTime,
-                this.colorOverLife, this.colorInterolation
+                this.colorOverLife, this.colorInterpolation
             );
             this.scale = rampInterpolation2D(
                 t, this.scaleOverLifeTime,
@@ -323,6 +396,13 @@ Scatter.Particle = class extends Scatter.Point {
  * @class
  */
 Scatter.Force = class {
+    /**
+     * @constructor
+     * @property {boolean} isDead=false - If true, the force will not be
+     * considered in the dynamic simulation anymore and will be destroyed
+     * at the end of the next simulation step. Forces should not be manually
+     * deleted and this boolean should be used instead.
+     */
     constructor() {
         append(forces, this);
         this.isDead = false; // whether the force should be de-referenced
@@ -340,8 +420,12 @@ Scatter.Force = class {
 /**
  * Gravitational force
  * @class
+ * @extends Scatter.Force
  */
 Scatter.Gravity = class extends Scatter.Force {
+    /**
+     * @constructor
+     */
     constructor() {
         super();
     }
@@ -360,8 +444,24 @@ Scatter.Gravity = class extends Scatter.Force {
 /**
  * Attractor force.
  * @class
+ * @extends Scatter.Force
  */
 Scatter.Attractor = class extends Scatter.Force {
+    /**
+     * @constructor
+     * @param {p5.Vector} position Center of the attractor
+     * @param {number} intensity Intensity of the force
+     * @param {number} cutoff Distance beyond which a particle
+     * will not be affected
+     * @param {number} [falloff] Power of the decay with distance.
+     * Typically gravitational attraction
+     * decays in `1 / distance^2` which corresponds to `falloff = -2`
+     * @property {p5.Vector} position Center of the attractor
+     * @property {number} intensity Intensity of the force
+     * @property {number} cutoff Distance beyond which a particle
+     * will not be affected
+     * @property {number} falloff Power of the decay with distance.
+     */
     constructor(position, intensity, cutoff, falloff = -2) {
         super();
         this.position = position; // attraction center.
@@ -398,8 +498,20 @@ Scatter.Attractor = class extends Scatter.Force {
  * All particles within the radius of impact will be affected.
  * The force burst will decay linearly over life.
  * @class
+ * @extends Scatter.Force
  */
 Scatter.Burst = class extends Scatter.Force {
+    /**
+     * @constructor
+     * @param {p5.Vector} position Center of the blast
+     * @param {number} intensity Intensity of the force
+     * @param {number} radius Radius of influence
+     * @param {number} [decayTime] How fast the burst decays and stops
+     * @property {p5.Vector} position Center of the blast
+     * @property {number} intensity Intensity of the force
+     * @property {number} radius Radius of influence
+     * @property {number} decayTime How fast the burst decays and stops
+     */
     constructor(position, intensity, radius, decayTime=1e-3) {
         super();
         this.position = position;
@@ -438,8 +550,14 @@ Scatter.Burst = class extends Scatter.Force {
 /**
  * Simulates kinetic drag
  * @class
+ * @extends Scatter.Force
  */
 Scatter.Drag = class extends Scatter.Force {
+    /**
+     * @constructor
+     * @param {number} intensity Drag intensity multiplier
+     * @property {number} intensity Drag intensity multiplier
+     */
     constructor(intensity = 1) {
         super();
         this.intensity = intensity;
@@ -458,10 +576,54 @@ Scatter.Drag = class extends Scatter.Force {
 
 /**
  * A template emitter class, which is to say a class which will create particles over time
- * following some set rules
+ * following some set properties. Each particle's oewn properties will be chosen randomly
+ * whithin the ranges defined in this class.
  * @class
  */
 Scatter.Emitter = class {
+    /**
+     * @constructor
+     * @property {p5.Vector} minV=-1,-1 - Minimum velocity attributed to a particle upon spawn.
+     * @property {p5.Vector} maxV=-1,-1 - Maximum velocity attributed to a particle upon spawn.
+     * @property {number} minLife=-1 - Minimum lifetime attributed to a particle upon spawn.
+     * @property {number} maxLife=-1 - Maximum lifetime attributed to a particle upon spawn.
+     * @property {number} minMass=1 - Minimum mass attributed to a particle upon spawn.
+     * @property {number} maxMass=1 - Maximum mass attributed to a particle upon spawn.
+     * @property {number} radius=1 - Radius attributed to a particle upon spawn.
+     * @property {Array.<Array.<number>>} colorOverLife Colors
+     * to interpolate between during the life of the particles. Each color
+     * should be an array of 4 RGBA values in the range [0, 255].
+     * @property {Array.<number>} colorOverLifeTime Timestamps after spawn at
+     * which a given particle should reach a given color. This array should
+     * have the same length as the colorOverLife array.
+     * @property {boolean} colorInterpolation=linear - Color interpolation mode,
+     * either `linear` or `constant`
+     * @property {Array.<p5.Vector>} scaleOverLife Scales to interpolate
+     * between over the life of the particle.
+     * @property {Array.<number>} scaleOverLifeTime Timestamps after spawn at
+     * which a given particle should reach a given scale. This array should
+     * have the same length as the colorOverLife array.
+     * @property {boolean} scaleInterpolation=linear - Scale interpolation mode,
+     * either `linear` or `constant`
+     * @property {Array.<number>} rotationOverLife Rotations to interpolate
+     * between over the life of the particle.
+     * @property {Array.<number>} rotationOverLifeTime Timestamps after spawn at
+     * which tha given particle should reach a given rotation. This array should
+     * have the same length as the colorOverLife array.
+     * @property {boolean} rotationInterpolation=linear - Rotation interpolation mode,
+     * either `linear` or `constant`
+     * @property {boolean} simulatePhysics=false - Whether the spawned particles should simulate physics
+     * @property {boolean} handleCollisions=false - Whether the spawned particles should handle collisions
+     * @property {boolean} leaveTrail=false - Whether the spawned particles should leave a trail
+     * @property {number} spawnRate=50 - Amount of particles this emitter should try spawning on each
+     * simulation step. If the emitter is to burst, this is the total amount of particles that will be spawned
+     * @property {number} spawnProbability=1 - Propability for a particle to be spawned. This can be used to add
+     * some variability in the number of particles spawned on each simulation step.
+     * @property {boolean} burst=false If true, this emitter will only emit particles
+     * on a single simulation step and then stop.
+     * @property {boolean} isDead=false - If true, this emitter will be deleted at the end of the next
+     * simulation step. Do not destroy this emitter manually, use this boolean instead.
+     */
     constructor() {
         // particles will be spawned with a random initial velocity
         // where x and y are randomly selected independentyl between
@@ -487,14 +649,14 @@ Scatter.Emitter = class {
         // Particles properties over time. These will be the same for all
         // particles, except for the scale which will be multiplied by the particle
         // overall scale
-        this.colorOverLife = [[255, 255, 255, 255], [255, 255, 255, 255]];
-        this.colorOverLifeTime = [0, 10];
-        this.colorInterolation = linear;
-        this.scaleOverLife = [createVector(1, 1), createVector(1, 1)];
-        this.scaleOverLifeTime = [0, 10];
+        this.colorOverLife = [[255, 255, 255, 255]];
+        this.colorOverLifeTime = [0];
+        this.colorInterpolation = linear;
+        this.scaleOverLife = [createVector(1, 1)];
+        this.scaleOverLifeTime = [0];
         this.scaleInterpolation = linear;
-        this.rotationOverLife = [0, 0];
-        this.rotationOverLifeTime = [0, 10];
+        this.rotationOverLife = [0];
+        this.rotationOverLifeTime = [0];
         this.rotationInterpolation = linear;
 
         // Whether the particles should simulate physics and collisions,
@@ -528,8 +690,15 @@ Scatter.Emitter = class {
 
 /**
  * A punctual emitter.
+ * @class
+ * @extends Scatter.Emitter
  */
 Scatter.PointEmitter = class extends Scatter.Emitter {
+    /**
+     * @constructor
+     * @param {p5.Vector} position Position of the emitter
+     * @property {p5.Vector} position Position of the emitter
+     */
     constructor(position) {
         super();
         this.position = position;
@@ -539,55 +708,57 @@ Scatter.PointEmitter = class extends Scatter.Emitter {
      * Create particles.
      */
     spawn() {
-        let t;
-        for (let i = 0; i < this.spawnRate; i++) {
-            if (random() <= this.spawnProbability) {
-                let nu_particle = new Scatter.Particle(this.position);
+        if (!this.isDead) {
+            let t;
+            for (let i = 0; i < this.spawnRate; i++) {
+                if (random() <= this.spawnProbability) {
+                    let nu_particle = new Scatter.Particle(this.position);
 
-                // assign random velocity in range
-                t = random();
-                nu_particle.velocity.x = (1 - t) * this.minV.x + t * this.maxV.x
-                t = random();
-                nu_particle.velocity.y = (1 - t) * this.minV.y + t * this.maxV.y
+                    // assign random velocity in range
+                    t = random();
+                    nu_particle.velocity.x = (1 - t) * this.minV.x + t * this.maxV.x
+                    t = random();
+                    nu_particle.velocity.y = (1 - t) * this.minV.y + t * this.maxV.y
 
-                // assign random life expectancy in range
-                t = random();
-                nu_particle.lifetime = (1 - t) * this.minLife + t * this.maxLife;
+                    // assign random life expectancy in range
+                    t = random();
+                    nu_particle.lifetime = (1 - t) * this.minLife + t * this.maxLife;
 
-                // assign random mass in range
-                t = random();
-                nu_particle.mass = (1 - t) * this.minMass + t * this.maxMass;
-                
-                // assign random scale
-                t = random();
-                nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
+                    // assign random mass in range
+                    t = random();
+                    nu_particle.mass = (1 - t) * this.minMass + t * this.maxMass;
+                    
+                    // assign random scale
+                    t = random();
+                    nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
 
-                // apply uniform properties
-                nu_particle.colorOverLife = this.colorOverLife;
-                nu_particle.colorOverLifeTime = this.colorOverLifeTime;
-                nu_particle.colorInterolation = this.colorInterolation;
-                nu_particle.scaleOverLife = this.scaleOverLife;
-                nu_particle.scaleOverLifeTime = this.scaleOverLifeTime;
-                nu_particle.scaleInterpolation = this.scaleInterpolation;
-                nu_particle.rotationOverLife = this.rotationOverLife;
-                nu_particle.rotationOverLifeTime = this.rotationOverLifeTime;
-                nu_particle.rotationInterpolation = this.rotationInterpolation;
+                    // apply uniform properties
+                    nu_particle.colorOverLife = this.colorOverLife;
+                    nu_particle.colorOverLifeTime = this.colorOverLifeTime;
+                    nu_particle.colorInterpolation = this.colorInterpolation;
+                    nu_particle.scaleOverLife = this.scaleOverLife;
+                    nu_particle.scaleOverLifeTime = this.scaleOverLifeTime;
+                    nu_particle.scaleInterpolation = this.scaleInterpolation;
+                    nu_particle.rotationOverLife = this.rotationOverLife;
+                    nu_particle.rotationOverLifeTime = this.rotationOverLifeTime;
+                    nu_particle.rotationInterpolation = this.rotationInterpolation;
 
-                // apply particle overall scale to its scale over life
-                for (let j = 0; j < nu_particle.scaleOverLife.length; j++) {
-                    nu_particle.scaleOverLife[j].mult(nu_particle.scale);
+                    // apply particle overall scale to its scale over life
+                    for (let j = 0; j < nu_particle.scaleOverLife.length; j++) {
+                        nu_particle.scaleOverLife[j].mult(nu_particle.scale);
+                    }
+
+                    nu_particle.simulatePhysics = this.simulatePhysics;
+                    nu_particle.handleCollisions = this.handleCollisions;
+                    nu_particle.leaveTrail = this.leaveTrail;
+
+                    nu_particle.radius = this.radius;
                 }
-
-                nu_particle.simulatePhysics = this.simulatePhysics;
-                nu_particle.handleCollisions = this.handleCollisions;
-                nu_particle.leaveTrail = this.leaveTrail;
-
-                nu_particle.radius = this.radius;
             }
-        }
 
-        if (this.burst) {
-            this.isDead = true;
+            if (this.burst) {
+                this.isDead = true;
+            }
         }
     }
 }
@@ -596,9 +767,21 @@ Scatter.PointEmitter = class extends Scatter.Emitter {
 /**
  * Emitter which creates particles along the contour of a shape
  * @class
+ * @extends Scatter.Emitter
  */
 Scatter.ShapeEmitter = class extends Scatter.Emitter {
-    constructor(shape) {
+    /**
+     * @constructor
+     * @param {Scatter.Shape} shape Shape to emit particles from the contour of
+     * @param {boolean} [normalVelocityOnly] If true, the random velocity of emitted particles 
+     * will be along the shape's normal only.
+     * @property {Scatter.Shape} shape Shape to emit particles from the contour of
+     * @property {number} minNormalV=0.1 Minimum amount of velocity along the normal to the
+     * shape at the spawn point to add to the particles velocity.
+     * @property {number} maxNormalV=0.1 Minimum amount of velocity along the normal to the
+     * shape at the spawn point to add to the particles velocity.
+     */
+    constructor(shape, normalVelocityOnly=true) {
         super();
         this.shape = shape;
 
@@ -606,70 +789,77 @@ Scatter.ShapeEmitter = class extends Scatter.Emitter {
         // the normal to the shape
         this.minNormalV = 0.1;
         this.maxNormalV = 1;
+
+        if (normalVelocityOnly) {
+            this.minV = createVector(0, 0);
+            this.maxV = createVector(0, 0);
+        }
     }
 
     /**
      * Create particles
      */
     spawn() {
-        let t;
-        let nu_pos;
-        let nrmV;
-        for (let i = 0; i < this.spawnRate; i++) {
-            if (random() <= this.spawnProbability) {
-                nu_pos = scatter(this.shape, 1, true);
-                let nu_particle = new Scatter.Particle(nu_pos[0]);
+        if (!this.isDead) {
+            let t;
+            let nu_pos;
+            let nrmV;
+            for (let i = 0; i < this.spawnRate; i++) {
+                if (random() <= this.spawnProbability) {
+                    nu_pos = scatter(this.shape, 1, true);
+                    let nu_particle = new Scatter.Particle(nu_pos[0]);
 
-                // assign random velocity in range
-                t = random();
-                nu_particle.velocity.x = (1 - t) * this.minV.x + t * this.maxV.x
-                t = random();
-                nu_particle.velocity.y = (1 - t) * this.minV.y + t * this.maxV.y
+                    // assign random velocity in range
+                    t = random();
+                    nu_particle.velocity.x = (1 - t) * this.minV.x + t * this.maxV.x
+                    t = random();
+                    nu_particle.velocity.y = (1 - t) * this.minV.y + t * this.maxV.y
 
-                // add the normal velocity
-                nrmV = this.shape.normalAtPoint(nu_particle, 1e-1);
-                t = random();
-                nrmV.mult((1 - t) * this.minNormalV + t * this.maxNormalV);
-                nu_particle.velocity.add(nrmV);
+                    // add the normal velocity
+                    nrmV = this.shape.normalAtPoint(nu_particle, 1e-1);
+                    t = random();
+                    nrmV.mult((1 - t) * this.minNormalV + t * this.maxNormalV);
+                    nu_particle.velocity.add(nrmV);
 
-                // assign random life expectancy in range
-                t = random();
-                nu_particle.lifetime = (1 - t) * this.minLife + t * this.maxLife;
+                    // assign random life expectancy in range
+                    t = random();
+                    nu_particle.lifetime = (1 - t) * this.minLife + t * this.maxLife;
 
-                // assign random mass in range
-                t = random();
-                nu_particle.mass = (1 - t) * this.minMass + t * this.maxMass;
-                
-                // assign random scale
-                t = random();
-                nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
+                    // assign random mass in range
+                    t = random();
+                    nu_particle.mass = (1 - t) * this.minMass + t * this.maxMass;
+                    
+                    // assign random scale
+                    t = random();
+                    nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
 
-                // apply uniform properties
-                nu_particle.colorOverLife = this.colorOverLife;
-                nu_particle.colorOverLifeTime = this.colorOverLifeTime;
-                nu_particle.colorInterolation = this.colorInterolation;
-                nu_particle.scaleOverLife = this.scaleOverLife;
-                nu_particle.scaleOverLifeTime = this.scaleOverLifeTime;
-                nu_particle.scaleInterpolation = this.scaleInterpolation;
-                nu_particle.rotationOverLife = this.rotationOverLife;
-                nu_particle.rotationOverLifeTime = this.rotationOverLifeTime;
-                nu_particle.rotationInterpolation = this.rotationInterpolation;
+                    // apply uniform properties
+                    nu_particle.colorOverLife = this.colorOverLife;
+                    nu_particle.colorOverLifeTime = this.colorOverLifeTime;
+                    nu_particle.colorInterpolation = this.colorInterpolation;
+                    nu_particle.scaleOverLife = this.scaleOverLife;
+                    nu_particle.scaleOverLifeTime = this.scaleOverLifeTime;
+                    nu_particle.scaleInterpolation = this.scaleInterpolation;
+                    nu_particle.rotationOverLife = this.rotationOverLife;
+                    nu_particle.rotationOverLifeTime = this.rotationOverLifeTime;
+                    nu_particle.rotationInterpolation = this.rotationInterpolation;
 
-                // apply particle overall scale to its scale over life
-                for (let j = 0; j < nu_particle.scaleOverLife.length; j++) {
-                    nu_particle.scaleOverLife[j].mult(nu_particle.scale);
+                    // apply particle overall scale to its scale over life
+                    for (let j = 0; j < nu_particle.scaleOverLife.length; j++) {
+                        nu_particle.scaleOverLife[j].mult(nu_particle.scale);
+                    }
+
+                    nu_particle.simulatePhysics = this.simulatePhysics;
+                    nu_particle.handleCollisions = this.handleCollisions;
+                    nu_particle.leaveTrail = this.leaveTrail;
+
+                    nu_particle.radius = this.radius;
                 }
-
-                nu_particle.simulatePhysics = this.simulatePhysics;
-                nu_particle.handleCollisions = this.handleCollisions;
-                nu_particle.leaveTrail = this.leaveTrail;
-
-                nu_particle.radius = this.radius;
             }
-        }
 
-        if (this.burst) {
-            this.isDead = true;
+            if (this.burst) {
+                this.isDead = true;
+            }
         }
     }
 }
