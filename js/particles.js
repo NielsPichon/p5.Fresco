@@ -12,16 +12,12 @@ const g = -9.81;
 
 
 /**
- * @default=true
- * @constant
  * Boolean value to use for linear interpolation
  */
 const linear = true;
 
 
 /**
- * @default=false
- * @constant
  * Boolean value to use for constant interpolation
  */
 const constant = false;

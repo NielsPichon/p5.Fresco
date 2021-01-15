@@ -31,11 +31,7 @@
         <h2><span class="attribs"><span class="type-signature"></span></span>
             <span class="ancestors"><a href="Scatter.html">Scatter</a>.</span>Particle<span class="signature">(position)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Class for handling particles.
-Particles are Points which also have a velocity, a mass,
-a life time, and possibly varying color and transform over life.
-Particles may be handled in a cinematic fashion or with a physics
-system</div>
+            <div class="class-description">Class for handling particles.Particles are Points which also have a velocity, a mass,a life time, and possibly varying color and transform over life.Particles may be handled in a cinematic fashion or with a physicssystem</div>
         
     
 </header>
@@ -168,8 +164,7 @@ system</div>
                 </td>
             
 
-            <td class="description last">Lifetime of the particle. If negative,
-the particle will live forever.</td>
+            <td class="description last">Lifetime of the particle. If negative,the particle will live forever.</td>
         </tr>
 
     
@@ -198,8 +193,7 @@ the particle will live forever.</td>
                 </td>
             
 
-            <td class="description last">Mass of the particle, used when
-simulating physics</td>
+            <td class="description last">Mass of the particle, used whensimulating physics</td>
         </tr>
 
     
@@ -228,14 +222,7 @@ simulating physics</td>
                 </td>
             
 
-            <td class="description last">Whether the particle
-should leave a trail.
-If true, the trail will contain a shape in which a new vertex
-will be added with this
-particle current properties, each time the particle is updated.
-This will allow for drawing the whole
-trajectory of the particle at once, or simply the displacement
-since the previous position.</td>
+            <td class="description last">Whether the particleshould leave a trail.If true, the trail will contain a shape in which a new vertexwill be added with thisparticle current properties, each time the particle is updated.This will allow for drawing the wholetrajectory of the particle at once, or simply the displacementsince the previous position.</td>
         </tr>
 
     
@@ -262,9 +249,7 @@ since the previous position.</td>
                 </td>
             
 
-            <td class="description last">Colors
-to interpolate between during the life of the particles. Each color
-should be an array of 4 RGBA values in the range [0, 255].</td>
+            <td class="description last">Colorsto interpolate between during the life of the particles. Each colorshould be an array of 4 RGBA values in the range [0, 255].</td>
         </tr>
 
     
@@ -291,9 +276,7 @@ should be an array of 4 RGBA values in the range [0, 255].</td>
                 </td>
             
 
-            <td class="description last">Timestamps at
-which the particle should reach a given color. This array should
-have the same length as the colorOverLife array.</td>
+            <td class="description last">Timestamps atwhich the particle should reach a given color. This array shouldhave the same length as the colorOverLife array.</td>
         </tr>
 
     
@@ -322,8 +305,7 @@ have the same length as the colorOverLife array.</td>
                 </td>
             
 
-            <td class="description last">Color interpolation mode,
-either `linear` or `constant`</td>
+            <td class="description last">Color interpolation mode,either `linear` or `constant`</td>
         </tr>
 
     
@@ -350,8 +332,7 @@ either `linear` or `constant`</td>
                 </td>
             
 
-            <td class="description last">Scales to interpolate
-between over the life of the particle.</td>
+            <td class="description last">Scales to interpolatebetween over the life of the particle.</td>
         </tr>
 
     
@@ -378,9 +359,7 @@ between over the life of the particle.</td>
                 </td>
             
 
-            <td class="description last">Timestamps at
-which the particle should reach a given scale. This array should
-have the same length as the colorOverLife array.</td>
+            <td class="description last">Timestamps atwhich the particle should reach a given scale. This array shouldhave the same length as the colorOverLife array.</td>
         </tr>
 
     
@@ -409,8 +388,7 @@ have the same length as the colorOverLife array.</td>
                 </td>
             
 
-            <td class="description last">Scale interpolation mode,
-either `linear` or `constant`</td>
+            <td class="description last">Scale interpolation mode,either `linear` or `constant`</td>
         </tr>
 
     
@@ -437,8 +415,7 @@ either `linear` or `constant`</td>
                 </td>
             
 
-            <td class="description last">Rotations to interpolate
-between over the life of the particle.</td>
+            <td class="description last">Rotations to interpolatebetween over the life of the particle.</td>
         </tr>
 
     
@@ -465,9 +442,7 @@ between over the life of the particle.</td>
                 </td>
             
 
-            <td class="description last">Timestamps at
-which the particle should reach a given rotation. This array should
-have the same length as the colorOverLife array.</td>
+            <td class="description last">Timestamps atwhich the particle should reach a given rotation. This array shouldhave the same length as the colorOverLife array.</td>
         </tr>
 
     
@@ -496,8 +471,7 @@ have the same length as the colorOverLife array.</td>
                 </td>
             
 
-            <td class="description last">Rotation interpolation mode,
-either `linear` or `constant`</td>
+            <td class="description last">Rotation interpolation mode,either `linear` or `constant`</td>
         </tr>
 
     
@@ -526,8 +500,7 @@ either `linear` or `constant`</td>
                 </td>
             
 
-            <td class="description last">Whether to simulate physics or use a
-purely cinematic approach for handling the particle motion.</td>
+            <td class="description last">Whether to simulate physics or use apurely cinematic approach for handling the particle motion.</td>
         </tr>
 
     
@@ -556,8 +529,7 @@ purely cinematic approach for handling the particle motion.</td>
                 </td>
             
 
-            <td class="description last">Whether to simulate collisions.
-WARNING: Currently not supported</td>
+            <td class="description last">Whether to simulate collisions.WARNING: Currently not supported</td>
         </tr>
 
     
@@ -640,8 +612,7 @@ WARNING: Currently not supported</td>
                 </td>
             
 
-            <td class="description last">Current acceleration of the particles.
-Used only if `simulatePhysics==true`</td>
+            <td class="description last">Current acceleration of the particles.Used only if `simulatePhysics==true`</td>
         </tr>
 
     
@@ -699,9 +670,7 @@ Used only if `simulatePhysics==true`</td>
                 </td>
             
 
-            <td class="description last">Whether the particle is dead. If it is it cannot be drawn,
-will not be updated and will be removed at the end of the next simulation step. Particles should
-not be manually deleted and this boolean should be used instead.</td>
+            <td class="description last">Whether the particle is dead. If it is it cannot be drawn,will not be updated and will be removed at the end of the next simulation step. Particles shouldnot be manually deleted and this boolean should be used instead.</td>
         </tr>
 
     
@@ -730,8 +699,7 @@ not be manually deleted and this boolean should be used instead.</td>
                 </td>
             
 
-            <td class="description last">Prevents the particle from further being updated.
-The particle will remain alive and can still be drawn.</td>
+            <td class="description last">Prevents the particle from further being updated.The particle will remain alive and can still be drawn.</td>
         </tr>
 
     
@@ -770,7 +738,7 @@ The particle will remain alive and can still be drawn.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line139">line 139</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line135">line 135</a>
     </li></ul></dd>
     
 
@@ -834,8 +802,7 @@ The particle will remain alive and can still be drawn.</td>
 
 
 <div class="description">
-    If the particle is to leave a trail, add a copy of this particle as a `Scatter.Point`
-to the trail `Scatter.Shape`
+    If the particle is to leave a trail, add a copy of this particle as a `Scatter.Point`to the trail `Scatter.Shape`
 </div>
 
 
@@ -879,7 +846,7 @@ to the trail `Scatter.Shape`
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line327">line 327</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line323">line 323</a>
     </li></ul></dd>
     
 
@@ -967,7 +934,7 @@ to the trail `Scatter.Shape`
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line242">line 242</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line238">line 238</a>
     </li></ul></dd>
     
 
@@ -996,8 +963,7 @@ to the trail `Scatter.Shape`
 
         
 <div class="param-desc">
-    The particle reinterpreted (hand "casted") 
-to a Scatter.Point
+    The particle reinterpreted (hand "casted") to a Scatter.Point
 </div>
 
 
@@ -1078,7 +1044,7 @@ to a Scatter.Point
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line340">line 340</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line336">line 336</a>
     </li></ul></dd>
     
 
@@ -1122,8 +1088,7 @@ to a Scatter.Point
 
 
 <div class="description">
-    If this particle leaves a trail, draws a line form the last but one 
-position in the trail to the current one.
+    If this particle leaves a trail, draws a line form the last but one position in the trail to the current one.
 </div>
 
 
@@ -1167,7 +1132,7 @@ position in the trail to the current one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line377">line 377</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line373">line 373</a>
     </li></ul></dd>
     
 
@@ -1255,7 +1220,7 @@ position in the trail to the current one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line362">line 362</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line358">line 358</a>
     </li></ul></dd>
     
 
@@ -1343,7 +1308,7 @@ position in the trail to the current one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line266">line 266</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line262">line 262</a>
     </li></ul></dd>
     
 
@@ -1431,7 +1396,7 @@ position in the trail to the current one.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line254">line 254</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line250">line 250</a>
     </li></ul></dd>
     
 
@@ -1477,13 +1442,13 @@ position in the trail to the current one.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Scatter.html">Scatter</a></li></ul><h3>Classes</h3><ul><li><a href="Scatter.Arc.html">Arc</a></li><li><a href="Scatter.Attractor.html">Attractor</a></li><li><a href="Scatter.Burst.html">Burst</a></li><li><a href="Scatter.Circle.html">Circle</a></li><li><a href="Scatter.Drag.html">Drag</a></li><li><a href="Scatter.Emitter.html">Emitter</a></li><li><a href="Scatter.Force.html">Force</a></li><li><a href="Scatter.Geometry.html">Geometry</a></li><li><a href="Scatter.Gravity.html">Gravity</a></li><li><a href="Scatter.Line.html">Line</a></li><li><a href="Scatter.Particle.html">Particle</a></li><li><a href="Scatter.Point.html">Point</a></li><li><a href="Scatter.PointEmitter.html">PointEmitter</a></li><li><a href="Scatter.Polygon.html">Polygon</a></li><li><a href="Scatter.Rect.html">Rect</a></li><li><a href="Scatter.Shape.html">Shape</a></li><li><a href="Scatter.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Scatter.Square.html">Square</a></li><li><a href="Scatter.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Scatter.html">Scatter</a></li></ul><h3>Classes</h3><ul><li><a href="Scatter.Arc.html">Arc</a></li><li><a href="Scatter.Attractor.html">Attractor</a></li><li><a href="Scatter.Burst.html">Burst</a></li><li><a href="Scatter.Circle.html">Circle</a></li><li><a href="Scatter.Drag.html">Drag</a></li><li><a href="Scatter.Emitter.html">Emitter</a></li><li><a href="Scatter.Force.html">Force</a></li><li><a href="Scatter.Geometry.html">Geometry</a></li><li><a href="Scatter.Gravity.html">Gravity</a></li><li><a href="Scatter.Line.html">Line</a></li><li><a href="Scatter.Particle.html">Particle</a></li><li><a href="Scatter.Point.html">Point</a></li><li><a href="Scatter.PointEmitter.html">PointEmitter</a></li><li><a href="Scatter.Polygon.html">Polygon</a></li><li><a href="Scatter.Rect.html">Rect</a></li><li><a href="Scatter.Shape.html">Shape</a></li><li><a href="Scatter.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Scatter.Square.html">Square</a></li><li><a href="Scatter.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#constant">constant</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#linear">linear</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 12:38:28 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 21:37:43 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>

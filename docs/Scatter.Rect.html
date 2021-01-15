@@ -255,10 +255,7 @@
 
 
 <div class="description">
-    Returns a copy of  the specified vertex, which position has
-been modified following this shape's transform (position, scale and rotation that is).
-This allows to retrieve the position in world coordinates of a point form the position
-in the  shape referential.
+    Returns a copy of  the specified vertex, which position hasbeen modified following this shape's transform (position, scale and rotation that is).This allows to retrieve the position in world coordinates of a point form the positionin the  shape referential.
 </div>
 
 
@@ -385,11 +382,7 @@ in the  shape referential.
 
         
 <div class="param-desc">
-    The transformed point. Note that because of the way the computation is done,
-classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implement
-the `copy` method, and usual vector arithmetics (this is the case of `Scatter.Point` and
-`Scatter.Particle` for instance). In this case the return type will be  the same
-as the input type.
+    The transformed point. Note that because of the way the computation is done,classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implementthe `copy` method, and usual vector arithmetics (this is the case of `Scatter.Point` and`Scatter.Particle` for instance). In this case the return type will be  the sameas the input type.
 </div>
 
 
@@ -426,11 +419,7 @@ as the input type.
 
 
 <div class="description">
-    Computes the total length of the shape's
-contour in world scale. The computation will only
-be performed when an update is required.
-Because of this last statement,  we may have missed so cases where recomputation is required.
-Should you run in such case,  please report it so  that we can fix  it accordingly.
+    Computes the total length of the shape'scontour in world scale. The computation will onlybe performed when an update is required.Because of this last statement,  we may have missed so cases where recomputation is required.Should you run in such case,  please report it so  that we can fix  it accordingly.
 </div>
 
 
@@ -545,14 +534,7 @@ Should you run in such case,  please report it so  that we can fix  it according
 
 
 <div class="description">
-    Returns the control point  defining an edge starting at a given vertex.
-In the case where the shape is polygonal, the edge is a line and
-this returns the 2 end vertices of the line.
-If  the shape isn't polygonal, this returns the point before the edge start vertex,
-the vertex  itself, and  the next to one. Should the first or last vertex extend out of the
-vertex array, they will be  dealt with accordingly. If the shape is open, the very first and
-very last vertices of the shape are repeated. Otherwise the next vertex in  the shape
-(that is reading the vertices array as a circular buffer) is returned.
+    Returns the control point  defining an edge starting at a given vertex.In the case where the shape is polygonal, the edge is a line andthis returns the 2 end vertices of the line.If  the shape isn't polygonal, this returns the point before the edge start vertex,the vertex  itself, and  the next to one. Should the first or last vertex extend out of thevertex array, they will be  dealt with accordingly. If the shape is open, the very first andvery last vertices of the shape are repeated. Otherwise the next vertex in  the shape(that is reading the vertices array as a circular buffer) is returned.
 </div>
 
 
@@ -716,9 +698,7 @@ very last vertices of the shape are repeated. Otherwise the next vertex in  the 
 
 
 <div class="description">
-    Returns a "deep-copy" of the shape. This is done manually to avoid
-cyclic dependencied issue with the vertices when using JSON
-Serialization-Desrialization.
+    Returns a "deep-copy" of the shape. This is done manually to avoidcyclic dependencied issue with the vertices when using JSONSerialization-Desrialization.
 </div>
 
 
@@ -796,10 +776,7 @@ Serialization-Desrialization.
 
         
 <div class="param-desc">
-    Deep-copy of this shape, meaning the resulting shape 
-can  me modified in any way
-wanted without fear of interfering with this one. Even the  vertices are
-deep-copied and can be altered at will.
+    Deep-copy of this shape, meaning the resulting shape can  me modified in any waywanted without fear of interfering with this one. Even the  vertices aredeep-copied and can be altered at will.
 </div>
 
 
@@ -908,11 +885,7 @@ deep-copied and can be altered at will.
                 </td>
             
 
-            <td class="description last">Whether to use  the shape color or the
-individual vertices color.
-At the current time, p5.js does not support drawing shapes with
-multiple vertices color so this will
-most likely result in drawing the sahpe  with the last vertex's color.</td>
+            <td class="description last">Whether to use  the shape color or theindividual vertices color.At the current time, p5.js does not support drawing shapes withmultiple vertices color so this willmost likely result in drawing the sahpe  with the last vertex's color.</td>
         </tr>
 
     
@@ -1002,9 +975,7 @@ most likely result in drawing the sahpe  with the last vertex's color.</td>
 
 
 <div class="description">
-    Draws multiple contours on top of one another,
-Each one of   them being displaced by some noise,
-to  give some organic feel to the  drawing.
+    Draws multiple contours on top of one another,Each one of   them being displaced by some noise,to  give some organic feel to the  drawing.
 </div>
 
 
@@ -1193,8 +1164,7 @@ to  give some organic feel to the  drawing.
                 </td>
             
 
-            <td class="description last">Whether to force the displaced line to come back
-to the starting point, should the original  shape be closed.</td>
+            <td class="description last">Whether to force the displaced line to come backto the starting point, should the original  shape be closed.</td>
         </tr>
 
     
@@ -1377,12 +1347,7 @@ to the starting point, should the original  shape be closed.</td>
 
 
 <div class="description">
-    Draws scattered points along contour. The  goal is to give  some organic
-effect and as such point  will not necessarily land  on the contour.
-How far they are allowed
-to land is controled by the  diffusivity.
-Each point  will have a different `strokeWeight` which will be randomly
-chosen within the user specified interval.
+    Draws scattered points along contour. The  goal is to give  some organiceffect and as such point  will not necessarily land  on the contour.How far they are allowedto land is controled by the  diffusivity.Each point  will have a different `strokeWeight` which will be randomlychosen within the user specified interval.
 </div>
 
 
@@ -1775,10 +1740,7 @@ chosen within the user specified interval.
                 </td>
             
 
-            <td class="description last">In the case where the shape is not polygonal, we will use
-a discrete integration
-to find the point position, because there is no exact expression  to compute it.
-This is the number of small segments to divide the edge into for the integration.</td>
+            <td class="description last">In the case where the shape is not polygonal, we will usea discrete integrationto find the point position, because there is no exact expression  to compute it.This is the number of small segments to divide the edge into for the integration.</td>
         </tr>
 
     
@@ -1807,11 +1769,7 @@ This is the number of small segments to divide the edge into for the integration
                 </td>
             
 
-            <td class="description last">If true, the position is  approximated  by the spline equation
-evaluated at the specified percentage of the edge. In the general case, this will be
-somewhat different from the point at the specified percentage of the length of the contour.
-This is however much faster to compute, and is recommended for application where the actual
-position does not really matter, such as random point scattering for instance.</td>
+            <td class="description last">If true, the position is  approximated  by the spline equationevaluated at the specified percentage of the edge. In the general case, this will besomewhat different from the point at the specified percentage of the length of the contour.This is however much faster to compute, and is recommended for application where the actualposition does not really matter, such as random point scattering for instance.</td>
         </tr>
 
     
@@ -1840,8 +1798,7 @@ position does not really matter, such as random point scattering for instance.</
                 </td>
             
 
-            <td class="description last">Whether the point position should be returned in the world or
-shape referential</td>
+            <td class="description last">Whether the point position should be returned in the world orshape referential</td>
         </tr>
 
     
@@ -1953,10 +1910,7 @@ shape referential</td>
 
 
 <div class="description">
-    Returns the length of an edge. If the index passed is the last one,
-it will return the distance of the hypothetic edge to the first vertex,
-no matter if the shape is closed or not.
-Note that the length is in world units (meaning all transforms have been applied)
+    Returns the length of an edge. If the index passed is the last one,it will return the distance of the hypothetic edge to the first vertex,no matter if the shape is closed or not.Note that the length is in world units (meaning all transforms have been applied)
 </div>
 
 
@@ -2043,9 +1997,7 @@ Note that the length is in world units (meaning all transforms have been applied
                 </td>
             
 
-            <td class="description last">In the case of a non polygonal shape, there is no explicit
-expression for computing the length of a 2D spline. We thus use a discrete integration,
-splitting the contour in the specified amount of small lines.</td>
+            <td class="description last">In the case of a non polygonal shape, there is no explicitexpression for computing the length of a 2D spline. We thus use a discrete integration,splitting the contour in the specified amount of small lines.</td>
         </tr>
 
     
@@ -2157,8 +2109,7 @@ splitting the contour in the specified amount of small lines.</td>
 
 
 <div class="description">
-    Freeze the transform of the shape into its vertices. This is to say that the current transform will be applied 
-to each vertex and then reset.
+    Freeze the transform of the shape into its vertices. This is to say that the current transform will be applied to each vertex and then reset.
 </div>
 
 
@@ -2251,11 +2202,7 @@ to each vertex and then reset.
 
 
 <div class="description">
-    Returns the bounding box (defined as the bottom left and top
-right corner points position in world coordinates).
-It will recompute it only if needed.
-Because of this last statement,  we may have missed so cases where recomputation is required.
-Should you run in such case,  please report it so  that we can fix  it accordingly
+    Returns the bounding box (defined as the bottom left and topright corner points position in world coordinates).It will recompute it only if needed.Because of this last statement,  we may have missed so cases where recomputation is required.Should you run in such case,  please report it so  that we can fix  it accordingly
 </div>
 
 
@@ -2370,11 +2317,7 @@ Should you run in such case,  please report it so  that we can fix  it according
 
 
 <div class="description">
-    Computes whether the shape is described in a clockwise fashion.
-This is achieved by computing the winding number relative to the center
-of the bounding box. Note that this method does not check whether the shape
-is closed. The resulting boolean will indeed only make sense in the case the
-shape actually is.
+    Computes whether the shape is described in a clockwise fashion.This is achieved by computing the winding number relative to the centerof the bounding box. Note that this method does not check whether the shapeis closed. The resulting boolean will indeed only make sense in the case theshape actually is.
 </div>
 
 
@@ -2604,20 +2547,7 @@ shape actually is.
 
 
 <div class="description">
-    Retrieve the normal at a given point along the contour.
-
-To do so we first need to  find, where the point is on  the edge. To do so, we do a
-simple line-point intersection test in the polygonal case.
-For the non-polygonal case, each edge will be sudvided in smaller segments,
-untill one of such segments end, is either close enough to the specified point
-or the max resolution is reached. This is  done this way because of numerical issues
-which may make it so a point may only ALMOST be on  the spline but not completely.
-In turn, this means that solving the spline equation for the point intersetcion will yield
-no solution. The adopted dichotomic solution  allows for a small distance espilon to exist
-between the  point and the line.
-
-The normal itself is taken as the orthogonal to the tangent at the found point, and is oriented
-depending on whether the shape is described in a clockwise fashion, to always face outwards.
+    Retrieve the normal at a given point along the contour.To do so we first need to  find, where the point is on  the edge. To do so, we do asimple line-point intersection test in the polygonal case.For the non-polygonal case, each edge will be sudvided in smaller segments,untill one of such segments end, is either close enough to the specified pointor the max resolution is reached. This is  done this way because of numerical issueswhich may make it so a point may only ALMOST be on  the spline but not completely.In turn, this means that solving the spline equation for the point intersetcion will yieldno solution. The adopted dichotomic solution  allows for a small distance espilon to existbetween the  point and the line.The normal itself is taken as the orthogonal to the tangent at the found point, and is orienteddepending on whether the shape is described in a clockwise fashion, to always face outwards.
 </div>
 
 
@@ -2724,8 +2654,7 @@ depending on whether the shape is described in a clockwise fashion, to always fa
                 </td>
             
 
-            <td class="description last">Distance tolerance in the distance of the point to the edge to
-consider it is actually on the edge</td>
+            <td class="description last">Distance tolerance in the distance of the point to the edge toconsider it is actually on the edge</td>
         </tr>
 
     
@@ -2764,8 +2693,7 @@ consider it is actually on the edge</td>
                 </td>
             
 
-            <td class="description last">Maximum number of subdivisions for a spline edge. Because we add 2
-points by sub-edge each iteration, it is  recommended to uses a power of 2.</td>
+            <td class="description last">Maximum number of subdivisions for a spline edge. Because we add 2points by sub-edge each iteration, it is  recommended to uses a power of 2.</td>
         </tr>
 
     
@@ -2877,11 +2805,7 @@ points by sub-edge each iteration, it is  recommended to uses a power of 2.</td>
 
 
 <div class="description">
-    Computes the normals to each vertex in local coordinates.
-If the shape is open, the first and last points will use the only
-connected edge to compute the normal, otherwise the computation will
-consider both connected edges (in the non polygonal case this does not make 
-any difference though, as the shape is supposed to have a continuous curvature).
+    Computes the normals to each vertex in local coordinates.If the shape is open, the first and last points will use the onlyconnected edge to compute the normal, otherwise the computation willconsider both connected edges (in the non polygonal case this does not make any difference though, as the shape is supposed to have a continuous curvature).
 </div>
 
 
@@ -2996,8 +2920,7 @@ any difference though, as the shape is supposed to have a continuous curvature).
 
 
 <div class="description">
-    Utility which prints the number of each vertex of the shape 
-next to it. This is designed mostly for debug purposes.
+    Utility which prints the number of each vertex of the shape next to it. This is designed mostly for debug purposes.
 </div>
 
 
@@ -3183,8 +3106,7 @@ next to it. This is designed mostly for debug purposes.
 
 
 <div class="description">
-    Sets the scale of the shape. If only x is specified,
-a uniform scale will be used
+    Sets the scale of the shape. If only x is specified,a uniform scale will be used
 </div>
 
 
@@ -3252,8 +3174,7 @@ a uniform scale will be used
                 </td>
             
 
-            <td class="description last">Scale along the x axis. Will be used  as the
-uniform scale if y is not specified</td>
+            <td class="description last">Scale along the x axis. Will be used  as theuniform scale if y is not specified</td>
         </tr>
 
     
@@ -3382,8 +3303,7 @@ uniform scale if y is not specified</td>
 
 
 <div class="description">
-    Converts a point coordinates (in vector form)
-to the shape local coordinate system
+    Converts a point coordinates (in vector form)to the shape local coordinate system
 </div>
 
 
@@ -3510,10 +3430,7 @@ to the shape local coordinate system
 
         
 <div class="param-desc">
-    Point coordinates the local coordinate system.
-The function also supports classes that extend `p5.Vector` as long as they
-implement vector arithmetic functions and the `copy` method. The return will
-be of the same type
+    Point coordinates the local coordinate system.The function also supports classes that extend `p5.Vector` as long as theyimplement vector arithmetic functions and the `copy` method. The return willbe of the same type
 </div>
 
 
@@ -3552,13 +3469,13 @@ be of the same type
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Scatter.html">Scatter</a></li></ul><h3>Classes</h3><ul><li><a href="Scatter.Arc.html">Arc</a></li><li><a href="Scatter.Attractor.html">Attractor</a></li><li><a href="Scatter.Burst.html">Burst</a></li><li><a href="Scatter.Circle.html">Circle</a></li><li><a href="Scatter.Drag.html">Drag</a></li><li><a href="Scatter.Emitter.html">Emitter</a></li><li><a href="Scatter.Force.html">Force</a></li><li><a href="Scatter.Geometry.html">Geometry</a></li><li><a href="Scatter.Gravity.html">Gravity</a></li><li><a href="Scatter.Line.html">Line</a></li><li><a href="Scatter.Particle.html">Particle</a></li><li><a href="Scatter.Point.html">Point</a></li><li><a href="Scatter.PointEmitter.html">PointEmitter</a></li><li><a href="Scatter.Polygon.html">Polygon</a></li><li><a href="Scatter.Rect.html">Rect</a></li><li><a href="Scatter.Shape.html">Shape</a></li><li><a href="Scatter.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Scatter.Square.html">Square</a></li><li><a href="Scatter.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Scatter.html">Scatter</a></li></ul><h3>Classes</h3><ul><li><a href="Scatter.Arc.html">Arc</a></li><li><a href="Scatter.Attractor.html">Attractor</a></li><li><a href="Scatter.Burst.html">Burst</a></li><li><a href="Scatter.Circle.html">Circle</a></li><li><a href="Scatter.Drag.html">Drag</a></li><li><a href="Scatter.Emitter.html">Emitter</a></li><li><a href="Scatter.Force.html">Force</a></li><li><a href="Scatter.Geometry.html">Geometry</a></li><li><a href="Scatter.Gravity.html">Gravity</a></li><li><a href="Scatter.Line.html">Line</a></li><li><a href="Scatter.Particle.html">Particle</a></li><li><a href="Scatter.Point.html">Point</a></li><li><a href="Scatter.PointEmitter.html">PointEmitter</a></li><li><a href="Scatter.Polygon.html">Polygon</a></li><li><a href="Scatter.Rect.html">Rect</a></li><li><a href="Scatter.Shape.html">Shape</a></li><li><a href="Scatter.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Scatter.Square.html">Square</a></li><li><a href="Scatter.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#constant">constant</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#linear">linear</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 12:38:28 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 21:37:43 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
