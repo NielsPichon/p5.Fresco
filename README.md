@@ -1,5 +1,5 @@
-# Scatter.js
-`Scatter.js` for p5.js is a collection of tools for procedural art generation. It mostly focuses on handling 2D shapes, particle systems, noises and physics in p5.js.
+# Cardioid.js
+`Cardioid.js` for p5.js is a collection of tools for procedural art generation. It mostly focuses on handling 2D shapes, particle systems, noises and physics in p5.js.
 Full documentation can be found [here](https://nielspichon.github.io/p5_Scatter)
 
 ## Generate the documentation
