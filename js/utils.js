@@ -1,5 +1,5 @@
 /**
- * @author Niels Pichon
+ * @author Niels Pichon <niels.pichon@outlook.com>
  * @fileoverview Various utility functions to make
  * procedural art generation easier.
  */

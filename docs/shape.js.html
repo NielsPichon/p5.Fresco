@@ -1,5 +1,33 @@
-/**
- * @author Niels Pichon <niels.pichon@outlook.com>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: shape.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: shape.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @author Niels Pichon &lt;niels.pichon@outlook.com>
  * @fileoverview This file contains classes and methods to better
  * handle 2D shape and points based procedures.
  */
@@ -137,7 +165,7 @@ Scatter.Point = class extends p5.Vector{
    * @constructor
    * @param {p5.Vector} position Position of the point.
    * @property {number} rotation=0 - Rotation of the point. Useful when instancing a shape with this point's transform.
-   * @property {Array.<number>} color=255,255,255,255 - Color of the point in RGBA, defined as an array of 4 values in the [0, 255] range.
+   * @property {Array.&lt;number>} color=255,255,255,255 - Color of the point in RGBA, defined as an array of 4 values in the [0, 255] range.
    * @property {number} radius=1 - Radius of the point. Used as strokeWeight when drawing, as well as for relaxation.
    * @property {p5.Vector} scale=1,1 - Point scale, useful when instancing a shape with this point's transform.
    * @property {Scatter.Shape} [owner] - Shape to which this point belongs to.
@@ -192,13 +220,13 @@ Scatter.Point = class extends p5.Vector{
    * @returns {boolean} True is the provided point is found to be the same as this one 
    */
   equals(pt) {
-    return this.position().equals(pt.position()) &&
-      this.rotation == pt.rotation &&
-      this.radius == pt.radius &&
-      this.scale.equals(pt.scale) &&
-      this.color[0] == pt.color[0] &&
-      this.color[1] == pt.color[1] &&
-      this.color[2] == pt.color[2] &&
+    return this.position().equals(pt.position()) &amp;&amp;
+      this.rotation == pt.rotation &amp;&amp;
+      this.radius == pt.radius &amp;&amp;
+      this.scale.equals(pt.scale) &amp;&amp;
+      this.color[0] == pt.color[0] &amp;&amp;
+      this.color[1] == pt.color[1] &amp;&amp;
+      this.color[2] == pt.color[2] &amp;&amp;
       this.color[3] == pt.color[3];    
   }
 
@@ -269,34 +297,34 @@ function createPoint(x, y, z=null) {
 Scatter.Shape = class {
   /**
    * @constructor
-   * @param {Array.<Scatter.Point>} vertices Vertices of this shape.
+   * @param {Array.&lt;Scatter.Point>} vertices Vertices of this shape.
    * For this shape to behave properly, it is important to use  `Scatter.Point` and not simple  `p5.Vector`.
    * Note that for easier handling in functions,
    * the class has no understanding of closed shapes.
    * To make a closed shape, simply add a copy of the first point
    * back at the end
    * of the vertices list
-   * @property {Array.<Scatter.Point>} vertices The shape's vertices
+   * @property {Array.&lt;Scatter.Point>} vertices The shape's vertices
    * @property {p5.Vector} position=0,0 - Position of the shape
    * @property {number} rotation=0 - Rotation of the shape
    * @property {p5.Vector} scale=1,1 - Scale of the shape
-   * @property {Array.<number>} color=255,255,255,255 Color of the contour in RGBA,
+   * @property {Array.&lt;number>} color=255,255,255,255 Color of the contour in RGBA,
    * described as an array of 4 values in the [0, 255] range.
-   * @property {Array.<number>} fillColor=255,255,255,255 Color of the fill of the shape in RGBA
+   * @property {Array.&lt;number>} fillColor=255,255,255,255 Color of the fill of the shape in RGBA
    * described as an array of 4 values in the [0, 255] range.
    * @property {boolean} noStroke=false Whether to draw the contour of the shape
    * @property {boolean} noFill=true Whether to fill in the shape
    * @property {number} strokeWeight=1 Stroke weight to draw the shape's contour with.
    * @property {boolean} updateBounds=true Whether the bounding box of the shape currently needs recomputing.
-   * @property {Array.<p5.Vector>} [BoundingBox] of the shape described as the top left and bottom right corners.
+   * @property {Array.&lt;p5.Vector>} [BoundingBox] of the shape described as the top left and bottom right corners.
    * DO NOT CALL DIRECTLY. Use boundingBox() instead.
    * @property {boolean} updateLengths=true Whether the edge lengths currently need recomputing.
-   * @property {Array.<number>} [edgeLengths] Length of the edges of the shape
+   * @property {Array.&lt;number>} [edgeLengths] Length of the edges of the shape
    */
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
     // set this shape as owner of the vertices
-    for (let i = 0; i < vertices.length; i++) {
+    for (let i = 0; i &lt; vertices.length; i++) {
       this.vertices[i].owner = this;
     }
     
@@ -327,7 +355,7 @@ Scatter.Shape = class {
    * most likely result in drawing the sahpe  with the last vertex's color.
    */
   draw(usePointColor = false) {
-    if (this.noStroke && !usePointColor) {
+    if (this.noStroke &amp;&amp; !usePointColor) {
       noStroke();
     } else {
       stroke(this.color);
@@ -344,7 +372,7 @@ Scatter.Shape = class {
     beginShape();
     if (this.isPolygonal) {
       let vtx;
-      for (let i = 0; i < this.vertices.length; i++) {
+      for (let i = 0; i &lt; this.vertices.length; i++) {
         vtx = this.applyTransform(this.vertices[i]);
         if (usePointColor) {
           stroke(this.vertices[i].color);
@@ -368,7 +396,7 @@ Scatter.Shape = class {
       }
 
       drawCurveVertex(vtx);
-      for (let i = 0; i < this.vertices.length; i++) {
+      for (let i = 0; i &lt; this.vertices.length; i++) {
         vtx = this.applyTransform(this.vertices[i]);
         if (usePointColor) {
           stroke(this.vertices[i].color);
@@ -400,7 +428,7 @@ Scatter.Shape = class {
    * Draws each and  every point of the shape
    */
   drawPoints() {
-    for (let i = 0; i < this.vertices.length; i++) {
+    for (let i = 0; i &lt; this.vertices.length; i++) {
       this.vertices[i].draw();
     }
   }
@@ -427,7 +455,7 @@ Scatter.Shape = class {
 
     let theta = 0;
     let r = 0;
-    for (let i = 0; i < p.length; i++) {
+    for (let i = 0; i &lt; p.length; i++) {
       r = random(0, diffusivity);
       theta = random(0, 2 * Math.PI);
       p[i].x += r * Math.cos(theta);
@@ -457,14 +485,14 @@ Scatter.Shape = class {
     let j;
     let r;
     let theta;
-    for (let i = 0; i < numLines; i++) {
-      for (j = 0; j < tmp_s.vertices.length; j++) {
+    for (let i = 0; i &lt; numLines; i++) {
+      for (j = 0; j &lt; tmp_s.vertices.length; j++) {
         r = random(0, diffusivity);
         theta = random(0, 2 * Math.PI);
         tmp_s.vertices[j].x = this.vertices[j].x + r * Math.cos(theta);
         tmp_s.vertices[j].y = this.vertices[j].y + r * Math.sin(theta);
       }
-      if (this.isClosed() && close) {
+      if (this.isClosed() &amp;&amp; close) {
         tmp_s.vertices[tmp_s.vertices.length - 1] = tmp_s.vertices[0];
       }
 
@@ -495,7 +523,7 @@ Scatter.Shape = class {
    */
   numberVertices() {
     let nrm = this.normals();
-    for (let i = 0; i < this.vertices.length - 1; i++) {
+    for (let i = 0; i &lt; this.vertices.length - 1; i++) {
       drawText(i, this.applyTransform(
         this.vertices[i].position().add(
           nrm[i].copy().mult(10))));
@@ -540,7 +568,7 @@ Scatter.Shape = class {
    * to each vertex and then reset.
    */
   freezeTransform() {
-    for (let i = 0; i < this.vertices.length; i++) {
+    for (let i = 0; i &lt; this.vertices.length; i++) {
       this.vertices[i] = 
         this.applyTransform(this.vertices[i]);
       this.vertices[i].rotation += this.rotation;
@@ -561,13 +589,13 @@ Scatter.Shape = class {
    * It will recompute it only if needed.
    * Because of this last statement,  we may have missed so cases where recomputation is required.
    * Should you run in such case,  please report it so  that we can fix  it accordingly
-   * @returns {Array.<p5.Vector>} Position of  the top left  and  bottom right  corners
+   * @returns {Array.&lt;p5.Vector>} Position of  the top left  and  bottom right  corners
    */
   getBoundingBox() {
     if (this.updateBounds) {
       let xs = [];
       let ys = [];
-      for (let i = 0; i < this.vertices.length; i++) {
+      for (let i = 0; i &lt; this.vertices.length; i++) {
         append(xs, this.vertices[i].x);
         append(ys, this.vertices[i].y);
       }
@@ -604,7 +632,7 @@ Scatter.Shape = class {
    * very last vertices of the shape are repeated. Otherwise the next vertex in  the shape
    * (that is reading the vertices array as a circular buffer) is returned. 
    * @param {number} idx Index of the vertex the  shape starts at.
-   * @returns {Array.<Scatter.Point>} Reference to the edge control points  
+   * @returns {Array.&lt;Scatter.Point>} Reference to the edge control points  
    */
   controlPoints(idx) {
     if (this.isPolygonal) {
@@ -627,7 +655,7 @@ Scatter.Shape = class {
       let p0;
       // if first vertex and shape is closed, return last but one vertex
       // else return starting point
-      if (idx - 1 < 0) {
+      if (idx - 1 &lt; 0) {
         if (this.isClosed()) {
           p0 = this.vertices[this.vertices.length - 2];
         }
@@ -685,7 +713,7 @@ Scatter.Shape = class {
       // the sdrawLine and drawing lines between them
       let a2 = d;
       let a1;
-      for (let i = 0; i < resolution; i++) {
+      for (let i = 0; i &lt; resolution; i++) {
         a1 = a2.copy();
         // compute next point
         t += dt;
@@ -711,13 +739,13 @@ Scatter.Shape = class {
   contourLength() {
     if (this.updateLengths) {
       this.edgeLengths = [];
-      for (let i = 0; i < this.vertices.length - 1; i++) {
+      for (let i = 0; i &lt; this.vertices.length - 1; i++) {
         append(this.edgeLengths, this.edgeLength(i));
       }
       this.updateLengths = false;
     }
     let l = 0;
-    for (let i = 0; i < this.vertices.length - 1; i++) {
+    for (let i = 0; i &lt; this.vertices.length - 1; i++) {
       l += this.edgeLengths[i];
     }
 
@@ -792,7 +820,7 @@ Scatter.Shape = class {
         // the sdrawLine and drawing lines between them
         let a2 = d;
         let a1;
-        for (let  t = 0; t < 1; t += dt) {
+        for (let  t = 0; t &lt; 1; t += dt) {
           a1 = a2.copy();
           // compute next point
           a2 = a.copy().mult(t * t * t).add(
@@ -864,7 +892,7 @@ Scatter.Shape = class {
     let center = (this.boundingBox[0] + this.boundingBox[1]) * 0.5;
 
     // offset all points to center the AABB to 0,0 in local referential
-    for (let i = 0; i < this.vertices.length; i++) {
+    for (let i = 0; i &lt; this.vertices.length; i++) {
       this.vertices[i].sub(center);
     }
 
@@ -905,7 +933,7 @@ Scatter.Shape = class {
       let l;
       let edge;
       // first retrieve which edge the point belongs to 
-      for (let i = 0; i < this.vertices.length - 1; i++) {
+      for (let i = 0; i &lt; this.vertices.length - 1; i++) {
         // compute the cross product of the vector from the first vertex
         // to the point with the edges vector.
         vec = pt.copy().sub(this.vertices[i]);
@@ -916,11 +944,11 @@ Scatter.Shape = class {
         // Note: we compare the magnitude to some espilon to avoid 
         // false negatives, e.g. the point near misses
         // because of numerical issues.
-        if (c.magSq() < epsilon) {
+        if (c.magSq() &lt; epsilon) {
           l = vec.dot(edge);
-          // if 0 < AC.AB < AB.AB wher A and B are the edges ends and C the point to test,
+          // if 0 &lt; AC.AB &lt; AB.AB wher A and B are the edges ends and C the point to test,
           // this means the point belongs to the vector
-          if (l >= 0 && l <= edge.magSq()) {
+          if (l >= 0 &amp;&amp; l &lt;= edge.magSq()) {
             edge = edge.normalize();
             // the normal is the orthogonal vector to the edge, which orientation depends
             // on whether the shape is described clockwise or anticlockwise
@@ -946,14 +974,14 @@ Scatter.Shape = class {
       let p1, p2;
       const incr = 1 / (resolution - 1);
       let vertex;
-      for (let i = 0; i < this.vertices.length - 1; i++) {
+      for (let i = 0; i &lt; this.vertices.length - 1; i++) {
         // retrieve the edge sdrawLine equation coefficients
         [a, b, c, d] = catmullRom(...this.controlPoints(i));
 
         t0 = 0;
         t1 = 1;
         // we proced by simple dichotomy. We stop early if one the points is already within the tolerance threshold
-        for (j = 1; Math.pow(2, j) <= resolution; j++) {
+        for (j = 1; Math.pow(2, j) &lt;= resolution; j++) {
           // compute the position of the first and 2nd thirds of the sub sdrawLine
           t00 = t0 + (t1 - t0) / 3;
           t01 = t0 + 2 * (t1 - t0) / 3;
@@ -963,10 +991,10 @@ Scatter.Shape = class {
             t01 * t01)).add(c.copy().mult(t01)).add(d);
 
           // move the bounds such that we restrict the sdrawLine to the closest half
-          if(distSq(pt, p1) <= distSq(pt, p2)) {
+          if(distSq(pt, p1) &lt;= distSq(pt, p2)) {
             t1 = (t1 + t0) * 0.5;
             // if the closest half is already at less than epsilon, return
-            if (distSq(pt, p1) <= epsilon) {
+            if (distSq(pt, p1) &lt;= epsilon) {
               let tangent = a.mult(3 * t00 * t00).add(
                 b.mult(2 * t00)).add(c).normalize();
               // return the orthogonal to the tangent, with the orientation chosen based
@@ -982,7 +1010,7 @@ Scatter.Shape = class {
           else {
             t0 = (t1 + t0) * 0.5;
             // if the closest half is already at less than epsilon, return
-            if (distSq(pt, p2) <= epsilon) {
+            if (distSq(pt, p2) &lt;= epsilon) {
               let tangent = a.mult(3 * t01 * t01).add(
                 b.mult(2 * t01)).add(c).normalize();
               // return the orthogonal to the tangent, with the orientation chosen based
@@ -1011,7 +1039,7 @@ Scatter.Shape = class {
    * connected edge to compute the normal, otherwise the computation will
    * consider both connected edges (in the non polygonal case this does not make 
    * any difference though, as the shape is supposed to have a continuous curvature).
-   * @returns {Array.<p5.Vector>} Normals at each vertex of the shape
+   * @returns {Array.&lt;p5.Vector>} Normals at each vertex of the shape
    */
   normals() {
     let nrm = [];
@@ -1026,13 +1054,13 @@ Scatter.Shape = class {
     let b; 
     let c;
     let d;
-    for (let i = 0; i < l - 1; i++) {
+    for (let i = 0; i &lt; l - 1; i++) {
       p0 = this.vertices[max([i - 1, 0])];
       p1 = this.vertices[i + 1];
       
       // if closed shape, last but one point is the one precedeing the
       // first point
-      if(i == 0 && this.isClosed()) {
+      if(i == 0 &amp;&amp; this.isClosed()) {
         p0 = this.vertices[l - 2];
       }
 
@@ -1049,7 +1077,7 @@ Scatter.Shape = class {
         // If the mesh is closed, the last and first vertex 
         // are the same.
         // Hence we retrieve the  second point;
-        if (i + 2 >= l && this.isClosed()) {
+        if (i + 2 >= l &amp;&amp; this.isClosed()) {
           p3 = this.vertices[1];
         }
 
@@ -1106,7 +1134,7 @@ Scatter.Shape = class {
     // Scatter.Shapes may be numbered clockwise or anticlockwise.
     // if the shape is clockwise we reverse the normals
     if (this.isClockwise()) {
-      for (let i = 0; i < nrm.length; i++) {
+      for (let i = 0; i &lt; nrm.length; i++) {
         nrm[i].mult(-1);
       }
     }
@@ -1127,7 +1155,7 @@ Scatter.Shape = class {
     let center = this.boundingBox[0].copy().add(this.boundingBox[1]).mult(0.5);
     let winding_nb = windingNumber(center, this.vertices)
     // wounding_nb is positive when the shae is counter clockwise
-    return winding_nb < 0;
+    return winding_nb &lt; 0;
   }
 
 
@@ -1144,7 +1172,7 @@ Scatter.Shape = class {
   copy() {
     // ugly but avoids cyclic references with JSON deserialization
     let vertexCopy = [];
-    for (let i = 0; i < this.vertices.length; i++) {
+    for (let i = 0; i &lt; this.vertices.length; i++) {
       append(vertexCopy, this.vertices[i].copy());
     }
     let nu_shape = new Scatter.Shape(vertexCopy);
@@ -1176,11 +1204,11 @@ Scatter.Geometry = class {
    * @property {p5.Vector} scale=1,1 - Scale of the geometry collection
    * @property {number} rotation=0 - Rotation of the geometry collection
    * @property {p5.Vector} position=0,0 - Position of the geometry collection
-   * @property {Array.<*>} objects Objects in the collection. These must be in the Scatter
+   * @property {Array.&lt;*>} objects Objects in the collection. These must be in the Scatter
    * namespace and implement the `draw` function as well have a transform of their own.
-   * @property {Array.<number>} objectsRotation Rotation of the individual objects of the collection relative to the collection itself
-   * @property {Array.<p5.Vector>} objectsScale Scale of the individual objects of the collection relative to the collection itself
-   * @property {Array.<p5.Vector>} objectsPosition Position of the individual objects of the collection relative to the collection itself
+   * @property {Array.&lt;number>} objectsRotation Rotation of the individual objects of the collection relative to the collection itself
+   * @property {Array.&lt;p5.Vector>} objectsScale Scale of the individual objects of the collection relative to the collection itself
+   * @property {Array.&lt;p5.Vector>} objectsPosition Position of the individual objects of the collection relative to the collection itself
    */
   constructor() {
     this.scale = createVector(1, 1);
@@ -1197,7 +1225,7 @@ Scatter.Geometry = class {
    * Draws all objects. Every object must have a `draw` method of its own.
    */
   draw() {
-    for (let i = 0; i < this.objects.length; i++) {
+    for (let i = 0; i &lt; this.objects.length; i++) {
       this.objects[i].draw();
     }
   }
@@ -1246,7 +1274,7 @@ Scatter.Geometry = class {
    * Applies this Geometry collection's transform to its objects
    */
   setobjectsTransform() {
-    for (let i = 0; i < this.objects.length; i++) {
+    for (let i = 0; i &lt; this.objects.length; i++) {
       // set rotation
       this.objects[i].rotation = this.objectsRotation[i] + this.rotation;
       // set scale
@@ -1326,14 +1354,14 @@ Scatter.Line = class extends Scatter.Shape {
    * line (min 2, the extremities).
    */
   constructor(pt1, pt2, resolution = 2) {
-    if (resolution < 2) {
+    if (resolution &lt; 2) {
       throw "A line should at least have 2 points"
     }
     super([]);
     let t = 0;
     const incr = 1 / (resolution - 1);
     // add resolution points
-    for (let i = 0; i < resolution; i++) {
+    for (let i = 0; i &lt; resolution; i++) {
       this.vertices.push(createPoint(
         pt1.x * (1 - t) + pt2.x * t,
         pt1.y * (1 - t) + pt2.y * t,
@@ -1372,7 +1400,7 @@ Scatter.Circle = class extends Scatter.Shape {
   resetResolution(resolution) {
     const angleIncr = 2 * PI / resolution;
     let angle = 0;
-    for (let i = 0; i < resolution; i++) {
+    for (let i = 0; i &lt; resolution; i++) {
       append(this.vertices,
         createPoint(this.radius * cos(angle), this.radius * sin(angle)));
       angle += angleIncr;
@@ -1401,7 +1429,7 @@ Scatter.Arc = class extends Scatter.Shape {
     this.radius = radius;
     const angleIncr = angle / (resolution - 1);
     let theta = - angle * 0.5 - PI / 2; //center the arc on the bottom vertical
-    for (let i = 0; i < resolution; i++) {
+    for (let i = 0; i &lt; resolution; i++) {
       append(this.vertices,
         createPoint(radius * cos(theta), radius * sin(theta)));
       theta += angleIncr;
@@ -1475,14 +1503,14 @@ Scatter.Polygon = class extends Scatter.Circle {
  * which is to say, in lemmans terms, how many time does the curve
  * turn around the point. 
  * @param {p5.Vector} pt Point of observation
- * @param {Array.<Scatter.Point>} vertices Vertices describing the curve 
+ * @param {Array.&lt;Scatter.Point>} vertices Vertices describing the curve 
  * @returns {number} The winding number
  */
 function windingNumber(pt, vertices) {
   let winding_nb = 0;
   let a = (vertices[0].position().sub(pt)).normalize();
   let b = a.copy();
-  for (let i = 0; i < vertices.length - 1; i++) {
+  for (let i = 0; i &lt; vertices.length - 1; i++) {
     a = b.copy();
     b = (vertices[i + 1].position().sub(pt)).normalize();
     
@@ -1503,7 +1531,7 @@ function windingNumber(pt, vertices) {
  * @param {Scatter.Point} p1 
  * @param {Scatter.Point} p2 
  * @param {Scatter.Point} p3
- * @returns {Array.<Scatter.Point>} 2D coefficients of the 2D Catmull-Rom spline.
+ * @returns {Array.&lt;Scatter.Point>} 2D coefficients of the 2D Catmull-Rom spline.
  * This may very well work in 3D as well but is untested
  */
 function catmullRom(p0, p1, p2, p3) {
@@ -1522,7 +1550,7 @@ function catmullRom(p0, p1, p2, p3) {
  * @param {number} a 2nd degree coefficient 
  * @param {number} b 1st degree coefficient 
  * @param {number} c 0th degree coeeficient
- * @returns {Array.<number>} Real roots if they exist  
+ * @returns {Array.&lt;number>} Real roots if they exist  
  */
 function parabolicRoots(a, b, c) {
   let roots = [];
@@ -1534,7 +1562,7 @@ function parabolicRoots(a, b, c) {
   }
   else {
     delta = b * b - 4 * a * c;
-    if (delta < 0) {
+    if (delta &lt; 0) {
       return [];
     }
     else if (delta == 0) {
@@ -1556,7 +1584,7 @@ function parabolicRoots(a, b, c) {
  * @param {number} b 2nd degree coefficient 
  * @param {number} c 1st degree coefficient 
  * @param {number} d 0th degree coefficient
- * @returns {Array.<number>} Real roots if they exist  
+ * @returns {Array.&lt;number>} Real roots if they exist  
  */
 function cubicRoots(a, b, c, d) {
   let roots = [];
@@ -1583,7 +1611,7 @@ function cubicRoots(a, b, c, d) {
     let B = -b2 / 2 - sqrt(delta);
     
     if (delta == 0) {
-      if (b2 < 0) {
+      if (b2 &lt; 0) {
         A = - pow(-A, 1 / 3);
       }
       else {
@@ -1593,13 +1621,13 @@ function cubicRoots(a, b, c, d) {
       append(roots, -A);
     }
     else {
-      if (A < 0) {
+      if (A &lt; 0) {
         A = - pow(-A, 1 / 3);
       }
       else {
         A = pow(A, 1 / 3);
       }
-      if (B < 0) {
+      if (B &lt; 0) {
         B = - pow(-B, 1 / 3);
       }
       else {
@@ -1611,13 +1639,13 @@ function cubicRoots(a, b, c, d) {
   else {  
       let phi = acos(sqrt(b2 * b2 / 4 / (-a2 * a2 * a2 / 27)));
       if (b2 > 0) phi += PI;
-      for (let k = 0; k < 3; k++) {
+      for (let k = 0; k &lt; 3; k++) {
         append(roots, 2 * sqrt(-a2 / 3) * cos((phi + 2 * k * PI) / 3));
       }
   }
   
   // convert back the roots of y^3 + ay + b to the form in x
-  for (let i = 0; i < roots.length; i++) {
+  for (let i = 0; i &lt; roots.length; i++) {
     roots[i] -= p / 3;
   }
 
@@ -1636,7 +1664,7 @@ function cubicRoots(a, b, c, d) {
  * @param {p5.Vector} dir1 First line's directon
  * @param {p5.Vector} pt2 Second line's origin
  * @param {p5.Vector} dir2 Second line's direction
- * @returns {Array.<number>} [t1, t2] where t1 and t2 are the value
+ * @returns {Array.&lt;number>} [t1, t2] where t1 and t2 are the value
  * of t at the intersection point for the first and second
  * line respectively. If the 2 lines are parallel, the array
  * will instead constain 2 booleans
@@ -1691,10 +1719,10 @@ function segmentIntersection(p0, p1, p2, p3) {
   // if lines intersect, check that intersection is within the
   // segment extremities
   if(t1) {
-    if (t1 > 1 || t1 < 0) {
+    if (t1 > 1 || t1 &lt; 0) {
       return false;
     }
-    if (t2 > 1 || t2 < 0) {
+    if (t2 > 1 || t2 &lt; 0) {
       return false;
     }
 
@@ -1723,10 +1751,10 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
   // if lines intersect, check that intersection is within the
   // segment extremities and on the positive direction of the ray
   if(t1) {
-    if (t1 < 0) {
+    if (t1 &lt; 0) {
       return [false, false];
     }
-    if (t2 > 1 || t2 < 0) {
+    if (t2 > 1 || t2 &lt; 0) {
       return [false, false];
     }
     return [rayOrigin.copy().add(rayDir.copy().mult(t1)), t2];
@@ -1750,7 +1778,7 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
  * @param {p5.Vector} p1 Spline control point
  * @param {p5.Vector} p2 Spline control point
  * @param {p5.Vector} p3 Spline control point
- * @returns {Array.Array<number>} For each intersection point the interpolent
+ * @returns {Array.Array&lt;number>} For each intersection point the interpolent
  * for the line and the spline are returned. If there is no interesection,
  * the array will be empty.
  */
@@ -1792,7 +1820,7 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
   let interp;
   let X;
   let Y;
-  for (let i = 0; i < intersections.length; i++) {
+  for (let i = 0; i &lt; intersections.length; i++) {
     ti = intersections[i];
     if (dir.x != 0) {
       X = a2.x * ti * ti * ti + b2.x * ti * ti + c2.x * ti + d2.x;
@@ -1819,14 +1847,14 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
  * @param {p5.Vector} p1 Spline control point
  * @param {p5.Vector} p2 Spline control point
  * @param {p5.Vector} p3 Spline control point
- * @returns {Array.<boolean, number, number>} For each intersection
+ * @returns {Array.&lt;boolean, number, number>} For each intersection
  */
 function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
   let t = lineSplineIntersection(rayOri, rayDir, p0, p1, p2, p3);
   
   let t2 = [];
-  for (let i = 0; i < t.length; i++) {
-    if (t[i][0] >= 0 && t[i][0] <=1 && t[i][1] >= 0) {
+  for (let i = 0; i &lt; t.length; i++) {
+    if (t[i][0] >= 0 &amp;&amp; t[i][0] &lt;=1 &amp;&amp; t[i][1] >= 0) {
       append(t2, [true, t[i][0], t[i][1]]);
     }
     else {
@@ -1864,7 +1892,7 @@ function isInside(vtx, shape, approx = true) {
   let intersections;
   let k;
   let xVec = createVector(0, 1);
-  for (let i = 0; i < l - 1; i++) {
+  for (let i = 0; i &lt; l - 1; i++) {
     // for a polygonal mesh a ray hits a contour line if the 2 points
     // are on opposite sides of the point in x.
     if (shape.isPolygonal || approx) {
@@ -1883,7 +1911,7 @@ function isInside(vtx, shape, approx = true) {
         // first vertex,
         // don't test the last edge to avoid counting 
         // twice the intersection at the closing point
-        if (t == 0 && i == 0 && shape.isClosed()) {
+        if (t == 0 &amp;&amp; i == 0 &amp;&amp; shape.isClosed()) {
           l--;
         }
       }
@@ -1902,7 +1930,7 @@ function isInside(vtx, shape, approx = true) {
       intersections = raySplineIntersection(
         vtx, xVec, p0, p1, p2, p3)
       
-      for (k = 0; k < intersections.length; k++) {
+      for (k = 0; k &lt; intersections.length; k++) {
         if (intersections[k][0]) {
           isIn = !isIn;
           // If we cut at the a vertex, skip the next edge
@@ -1915,7 +1943,7 @@ function isInside(vtx, shape, approx = true) {
           // don't test the last edge to avoid counting 
           // twice the intersection
           // at the closing point
-          if (intersections[k][1] == 0 && i == 0 &&
+          if (intersections[k][1] == 0 &amp;&amp; i == 0 &amp;&amp;
               shape.isClosed()) {
             l--;
           }
@@ -1950,7 +1978,7 @@ function isInside(vtx, shape, approx = true) {
  */
 function resample(shape, numPoints = 0, offset=true, approx=false,
                    splineResample = true) {
-  if (shape.vertices.length <= 1) {
+  if (shape.vertices.length &lt;= 1) {
     return shape.copy();
   }
   
@@ -1982,14 +2010,14 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
   let pt;
   let t;
   let k;
-  for (let i = start; i < numPoints - 1; i++) {
+  for (let i = start; i &lt; numPoints - 1; i++) {
     // retrieve fraction of the contour
     tgt = i * incr + shift;
     
     // find segment which corresponds to the generated distance
-    if (l < tgt) {
+    if (l &lt; tgt) {
       j++;
-      for (j; j < shape.vertices.length; j++) {
+      for (j; j &lt; shape.vertices.length; j++) {
         l += shape.edgeLengths[j];
         if (l >= tgt) {
           break;
@@ -2008,7 +2036,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     
     pt.rotation = shape.vertices[j].rotation * (1 - t) +
       shape.vertices[j + 1].rotation * t;
-    for (k = 0; k < shape.vertices[j].color.length; k++) {
+    for (k = 0; k &lt; shape.vertices[j].color.length; k++) {
       pt.color[k] = shape.vertices[j].color[k] * (1 - t) +
         shape.vertices[j + 1].color[k] * t;
     }
@@ -2020,7 +2048,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     append(vtx, pt); 
   }
   
-  if (offset && shape.isClosed()) {
+  if (offset &amp;&amp; shape.isClosed()) {
     append(vtx, vtx[0]);
   }
   else {
@@ -2054,11 +2082,11 @@ function divide(shape, numDivision, approx=false) {
   let k;
   let t;
   let j;
-  for (let i = 0; i < nu_shape.vertices.length - 1; i++) {
+  for (let i = 0; i &lt; nu_shape.vertices.length - 1; i++) {
     append(nu_vtx, nu_shape.vertices[i].copy());
     vtx = nu_shape.vertices[i].copy();
     interp = 1 / (numDivision + 1);
-    for (k = 1; k <= numDivision; k++) {
+    for (k = 1; k &lt;= numDivision; k++) {
       t = k * interp;
       // interpolate position and all other point properties
       if (!shape.isPolygonal) {
@@ -2071,7 +2099,7 @@ function divide(shape, numDivision, approx=false) {
       vtx.rotation = nu_shape.vertices[i].rotation * (1 - t) +
         nu_shape.vertices[i + 1].rotation * t;
       
-      for (j = 0; j < nu_shape.vertices[i].color.length; j++) {
+      for (j = 0; j &lt; nu_shape.vertices[i].color.length; j++) {
         vtx.color[j] = nu_shape.vertices[i].color[j] * (1 - t) +
           nu_shape.vertices[i + 1].color[j] * t;
       }
@@ -2109,7 +2137,7 @@ function divide(shape, numDivision, approx=false) {
  * high number of attempts may be needed before a single point actually
  * lands in the shape. To avoid ending in a nearly infinite loop, we set a
  * maximum safety number of tries before aborting.
- * @returns {Array.<Scatter.Point>} The scattered points.
+ * @returns {Array.&lt;Scatter.Point>} The scattered points.
  */
 function scatter(shape, numPoints = 100,
   contour = true, approx = true, safety = 10000) {
@@ -2120,12 +2148,12 @@ function scatter(shape, numPoints = 100,
     let t;
     let l;
     let j;
-    for (let i = 0; i < numPoints; i++) {
+    for (let i = 0; i &lt; numPoints; i++) {
       // generate random fraction of the contour
       t = random(0, totalLength);
       l = 0; // length accumulator
       // find segment which corresponds to the generated distance
-      for (j = 0; j < shape.vertices.length; j++) {
+      for (j = 0; j &lt; shape.vertices.length; j++) {
         l += shape.edgeLengths[j];
         if (l >= t) {
           break;
@@ -2152,7 +2180,7 @@ function scatter(shape, numPoints = 100,
     let roll;
     let nu_vtx;
     let itr;
-    for (let i = 0; i < numPoints; i++) {
+    for (let i = 0; i &lt; numPoints; i++) {
       roll = true;
       itr = 0;
       while (roll) {
@@ -2162,7 +2190,7 @@ function scatter(shape, numPoints = 100,
             boundingBox[1].y));
         roll  = !isInside(nu_vtx, shape, approx);
         itr ++;
-        if (itr > safety && safety > 0) {
+        if (itr > safety &amp;&amp; safety > 0) {
           throw "Could not find place for scattered point in shape";
         }
       }
@@ -2171,7 +2199,7 @@ function scatter(shape, numPoints = 100,
   }
 
   let pts = [];
-  for (let i = 0; i < vtx.length; i++) {
+  for (let i = 0; i &lt; vtx.length; i++) {
     append(pts, new Scatter.Point(vtx[i]));
   }
 
@@ -2182,7 +2210,7 @@ function scatter(shape, numPoints = 100,
 /**
  * Relaxes points towards a position which minimizes points overlap based on
  * their respective radii. This is based on
- * <a href="https://en.wikipedia.org/wiki/Lloyd%27s_algorithm">Lloyd's algorithm</a>,
+ * &lt;a href="https://en.wikipedia.org/wiki/Lloyd%27s_algorithm">Lloyd's algorithm&lt;/a>,
  * but using a weighted
  * voronoi diagram, where the weights are the radii.
  * For the Voroinoi diagram computation, we use a monte carlo simulation,
@@ -2191,7 +2219,7 @@ function scatter(shape, numPoints = 100,
  * closest to the sample, and the sample is at less than point.radius away.
  * Once this is done, we move each point to the computed centroids.
  * Rinse and repeat.
- * @param {Array.<p5.Vector>} points Points to relax.
+ * @param {Array.&lt;p5.Vector>} points Points to relax.
  * @param {number} [iterations] Number of relaxation iterations to perform.
  * @param {number} [totSamples] Number of samples to use for the Monte Carlo estimation.
  * @param {Scatter.Shape} [shape] Shape the points may belong to.
@@ -2199,7 +2227,7 @@ function scatter(shape, numPoints = 100,
  * @param {number} [minY] Bounds to constrain the relaxed points to.
  * @param {number} [maxX] Bounds to constrain the relaxed points to.
  * @param {number} [maxY] Bounds to constrain the relaxed points to.
- * @returns {Array.<p5.Vector>} The relaxed points.
+ * @returns {Array.&lt;p5.Vector>} The relaxed points.
  */
 function relax(points, 
                 iterations = 1, totSamples = 1000,
@@ -2208,7 +2236,7 @@ function relax(points,
                 maxX = width / 2, maxY = height / 2) {
   // we find the max radius
   let  r = 0;
-  for (let i = 0; i < points.length; i++) {
+  for (let i = 0; i &lt; points.length; i++) {
     if (points[i].radius > r) {
       r = points[i].radius;
     }
@@ -2234,7 +2262,7 @@ function relax(points,
   let k;
   let dist;
   let pt;
-  for (let i = 0; i < iterations; i++) {
+  for (let i = 0; i &lt; iterations; i++) {
     cells = new Array(num_pts).fill(createVector(0, 0));
     sampleCount = new Array(num_pts).fill(0);
     
@@ -2243,17 +2271,17 @@ function relax(points,
     Mx = -width;
     my = height;
     My = -height;
-    for (j = 0; j < points.length; j++) {
+    for (j = 0; j &lt; points.length; j++) {
       if (points[j].x > Mx) {
         Mx = points[j].x
       }
-      else if (points[j].x < mx) {
+      else if (points[j].x &lt; mx) {
         mx = points[j].x
       }
       if (points[j].y > My) {
         My = points[j].y
       }
-      else if (points[j].y < my) {
+      else if (points[j].y &lt; my) {
         my = points[j].y
       }      
     }
@@ -2265,20 +2293,20 @@ function relax(points,
     
     // we generate totSample random samples and update the centroid
     // of the closest point's voronoi cell
-    for (j = 0; j < totSamples; j++) {
+    for (j = 0; j &lt; totSamples; j++) {
       p = createVector(random(mx, Mx), random(my, My));
     
       // find closest point's idx
       m = width * width + height * height;
       idx = 0;
       isCell = false;
-      for (k = 0; k < points.length; k++) {
+      for (k = 0; k &lt; points.length; k++) {
         pt = points[k].position();
         if (shape) {
           pt = shape.applyTransform(points[k]).position();
         }
         dist = pt.sub(p).mag()
-        if (dist < m && dist <= points[k].radius) {
+        if (dist &lt; m &amp;&amp; dist &lt;= points[k].radius) {
           m = dist;
           idx = k;
           isCell = true;
@@ -2293,14 +2321,14 @@ function relax(points,
     }
     
     // for each cell divide the centroid by the sample count
-    for (j = 0; j < num_pts; j++) {
+    for (j = 0; j &lt; num_pts; j++) {
       if (sampleCount[j] != 0) {
         cells[j].div(sampleCount[j]);
       }
     }
 
     // move points to the centroids of there respective cells
-    for (j = 0; j < num_pts; j++) {
+    for (j = 0; j &lt; num_pts; j++) {
       if (sampleCount[j] != 0) {
         points[j].setPosition(cells[j]);
       }
@@ -2321,14 +2349,14 @@ function relax(points,
  * it's shape will be that of the original shape times the that of the point,
  * and it's velocity will be a composition of the velocity of the points,
  * @param {Scatter.Shape} shape Shape to copy
- * @param {Array.<Scatter.Point>} points Points to copy the shape to.
- * @returns {Array<Scatter.Shape>} The shape copies.
+ * @param {Array.&lt;Scatter.Point>} points Points to copy the shape to.
+ * @returns {Array&lt;Scatter.Shape>} The shape copies.
  */
 // and the shape owning the points
 function copyToPoints(shape, points) {
   shapes = [];
   let nu_shape;
-  for (let i = 0; i < points.length; i++) {
+  for (let i = 0; i &lt; points.length; i++) {
     nu_shape = shape.copy();
     // if point has owner, apply transform to point and add rotation to shape
     if (points[i].owner) {
@@ -2392,17 +2420,17 @@ function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1)
 
   // if no point pair has been provided.
   // This is done by minimizing the average distance between point pairs
-  if (pointMatch < 0) {
+  if (pointMatch &lt; 0) {
     pointMatch = 0;
-    // brute force (see <a href "https://preview.tinyurl.com/y26xsngd">SO question</a>)
+    // brute force (see &lt;a href "https://preview.tinyurl.com/y26xsngd">SO question&lt;/a>)
     let m = Number.MAX_VALUE;
     let d;
     let d1;
     let i;
-    for (let k = 0; k < A.vertices.length; k++) {
+    for (let k = 0; k &lt; A.vertices.length; k++) {
       d = 0;
       d1 = 0;
-      for (i = 0; i < A.vertices.length; i++) {
+      for (i = 0; i &lt; A.vertices.length; i++) {
         d += (A.applyTransform(A.vertices[i]).sub(
           B.applyTransform(
             B.vertices[(i + k) % A.vertices.length]))).mag();    
@@ -2412,12 +2440,12 @@ function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1)
                        A.vertices.length]))).mag();
       }
 
-      if (d < m) {
+      if (d &lt; m) {
         m = d;
         pointMatch = k;
         matchDir = 1;
       }
-      if (d1 < m) {
+      if (d1 &lt; m) {
         m = d;
         pointMatch = k;
         matchDir = -1;
@@ -2425,7 +2453,7 @@ function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1)
     }
   }
 
-  for (let i = 0; i < C.vertices.length; i++) {
+  for (let i = 0; i &lt; C.vertices.length; i++) {
     C.vertices[i].setPosition(
       A.applyTransform(A.vertices[i]).mult(
       1 - interp).add(
@@ -2452,12 +2480,12 @@ function matchPoints(A, B) {
   if (A.length == 2) {
     let s0 = 0;
     let s1 = 0;
-    for (let i = 0; i < A.length; i++) {
+    for (let i = 0; i &lt; A.length; i++) {
       s0 += (A[i].position().sub(B[(i + 1) % A.length])).mag();
       s1 += (A[i].position().sub(B[(i) % A.length])).mag();
     }
     
-    if (s0 < s1) {
+    if (s0 &lt; s1) {
       return 
     }
   }
@@ -2468,7 +2496,7 @@ function matchPoints(A, B) {
     let midB = [];
     let a;
     let b;
-    for (let i = 0; i < A.length - 1; i+=2) {
+    for (let i = 0; i &lt; A.length - 1; i+=2) {
       a = A[i + 1].copy();
       a.add(A[i]).mult(0.5);
       b = B[i + 1].copy();
@@ -2483,17 +2511,17 @@ function matchPoints(A, B) {
 
     let s0 = 0;
     let s1 = 0;
-    for (let i = 0; i < A.length; i++) {
+    for (let i = 0; i &lt; A.length; i++) {
       s0 += (A[i].position().sub(B[(i + k + 1) % A.length])).mag();
       s1 += (A[i].position().sub(B[(i + k - 1) % A.length])).mag();
     }
     
     let k0 = k;
-    if (s0 < sum) {
+    if (s0 &lt; sum) {
       sum = s0;
       k0 = k + 1;
     }
-    if (s1 < sum) {
+    if (s1 &lt; sum) {
       sum = s1;
       k0 = k - 1;
     }
@@ -2554,13 +2582,13 @@ function distort(point, func, amplitude, step) {
   let lenY = 0;
   let buffer = func(-width / 2, point.y);
   let depth;
-  for (let i = - width / 2 + step; i < width / 2; i += step) {
+  for (let i = - width / 2 + step; i &lt; width / 2; i += step) {
     depth = func(i, point.y);
     lenX += createVector(step, (depth - buffer) * amplitude).mag();
     buffer = depth;
   }
   buffer = func(point.x, -height / 2);
-  for (let i = - height / 2 + step; i < height / 2; i += step) {
+  for (let i = - height / 2 + step; i &lt; height / 2; i += step) {
     depth = func(point.x, i);
     lenY += createVector(step, (depth - buffer) * amplitude).mag();
     buffer = depth;
@@ -2572,7 +2600,7 @@ function distort(point, func, amplitude, step) {
   let u = 0;
   let v = 0;
   buffer = func(-width / 2, point.y);
-  for (let i = - width / 2 + step; i < width / 2; i += step) {
+  for (let i = - width / 2 + step; i &lt; width / 2; i += step) {
     depth = func(i, point.y);
     u += createVector(step, (depth - buffer) * amplitude).mag();
     buffer = depth;
@@ -2582,7 +2610,7 @@ function distort(point, func, amplitude, step) {
     }
   }
   buffer = func(point.x, -height / 2);
-  for (let i = - height / 2 + step; i < height / 2; i += step) {
+  for (let i = - height / 2 + step; i &lt; height / 2; i += step) {
     depth = func(point.x, i);
     v += createVector(step, (depth - buffer) * amplitude).mag();
     buffer = depth;
@@ -2640,3 +2668,26 @@ function sIntersection(A, B) {
 function sSubtract(A, B) {
 
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Scatter.html">Scatter</a></li></ul><h3>Classes</h3><ul><li><a href="Scatter.Arc.html">Arc</a></li><li><a href="Scatter.Attractor.html">Attractor</a></li><li><a href="Scatter.Burst.html">Burst</a></li><li><a href="Scatter.Circle.html">Circle</a></li><li><a href="Scatter.Drag.html">Drag</a></li><li><a href="Scatter.Emitter.html">Emitter</a></li><li><a href="Scatter.Force.html">Force</a></li><li><a href="Scatter.Geometry.html">Geometry</a></li><li><a href="Scatter.Gravity.html">Gravity</a></li><li><a href="Scatter.Line.html">Line</a></li><li><a href="Scatter.Particle.html">Particle</a></li><li><a href="Scatter.Point.html">Point</a></li><li><a href="Scatter.PointEmitter.html">PointEmitter</a></li><li><a href="Scatter.Polygon.html">Polygon</a></li><li><a href="Scatter.Rect.html">Rect</a></li><li><a href="Scatter.Shape.html">Shape</a></li><li><a href="Scatter.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Scatter.Square.html">Square</a></li><li><a href="Scatter.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Boolean">Boolean</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 12:38:28 GMT+0000 (Greenwich Mean Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
