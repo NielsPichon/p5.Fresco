@@ -376,6 +376,7 @@ Cardioid.Particle = class extends Cardioid.Point {
                 if (this.trail.vertices.length > 1) {
                     stroke(this.color);
                     strokeWeight(this.radius);
+                    // Draw the line between the start point and current one
                     drawLine(
                         this.trail.vertices[this.trail.vertices.length - 1],
                         this.trail.vertices[this.trail.vertices.length - 2]
@@ -472,11 +473,11 @@ Cardioid.Attractor = class extends Cardioid.Force {
      * @param {Cardioid.Particle} particle Particle to apply the force to
      */
     applyForce(particle) {
-        let direction = this.position.sub(particle);
+        let direction = this.position.copy().sub(particle);
         let magnitude = direction.mag();
 
         // if further than cutoff, ignore
-        if (this.cutoff > 0 && magnitude >= this.cutoff) {
+        if (this.cutoff > 0 && magnitude > this.cutoff) {
             return createVector(0, 0);
         }
         
