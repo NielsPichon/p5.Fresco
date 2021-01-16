@@ -21,14 +21,14 @@ function setup() {
   // create a grid of lines
   for (let  i = 0; i < num_lines; i++) {
     lines.push(
-      new Cardioid.Line(createPoint(
+      new Fresco.Line(createPoint(
         -width / 2, - height / 2 + (i + 1) * height / (num_lines + 1)),
         createPoint(width / 2, -height / 2 + (i + 1) * height / (num_lines + 1)),
       lines_resolution)
     );
     if (useVertLines) {
       lines.push(
-        new Cardioid.Line(createPoint(
+        new Fresco.Line(createPoint(
           -width / 2 + (i + 1) * width / (num_lines + 1), - height / 2),
           createPoint(-width / 2 + (i + 1) * width / (num_lines + 1), height / 2),
         lines_resolution)

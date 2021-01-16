@@ -55,7 +55,7 @@ function draw() {
 }
 
 function makeBoob(X, Y) {
-  let nu_geo = new Cardioid.Geometry();
+  let nu_geo = new Fresco.Geometry();
 
   // generate breast parameters
   const cupRadius = random(minCupRadius, maxCupRadius);
@@ -63,7 +63,7 @@ function makeBoob(X, Y) {
   const heightToWidthRatio = random(minHeightToWidthRatio, maxHeightToWidthRatio);
   
   // create cup
-  let cup = new Cardioid.Arc(Math.PI, cupRadius);
+  let cup = new Fresco.Arc(Math.PI, cupRadius);
   if (cupContours) {
     cup.color = colorFromHex(cupColors[Math.floor(random(cupColors.length))]);
     cup.strokeWeight = lineWeight;
@@ -78,7 +78,7 @@ function makeBoob(X, Y) {
   let cupHeight = cupRadius * heightToWidthRatio;
 
   // create tit
-  let tit = new Cardioid.Circle(titRadius, 12);
+  let tit = new Fresco.Circle(titRadius, 12);
   tit.position.add(createVector(0, -cupHeight - random(minTitOffset * titRadius, maxTitOffset * titRadius)));
 
   if (titContours) {

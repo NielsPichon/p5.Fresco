@@ -7,7 +7,7 @@
 /**
  * A class for 2D/3D cellular noise
 */
-Cardioid.Voronoi = class {
+Fresco.Voronoi = class {
   /**
    * 
    * @constructor
@@ -21,7 +21,7 @@ Cardioid.Voronoi = class {
    * @property {number} gridBased Whether to use a grid based approach.
    * @property {number} numCells Number of cells to create within the canvas.
    * @property {boolean} is3D Whether the noise is 3D noise.
-   * @property {Array.<Cardioid.Point>} seeds Seed points used to generate the noise
+   * @property {Array.<Fresco.Point>} seeds Seed points used to generate the noise
    */
   constructor(numCells, gridBased = false, is3D=false) {
     this.gridBased = gridBased;

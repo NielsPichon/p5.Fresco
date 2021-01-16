@@ -105,7 +105,7 @@ function rampInterpolation2D(t, time, values, linear = true) {
  * Checks whether a particle will collide with another particle
  * or a collider and resolves the collision accordingly.
  * WARNING: Not yet implemented
- * @param {Cardioid.Particle} particle A particle to check the collisons for
+ * @param {Fresco.Particle} particle A particle to check the collisons for
  * @param {number} dt Timestep between frames
  */
 function solveCollision(particle, dt) {
@@ -120,7 +120,7 @@ function solveCollision(particle, dt) {
  * @param {number} [z] Z-coordinate of the new particle
  */
 function createParticle(x, y, z = null) {
-    return new Cardioid.Particle(createPoint(x, y));
+    return new Fresco.Particle(createPoint(x, y));
 }
 
 
@@ -132,7 +132,7 @@ function createParticle(x, y, z = null) {
  * system
  * @class
  */
-Cardioid.Particle = class extends Cardioid.Point {
+Fresco.Particle = class extends Fresco.Point {
     /**
      * @constructor
      * @param {p5.Vector} position Position of the particle when spawned
@@ -232,11 +232,11 @@ Cardioid.Particle = class extends Cardioid.Point {
 
     /**
      * Manually casts the particle to a Point
-     * @returns {Cardioid.Point} The particle reinterpreted (hand "casted") 
-     * to a Cardioid.Point
+     * @returns {Fresco.Point} The particle reinterpreted (hand "casted") 
+     * to a Fresco.Point
      */
     asPoint() {
-        let nu_point = new Cardioid.Point(this.position());
+        let nu_point = new Fresco.Point(this.position());
         nu_point.color = this.color;
         nu_point.rotation = this.rotation;
         nu_point.radius = this.radius;
@@ -317,15 +317,15 @@ Cardioid.Particle = class extends Cardioid.Point {
     }
 
     /**
-     * If the particle is to leave a trail, add a copy of this particle as a `Cardioid.Point`
-     * to the trail `Cardioid.Shape`
+     * If the particle is to leave a trail, add a copy of this particle as a `Fresco.Point`
+     * to the trail `Fresco.Shape`
      */
     addCurrentPositionToTrail() {
         if (this.trail) {
             append(this.trail.vertices, this.asPoint());
         }
         else {
-            this.trail = new Cardioid.Shape([this.asPoint()]);
+            this.trail = new Fresco.Shape([this.asPoint()]);
             this.trail.strokeWeight = this.radius;
         }
     }
@@ -392,7 +392,7 @@ Cardioid.Particle = class extends Cardioid.Point {
  * Generic class for a force, enforcing the API
  * @class
  */
-Cardioid.Force = class {
+Fresco.Force = class {
     /**
      * @constructor
      * @property {boolean} isDead=false - If true, the force will not be
@@ -407,7 +407,7 @@ Cardioid.Force = class {
 
     /**
      * Returns the force applied to a given particle
-     * @param {Cardioid.Particle} particle Particle to apply the force to
+     * @param {Fresco.Particle} particle Particle to apply the force to
      */
     applyForce(particle) {
     }
@@ -417,9 +417,9 @@ Cardioid.Force = class {
 /**
  * Gravitational force
  * @class
- * @extends Cardioid.Force
+ * @extends Fresco.Force
  */
-Cardioid.Gravity = class extends Cardioid.Force {
+Fresco.Gravity = class extends Fresco.Force {
     /**
      * @constructor
      */
@@ -430,7 +430,7 @@ Cardioid.Gravity = class extends Cardioid.Force {
     /** 
      * Returns the weight of a particle, which is to say the 
      * gravitational froce appled by the earth on this particle
-     * @param {Cardioid.Particle} particle Particle to apply the force to
+     * @param {Fresco.Particle} particle Particle to apply the force to
      */
     applyForce(particle) {
         return createVector(0, 1).mult(g * particle.mass);
@@ -441,9 +441,9 @@ Cardioid.Gravity = class extends Cardioid.Force {
 /**
  * Attractor force.
  * @class
- * @extends Cardioid.Force
+ * @extends Fresco.Force
  */
-Cardioid.Attractor = class extends Cardioid.Force {
+Fresco.Attractor = class extends Fresco.Force {
     /**
      * @constructor
      * @param {p5.Vector} position Center of the attractor
@@ -470,7 +470,7 @@ Cardioid.Attractor = class extends Cardioid.Force {
     /**
      * Returns the attraction force on a given particle. The intensity depeds on
      * the distance of the particle to center of the attractor.
-     * @param {Cardioid.Particle} particle Particle to apply the force to
+     * @param {Fresco.Particle} particle Particle to apply the force to
      */
     applyForce(particle) {
         let direction = this.position.copy().sub(particle);
@@ -495,9 +495,9 @@ Cardioid.Attractor = class extends Cardioid.Force {
  * All particles within the radius of impact will be affected.
  * The force burst will decay linearly over life.
  * @class
- * @extends Cardioid.Force
+ * @extends Fresco.Force
  */
-Cardioid.Burst = class extends Cardioid.Force {
+Fresco.Burst = class extends Fresco.Force {
     /**
      * @constructor
      * @param {p5.Vector} position Center of the blast
@@ -519,7 +519,7 @@ Cardioid.Burst = class extends Cardioid.Force {
 
     /**
      * Returns the burst force appied onto a particle
-     * @param {Cardioid.Particle} particle Particle to apply the force to
+     * @param {Fresco.Particle} particle Particle to apply the force to
      */
     applyForce(particle) {
         if (T > this.decayTime) {
@@ -547,9 +547,9 @@ Cardioid.Burst = class extends Cardioid.Force {
 /**
  * Simulates kinetic drag
  * @class
- * @extends Cardioid.Force
+ * @extends Fresco.Force
  */
-Cardioid.Drag = class extends Cardioid.Force {
+Fresco.Drag = class extends Fresco.Force {
     /**
      * @constructor
      * @param {number} intensity Drag intensity multiplier
@@ -562,7 +562,7 @@ Cardioid.Drag = class extends Cardioid.Force {
 
     /**
      * Retuns the drag applied to a particle which is equal -mu.mv^2
-     * @param {Cardioid.Particle} particle Particle to apply the force to
+     * @param {Fresco.Particle} particle Particle to apply the force to
      */
     applyForce(particle) {
         // - mu * v^2
@@ -577,7 +577,7 @@ Cardioid.Drag = class extends Cardioid.Force {
  * whithin the ranges defined in this class.
  * @class
  */
-Cardioid.Emitter = class {
+Fresco.Emitter = class {
     /**
      * @constructor
      * @property {p5.Vector} minV=-1,-1 - Minimum velocity attributed to a particle upon spawn.
@@ -688,9 +688,9 @@ Cardioid.Emitter = class {
 /**
  * A punctual emitter.
  * @class
- * @extends Cardioid.Emitter
+ * @extends Fresco.Emitter
  */
-Cardioid.PointEmitter = class extends Cardioid.Emitter {
+Fresco.PointEmitter = class extends Fresco.Emitter {
     /**
      * @constructor
      * @param {p5.Vector} position Position of the emitter
@@ -709,7 +709,7 @@ Cardioid.PointEmitter = class extends Cardioid.Emitter {
             let t;
             for (let i = 0; i < this.spawnRate; i++) {
                 if (random() <= this.spawnProbability) {
-                    let nu_particle = new Cardioid.Particle(this.position);
+                    let nu_particle = new Fresco.Particle(this.position);
 
                     // assign random velocity in range
                     t = random();
@@ -764,15 +764,15 @@ Cardioid.PointEmitter = class extends Cardioid.Emitter {
 /**
  * Emitter which creates particles along the contour of a shape
  * @class
- * @extends Cardioid.Emitter
+ * @extends Fresco.Emitter
  */
-Cardioid.ShapeEmitter = class extends Cardioid.Emitter {
+Fresco.ShapeEmitter = class extends Fresco.Emitter {
     /**
      * @constructor
-     * @param {Cardioid.Shape} shape Shape to emit particles from the contour of
+     * @param {Fresco.Shape} shape Shape to emit particles from the contour of
      * @param {boolean} [normalVelocityOnly] If true, the random velocity of emitted particles 
      * will be along the shape's normal only.
-     * @property {Cardioid.Shape} shape Shape to emit particles from the contour of
+     * @property {Fresco.Shape} shape Shape to emit particles from the contour of
      * @property {number} minNormalV=0.1 Minimum amount of velocity along the normal to the
      * shape at the spawn point to add to the particles velocity.
      * @property {number} maxNormalV=0.1 Minimum amount of velocity along the normal to the
@@ -804,7 +804,7 @@ Cardioid.ShapeEmitter = class extends Cardioid.Emitter {
             for (let i = 0; i < this.spawnRate; i++) {
                 if (random() <= this.spawnProbability) {
                     nu_pos = scatter(this.shape, 1, true);
-                    let nu_particle = new Cardioid.Particle(nu_pos[0]);
+                    let nu_particle = new Fresco.Particle(nu_pos[0]);
 
                     // assign random velocity in range
                     t = random();

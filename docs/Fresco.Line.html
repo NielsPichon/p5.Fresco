@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Polygon</title>
+    <title>JSDoc: Class: Line</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Polygon</h1>
+    <h1 class="page-title">Class: Line</h1>
 
     
 
@@ -29,9 +29,9 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="Cardioid.html">Cardioid</a>.</span>Polygon<span class="signature">(radius, resolution)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="Fresco.html">Fresco</a>.</span>Line<span class="signature">(pt1, pt2, resolution)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Centered regular polygon (for example hexagon, octogon...)</div>
+            <div class="class-description">A class representing a line</div>
         
     
 </header>
@@ -46,7 +46,7 @@
     
 
     
-    <h4 class="name" id="Polygon"><span class="type-signature"></span>new Polygon<span class="signature">(radius, resolution)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Line"><span class="type-signature"></span>new Line<span class="signature">(pt1, pt2, resolution)</span><span class="type-signature"></span></h4>
     
 
     
@@ -88,13 +88,13 @@
 
         <tr>
             
-                <td class="name"><code>radius</code></td>
+                <td class="name"><code>pt1</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Point</span>
 
 
             
@@ -105,12 +105,37 @@
             
                 <td class="default">
                 
-                    50
+                </td>
+            
+
+            <td class="description last">First extremity Point</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pt2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Point</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
                 
                 </td>
             
 
-            <td class="description last">Radius of the  polygon</td>
+            <td class="description last">Second extremity Point</td>
         </tr>
 
     
@@ -134,12 +159,12 @@
             
                 <td class="default">
                 
-                    24
+                    2
                 
                 </td>
             
 
-            <td class="description last">Number of summit vertices</td>
+            <td class="description last">number of points subdividing the line (min 2, the extremities).</td>
         </tr>
 
     
@@ -180,7 +205,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1460">line 1460</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1320">line 1320</a>
     </li></ul></dd>
     
 
@@ -220,7 +245,7 @@
 
 
     <ul>
-        <li><a href="Cardioid.Circle.html">Cardioid.Circle</a></li>
+        <li><a href="Fresco.Shape.html">Fresco.Shape</a></li>
     </ul>
 
 
@@ -330,7 +355,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#applyTransform">Cardioid.Circle#applyTransform</a>
+        <a href="Fresco.Shape.html#applyTransform">Fresco.Shape#applyTransform</a>
     </li></ul></dd>
     
 
@@ -382,7 +407,7 @@
 
         
 <div class="param-desc">
-    The transformed point. Note that because of the way the computation is done,classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implementthe `copy` method, and usual vector arithmetics (this is the case of `Cardioid.Point` and`Cardioid.Particle` for instance). In this case the return type will be  the sameas the input type.
+    The transformed point. Note that because of the way the computation is done,classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implementthe `copy` method, and usual vector arithmetics (this is the case of `Fresco.Point` and`Fresco.Particle` for instance). In this case the return type will be  the sameas the input type.
 </div>
 
 
@@ -445,7 +470,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#contourLength">Cardioid.Circle#contourLength</a>
+        <a href="Fresco.Shape.html#contourLength">Fresco.Shape#contourLength</a>
     </li></ul></dd>
     
 
@@ -526,7 +551,7 @@
     
 
     
-    <h4 class="name" id="controlPoints"><span class="type-signature"></span>controlPoints<span class="signature">(idx)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Cardioid.Point.html">Cardioid.Point</a>>}</span></h4>
+    <h4 class="name" id="controlPoints"><span class="type-signature"></span>controlPoints<span class="signature">(idx)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Fresco.Point.html">Fresco.Point</a>>}</span></h4>
     
 
     
@@ -609,7 +634,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#controlPoints">Cardioid.Circle#controlPoints</a>
+        <a href="Fresco.Shape.html#controlPoints">Fresco.Shape#controlPoints</a>
     </li></ul></dd>
     
 
@@ -672,7 +697,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array.&lt;<a href="Cardioid.Point.html">Cardioid.Point</a>></span>
+<span class="param-type">Array.&lt;<a href="Fresco.Point.html">Fresco.Point</a>></span>
 
 
     </dd>
@@ -690,7 +715,7 @@
     
 
     
-    <h4 class="name" id="copy"><span class="type-signature"></span>copy<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Cardioid.Shape.html">Cardioid.Shape</a>}</span></h4>
+    <h4 class="name" id="copy"><span class="type-signature"></span>copy<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Fresco.Shape.html">Fresco.Shape</a>}</span></h4>
     
 
     
@@ -724,7 +749,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#copy">Cardioid.Circle#copy</a>
+        <a href="Fresco.Shape.html#copy">Fresco.Shape#copy</a>
     </li></ul></dd>
     
 
@@ -787,7 +812,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="Cardioid.Shape.html">Cardioid.Shape</a></span>
+<span class="param-type"><a href="Fresco.Shape.html">Fresco.Shape</a></span>
 
 
     </dd>
@@ -908,7 +933,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#draw">Cardioid.Circle#draw</a>
+        <a href="Fresco.Shape.html#draw">Fresco.Shape#draw</a>
     </li></ul></dd>
     
 
@@ -1187,7 +1212,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#drawNoisy">Cardioid.Circle#drawNoisy</a>
+        <a href="Fresco.Shape.html#drawNoisy">Fresco.Shape#drawNoisy</a>
     </li></ul></dd>
     
 
@@ -1280,7 +1305,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#drawPoints">Cardioid.Circle#drawPoints</a>
+        <a href="Fresco.Shape.html#drawPoints">Fresco.Shape#drawPoints</a>
     </li></ul></dd>
     
 
@@ -1419,7 +1444,7 @@
                 </td>
             
 
-            <td class="description last">Number of points  to Cardioid.</td>
+            <td class="description last">Number of points  to Fresco.</td>
         </tr>
 
     
@@ -1559,7 +1584,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#drawScattered">Cardioid.Circle#drawScattered</a>
+        <a href="Fresco.Shape.html#drawScattered">Fresco.Shape#drawScattered</a>
     </li></ul></dd>
     
 
@@ -1618,7 +1643,7 @@
     
 
     
-    <h4 class="name" id="edgeInterpolation"><span class="type-signature"></span>edgeInterpolation<span class="signature">(interp, edgeIdx, resolution, approx, world)</span><span class="type-signature"> &rarr; {<a href="Cardioid.Point.html">Cardioid.Point</a>}</span></h4>
+    <h4 class="name" id="edgeInterpolation"><span class="type-signature"></span>edgeInterpolation<span class="signature">(interp, edgeIdx, resolution, approx, world)</span><span class="type-signature"> &rarr; {<a href="Fresco.Point.html">Fresco.Point</a>}</span></h4>
     
 
     
@@ -1821,7 +1846,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#edgeInterpolation">Cardioid.Circle#edgeInterpolation</a>
+        <a href="Fresco.Shape.html#edgeInterpolation">Fresco.Shape#edgeInterpolation</a>
     </li></ul></dd>
     
 
@@ -1884,7 +1909,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="Cardioid.Point.html">Cardioid.Point</a></span>
+<span class="param-type"><a href="Fresco.Point.html">Fresco.Point</a></span>
 
 
     </dd>
@@ -2020,7 +2045,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#edgeLength">Cardioid.Circle#edgeLength</a>
+        <a href="Fresco.Shape.html#edgeLength">Fresco.Shape#edgeLength</a>
     </li></ul></dd>
     
 
@@ -2135,7 +2160,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#freezeTransform">Cardioid.Circle#freezeTransform</a>
+        <a href="Fresco.Shape.html#freezeTransform">Fresco.Shape#freezeTransform</a>
     </li></ul></dd>
     
 
@@ -2228,7 +2253,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#getBoundingBox">Cardioid.Circle#getBoundingBox</a>
+        <a href="Fresco.Shape.html#getBoundingBox">Fresco.Shape#getBoundingBox</a>
     </li></ul></dd>
     
 
@@ -2343,7 +2368,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#isClockwise">Cardioid.Circle#isClockwise</a>
+        <a href="Fresco.Shape.html#isClockwise">Fresco.Shape#isClockwise</a>
     </li></ul></dd>
     
 
@@ -2458,7 +2483,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#isClosed">Cardioid.Circle#isClosed</a>
+        <a href="Fresco.Shape.html#isClosed">Fresco.Shape#isClosed</a>
     </li></ul></dd>
     
 
@@ -2716,7 +2741,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#normalAtPoint">Cardioid.Circle#normalAtPoint</a>
+        <a href="Fresco.Shape.html#normalAtPoint">Fresco.Shape#normalAtPoint</a>
     </li></ul></dd>
     
 
@@ -2831,7 +2856,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#normals">Cardioid.Circle#normals</a>
+        <a href="Fresco.Shape.html#normals">Fresco.Shape#normals</a>
     </li></ul></dd>
     
 
@@ -2946,7 +2971,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#numberVertices">Cardioid.Circle#numberVertices</a>
+        <a href="Fresco.Shape.html#numberVertices">Fresco.Shape#numberVertices</a>
     </li></ul></dd>
     
 
@@ -2970,148 +2995,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line496">line 496</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="resetResolution"><span class="type-signature"></span>resetResolution<span class="signature">(resolution)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Allows to change the sphere resolution on the fly.WARNING: this will reset point positions
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>resolution</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">New number of points</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#resetResolution">Cardioid.Circle#resetResolution</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1372">line 1372</a>
     </li></ul></dd>
     
 
@@ -3181,7 +3064,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#setOriginToGeometricCenter">Cardioid.Circle#setOriginToGeometricCenter</a>
+        <a href="Fresco.Shape.html#setOriginToGeometricCenter">Fresco.Shape#setOriginToGeometricCenter</a>
     </li></ul></dd>
     
 
@@ -3378,7 +3261,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#setScale">Cardioid.Circle#setScale</a>
+        <a href="Fresco.Shape.html#setScale">Fresco.Shape#setScale</a>
     </li></ul></dd>
     
 
@@ -3520,7 +3403,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Cardioid.Circle.html#toLocalCoordinates">Cardioid.Circle#toLocalCoordinates</a>
+        <a href="Fresco.Shape.html#toLocalCoordinates">Fresco.Shape#toLocalCoordinates</a>
     </li></ul></dd>
     
 
@@ -3611,13 +3494,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Cardioid.html">Cardioid</a></li></ul><h3>Classes</h3><ul><li><a href="Cardioid.Arc.html">Arc</a></li><li><a href="Cardioid.Attractor.html">Attractor</a></li><li><a href="Cardioid.Burst.html">Burst</a></li><li><a href="Cardioid.Circle.html">Circle</a></li><li><a href="Cardioid.Drag.html">Drag</a></li><li><a href="Cardioid.Emitter.html">Emitter</a></li><li><a href="Cardioid.Force.html">Force</a></li><li><a href="Cardioid.Geometry.html">Geometry</a></li><li><a href="Cardioid.Gravity.html">Gravity</a></li><li><a href="Cardioid.Line.html">Line</a></li><li><a href="Cardioid.Particle.html">Particle</a></li><li><a href="Cardioid.Point.html">Point</a></li><li><a href="Cardioid.PointEmitter.html">PointEmitter</a></li><li><a href="Cardioid.Polygon.html">Polygon</a></li><li><a href="Cardioid.Rect.html">Rect</a></li><li><a href="Cardioid.Shape.html">Shape</a></li><li><a href="Cardioid.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Cardioid.Square.html">Square</a></li><li><a href="Cardioid.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#constant">constant</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#linear">linear</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#constant">constant</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#linear">linear</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Jan 15 2021 22:57:43 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Jan 16 2021 23:12:36 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>

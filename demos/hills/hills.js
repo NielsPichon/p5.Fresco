@@ -73,7 +73,7 @@ function setup() {
   vertices.push(createPoint(2 * width, -height));
   vertices.push(createPoint(-2 * width, -height));
 
-  s = new Cardioid.Shape(vertices);
+  s = new Fresco.Shape(vertices);
   s.position = createVector(0, height / 2);
   s.color = colorFromHex(strokeClr, strokeOpacity);
   s.noFill = false;

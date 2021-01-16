@@ -16,7 +16,7 @@ function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
   background(0);
 
-  e = new Cardioid.ShapeEmitter(new Cardioid.Circle(150, 24));
+  e = new Fresco.ShapeEmitter(new Fresco.Circle(150, 24));
   e.shape.isPolygonal = polyShape;
   e.minV = createVector(0, 0);
   e.maxV = createVector(0, 0);

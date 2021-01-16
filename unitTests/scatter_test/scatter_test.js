@@ -8,14 +8,14 @@ let pts4;
 
 function setup() {
   createCanvas(200, 200);
-  s = new Cardioid.Polygon(50, 10);
+  s = new Fresco.Polygon(50, 10);
   s.scale.mult(1.2);
   s.position.add(20, 20);
   s.isPolygonal = false;
   pts = scatter(s, 10, contour = true);
   pts2 = scatter(s, 10, contour = false);
   
-  s2 = new Cardioid.Polygon(50, 10);
+  s2 = new Fresco.Polygon(50, 10);
   s2.scale.mult(0.5);
   s2.position.add(-50, -50);
   s2.isPolygonal = true;

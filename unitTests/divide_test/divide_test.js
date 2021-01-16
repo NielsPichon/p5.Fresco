@@ -4,7 +4,7 @@ let approx = false;
 
 function setup() {
   createCanvas(200, 200);
-  s = new Cardioid.Polygon(50, 5);
+  s = new Fresco.Polygon(50, 5);
   for (let i = 0; i < s.vertices.length; i++) {
     s.vertices[i].color = [255, 0, 0, 255];
   }

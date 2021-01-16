@@ -10,7 +10,7 @@ let s1;
 function setup() {
   createCanvas(500, 500);
 
-  s = new Cardioid.Circle(200, 24);
+  s = new Fresco.Circle(200, 24);
   s1 = s.copy();
   s1.scale.mult(0.5);
 }

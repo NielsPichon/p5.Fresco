@@ -6,7 +6,7 @@ function setup() {
   createCanvas(1000, 1000);
 
   // create point emiter
-  p = new Cardioid.PointEmitter(createPoint(0, 0));
+  p = new Fresco.PointEmitter(createPoint(0, 0));
   p.simulatePhysics = true;
   p.minV = createVector(-0.5, 1).mult(50);
   p.maxV = createVector(0.5, 1).mult(50);
@@ -16,7 +16,7 @@ function setup() {
   p.spawnRate = 10;
 
   // convert points to particles and set tangential velocity
-  f = new Cardioid.Gravity();
+  f = new Fresco.Gravity();
 }
 
 function draw() {

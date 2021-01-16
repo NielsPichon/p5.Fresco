@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Class: Force</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,46 +17,9 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Class: Force</h1>
 
     
-
-
-
-    
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-    <section>
-        <article><h1>Fresco.js</h1>
-<p><code>Fresco.js</code> for p5.js is a collection of tools for procedural art generation. It mostly focuses on handling 2D shapes, particle systems, noises and physics in p5.js.
-Full documentation can be found <a href="https://nielspichon.github.io/Cardioid">here</a></p>
-<h2>Generate the documentation</h2>
-<p>The documentation is generated using <a href="https://github.com/jsdoc/jsdoc">jsdoc</a>.</p>
-<p>Build documentation by running <code>gen_docs.sh</code> or with</p>
-<pre class="prettyprint source"><code>jsdoc -r ./js -R README.md -d ./docs
-</code></pre></article>
-    </section>
-
-
-
-
-
 
 
 
@@ -65,7 +28,10 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
 
 <header>
     
-        <h2>noise.js</h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="Fresco.html">Fresco</a>.</span>Force<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">Generic class for a force, enforcing the API</div>
         
     
 </header>
@@ -74,10 +40,89 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
     <div class="container-overview">
     
         
-            <div class="description">Contains utilities to generatestructured noise of various sorts</div>
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="Force"><span class="type-signature"></span>new Force<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
         
 
         
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>isDead</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">If true, the force will not beconsidered in the dynamic simulation anymore and will be destroyedat the end of the next simulation step. Forces should not be manuallydeleted and this boolean should be used instead.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
 
 
 <dl class="details">
@@ -99,13 +144,6 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:niels.pichon@outlook.com">Niels Pichon</a></li>
-        </ul>
-    </dd>
-    
 
     
 
@@ -116,7 +154,7 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="noise.js.html">noise.js</a>, <a href="noise.js.html#line1">line 1</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line395">line 395</a>
     </li></ul></dd>
     
 
@@ -128,7 +166,24 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
 </dl>
 
 
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     </div>
 
@@ -147,37 +202,84 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
     
 
     
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>particles.js</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Everything needed to handle particle systems, from particle description and emitters to forces, collisionsand simulated time</div>
-        
+        <h3 class="subsection-title">Methods</h3>
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="applyForce"><span class="type-signature"></span>applyForce<span class="signature">(particle)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns the force applied to a given particle
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>particle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fresco.Particle.html">Fresco.Particle</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Particle to apply the force to</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
 
 
 <dl class="details">
@@ -199,13 +301,6 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:niels.pichon@outlook.com">Niels Pichon</a></li>
-        </ul>
-    </dd>
-    
 
     
 
@@ -216,7 +311,7 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line1">line 1</a>
+        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line412">line 412</a>
     </li></ul></dd>
     
 
@@ -228,32 +323,6 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
 </dl>
 
 
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -261,191 +330,18 @@ Full documentation can be found <a href="https://nielspichon.github.io/Cardioid"
 
 
 
-<section>
-
-<header>
-    
-        <h2>shape.js</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">This file contains classes and methods to betterhandle 2D shape and points based procedures.</div>
-        
-
-        
 
 
-<dl class="details">
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:niels.pichon@outlook.com">Niels Pichon</a></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
         
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>utils.js</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Various utility functions to makeprocedural art generation easier.</div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:niels.pichon@outlook.com">Niels Pichon</a></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
     
 
     

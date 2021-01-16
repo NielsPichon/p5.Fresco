@@ -44,7 +44,7 @@ function draw() {
   // if enough frames have lapsed since welast created
   // a particle,spawn a new one
   if ((frameCount - 1)  % timeOffset == 0 && particles.length < lineNum) {
-    let p = new Cardioid.Particle(createVector(offset + lineCount
+    let p = new Fresco.Particle(createVector(offset + lineCount
       * lineWidth, verticalPos));
     p.color = colors[lineCount % colors.length];
     p.colorOverLife = [p.color];

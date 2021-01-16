@@ -6,7 +6,7 @@ const num_samples = 5000;
 
 function setup() {
   createCanvas(200, 200);
-  s = new Cardioid.Square();
+  s = new Fresco.Square();
   s.scale.mult(2);
   pts = scatter(s, num_pts, contour = false);
   for (let i = 0; i < pts.length; i++) {

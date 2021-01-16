@@ -5,10 +5,10 @@
  */
 
 /**
- * Defines the namespace for all classes of the Cardioid.js library
+ * Defines the namespace for all classes of the p5.Fresco library
  * @namespace
  */
-var Cardioid = {};
+var Fresco = {};
 
 /**
  * Helper function to draw a line from 2 p5.vectors.
@@ -113,7 +113,7 @@ function drawCircle(center, radius) {
  * normalized and expressed in the shape referential
  * @param {p5.Vector} pt Point at which the normal was computed,
  * in the shape referential
- * @param {Cardioid.Shape} shape Shape to which the point belongs
+ * @param {Fresco.Shape} shape Shape to which the point belongs
  * @param {number} length Lenght we want to draw the normal at 
  */
 function drawNormal(normal, pt, shape, length = 10) {
@@ -132,7 +132,7 @@ function drawNormal(normal, pt, shape, length = 10) {
  * @class
  * @extends p5.Vector
  */
-Cardioid.Point = class extends p5.Vector{
+Fresco.Point = class extends p5.Vector{
   /**
    * @constructor
    * @param {p5.Vector} position Position of the point.
@@ -140,7 +140,7 @@ Cardioid.Point = class extends p5.Vector{
    * @property {Array.<number>} color=255,255,255,255 - Color of the point in RGBA, defined as an array of 4 values in the [0, 255] range.
    * @property {number} radius=1 - Radius of the point. Used as strokeWeight when drawing, as well as for relaxation.
    * @property {p5.Vector} scale=1,1 - Point scale, useful when instancing a shape with this point's transform.
-   * @property {Cardioid.Shape} [owner] - Shape to which this point belongs to.
+   * @property {Fresco.Shape} [owner] - Shape to which this point belongs to.
    */
   constructor(position) {
     super(position.x, position.y, position.z);
@@ -188,7 +188,7 @@ Cardioid.Point = class extends p5.Vector{
    * is considered the same as this one.
    * This ignores ownership so 2 points belonging to 2 different shapes will
    * still be detected as one and only
-   * @param {Cardioid.Point} pt Point to compare this one with
+   * @param {Fresco.Point} pt Point to compare this one with
    * @returns {boolean} True is the provided point is found to be the same as this one 
    */
   equals(pt) {
@@ -234,12 +234,12 @@ Cardioid.Point = class extends p5.Vector{
    * point possible ownership by a shape, we stayed away from
    * using JSON Serialization-Deserialization an manually copied
    * over properties instead.
-   * @returns {Cardioid.Point} Deepcopy of this point
+   * @returns {Fresco.Point} Deepcopy of this point
    */
   copy() {
     // ugly but avoids issues with cyclic references
     // when using JSON serialization
-    let nu_pt = new Cardioid.Point(this.position());
+    let nu_pt = new Fresco.Point(this.position());
     nu_pt.rotation = this.rotation;
     nu_pt.radius = this.radius;
     nu_pt.scale = this.scale.copy();
@@ -252,31 +252,31 @@ Cardioid.Point = class extends p5.Vector{
 
 // simple utility to create a point from coordinates
 /**
- * Utility function which creates a `Cardioid.Point`
+ * Utility function which creates a `Fresco.Point`
  * from x, y, and z coordinates
  * @param {number} x X-coordinate of the new Point
  * @param {number} y Y-coordinate of the new Point
  * @param {number} [z] Z-coordinate of the new Point
  */
 function createPoint(x, y, z=null) {
-  return new Cardioid.Point(createVector(x, y, z));
+  return new Fresco.Point(createVector(x, y, z));
 }
 
 
 /**
  * Container for all point based 2D shapes.
  */
-Cardioid.Shape = class {
+Fresco.Shape = class {
   /**
    * @constructor
-   * @param {Array.<Cardioid.Point>} vertices Vertices of this shape.
-   * For this shape to behave properly, it is important to use  `Cardioid.Point` and not simple  `p5.Vector`.
+   * @param {Array.<Fresco.Point>} vertices Vertices of this shape.
+   * For this shape to behave properly, it is important to use  `Fresco.Point` and not simple  `p5.Vector`.
    * Note that for easier handling in functions,
    * the class has no understanding of closed shapes.
    * To make a closed shape, simply add a copy of the first point
    * back at the end
    * of the vertices list
-   * @property {Array.<Cardioid.Point>} vertices The shape's vertices
+   * @property {Array.<Fresco.Point>} vertices The shape's vertices
    * @property {p5.Vector} position=0,0 - Position of the shape
    * @property {number} rotation=0 - Rotation of the shape
    * @property {p5.Vector} scale=1,1 - Scale of the shape
@@ -416,7 +416,7 @@ Cardioid.Shape = class {
    * to land is controled by the  diffusivity.
    * Each point  will have a different `strokeWeight` which will be randomly
    * chosen within the user specified interval.
-   * @param {number} [numPoints] Number of points  to Cardioid.
+   * @param {number} [numPoints] Number of points  to Fresco.
    * @param {number} [diffusivity] How far form the original contour, in pixels, a point can land 
    * @param {number} [minWeight] Minimum random stroke weight with which a point  can be  drawn
    * @param {number} [maxWeight] Maximum random stroke weight with which a point  can be  drawn
@@ -519,8 +519,8 @@ Cardioid.Shape = class {
    * @param {p5.Vector} vtx The point to  apply the transform to.
    * @returns {p5.Vector} The transformed point. Note that because of the way the computation is done,
    * classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implement
-   * the `copy` method, and usual vector arithmetics (this is the case of `Cardioid.Point` and
-   * `Cardioid.Particle` for instance). In this case the return type will be  the same
+   * the `copy` method, and usual vector arithmetics (this is the case of `Fresco.Point` and
+   * `Fresco.Particle` for instance). In this case the return type will be  the same
    * as the input type.
    */
   applyTransform(vtx) {
@@ -604,7 +604,7 @@ Cardioid.Shape = class {
    * very last vertices of the shape are repeated. Otherwise the next vertex in  the shape
    * (that is reading the vertices array as a circular buffer) is returned. 
    * @param {number} idx Index of the vertex the  shape starts at.
-   * @returns {Array.<Cardioid.Point>} Reference to the edge control points  
+   * @returns {Array.<Fresco.Point>} Reference to the edge control points  
    */
   controlPoints(idx) {
     if (this.isPolygonal) {
@@ -740,7 +740,7 @@ Cardioid.Shape = class {
    * position does not really matter, such as random point scattering for instance. 
    * @param {boolean} world Whether the point position should be returned in the world or
    * shape referential
-   * @returns {Cardioid.Point} Point at specified percentage of the contour length
+   * @returns {Fresco.Point} Point at specified percentage of the contour length
    */
   edgeInterpolation(interp, edgeIdx, resolution = 100,
                      approx = false, world = true) {
@@ -1103,7 +1103,7 @@ Cardioid.Shape = class {
       append(nrm, nu_nrm.normalize());
     }
     
-    // Cardioid.Shapes may be numbered clockwise or anticlockwise.
+    // Fresco.Shapes may be numbered clockwise or anticlockwise.
     // if the shape is clockwise we reverse the normals
     if (this.isClockwise()) {
       for (let i = 0; i < nrm.length; i++) {
@@ -1136,7 +1136,7 @@ Cardioid.Shape = class {
    * Returns a "deep-copy" of the shape. This is done manually to avoid
    * cyclic dependencied issue with the vertices when using JSON
    * Serialization-Desrialization.
-   * @returns {Cardioid.Shape} Deep-copy of this shape, meaning the resulting shape 
+   * @returns {Fresco.Shape} Deep-copy of this shape, meaning the resulting shape 
    * can  me modified in any way
    * wanted without fear of interfering with this one. Even the  vertices are
    * deep-copied and can be altered at will.  
@@ -1147,7 +1147,7 @@ Cardioid.Shape = class {
     for (let i = 0; i < this.vertices.length; i++) {
       append(vertexCopy, this.vertices[i].copy());
     }
-    let nu_shape = new Cardioid.Shape(vertexCopy);
+    let nu_shape = new Fresco.Shape(vertexCopy);
     nu_shape.isPolygonal = this.isPolygonal;
     nu_shape.position = this.position.copy();
     nu_shape.rotation = this.rotation;
@@ -1170,7 +1170,7 @@ Cardioid.Shape = class {
  * (meaning they will keep  their scale , position and  rotation relative to one another). 
  * @class 
  */
-Cardioid.Geometry = class {
+Fresco.Geometry = class {
   /**
    * @constructor
    * @property {p5.Vector} scale=1,1 - Scale of the geometry collection
@@ -1315,9 +1315,9 @@ function deepcopy(obj) {
 /**
  * A class representing a line
  * @class
- * @extends Cardioid.Shape
+ * @extends Fresco.Shape
  */
-Cardioid.Line = class extends Cardioid.Shape {
+Fresco.Line = class extends Fresco.Shape {
   /**
    * @constructor
    * @param {Point} pt1 First extremity Point
@@ -1347,9 +1347,9 @@ Cardioid.Line = class extends Cardioid.Shape {
 /**
  * Class representing a sphere as a collection of splines
  * @class
- * @extends Cardioid.Shape
+ * @extends Fresco.Shape
  */
-Cardioid.Circle = class extends Cardioid.Shape {
+Fresco.Circle = class extends Fresco.Shape {
   /**
    * @constructor
    * @param {number} radius Radius  of the circle in pixels 
@@ -1387,7 +1387,7 @@ Cardioid.Circle = class extends Cardioid.Shape {
  * Class describing an Arc from a collection of splines.
  * By default the arc faces downwards and is centered on the vertical center line 
  */
-Cardioid.Arc = class extends Cardioid.Shape {
+Fresco.Arc = class extends Fresco.Shape {
   /**
    * @constructor
    * @param {number} angle Arc angle in radians
@@ -1415,9 +1415,9 @@ Cardioid.Arc = class extends Cardioid.Shape {
 
 /**
  * Rectangle shape, centered
- * @extends Cardioid.Shape
+ * @extends Fresco.Shape
  */
-Cardioid.Rect = class extends Cardioid.Shape {
+Fresco.Rect = class extends Fresco.Shape {
   /**
    * @contructor
    * @param {number} w Width in pixels
@@ -1440,9 +1440,9 @@ Cardioid.Rect = class extends Cardioid.Shape {
 
 /**
  * Centered Square
- * @extends Cardioid.Shape
+ * @extends Fresco.Shape
  */
-Cardioid.Square = class extends Cardioid.Rect {
+Fresco.Square = class extends Fresco.Rect {
   /**
    * @constructor
    * @param {number} size Side length in pixels
@@ -1455,9 +1455,9 @@ Cardioid.Square = class extends Cardioid.Rect {
 
 /**
  * Centered regular polygon (for example hexagon, octogon...)
- * @extends Cardioid.Circle
+ * @extends Fresco.Circle
  */
-Cardioid.Polygon = class extends Cardioid.Circle {
+Fresco.Polygon = class extends Fresco.Circle {
   /**
    * @constructor
    * @param {number} radius Radius of the  polygon 
@@ -1475,7 +1475,7 @@ Cardioid.Polygon = class extends Cardioid.Circle {
  * which is to say, in lemmans terms, how many time does the curve
  * turn around the point. 
  * @param {p5.Vector} pt Point of observation
- * @param {Array.<Cardioid.Point>} vertices Vertices describing the curve 
+ * @param {Array.<Fresco.Point>} vertices Vertices describing the curve 
  * @returns {number} The winding number
  */
 function windingNumber(pt, vertices) {
@@ -1499,11 +1499,11 @@ function windingNumber(pt, vertices) {
  * Returns the catmull rom centripetal spline equation (3rd order polynomial)
  * coefficients given 4 points position.
  * This is usefull as the vertexCurve in p5 uses Catmull-Rom with its alpha = 0.5.
- * @param {Cardioid.Point} p0 
- * @param {Cardioid.Point} p1 
- * @param {Cardioid.Point} p2 
- * @param {Cardioid.Point} p3
- * @returns {Array.<Cardioid.Point>} 2D coefficients of the 2D Catmull-Rom spline.
+ * @param {Fresco.Point} p0 
+ * @param {Fresco.Point} p1 
+ * @param {Fresco.Point} p2 
+ * @param {Fresco.Point} p3
+ * @returns {Array.<Fresco.Point>} 2D coefficients of the 2D Catmull-Rom spline.
  * This may very well work in 3D as well but is untested
  */
 function catmullRom(p0, p1, p2, p3) {
@@ -1843,7 +1843,7 @@ function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
  * That is, it counts how many times a ray starting from the point intersects
  * the contour. If it is odd, the point is inside.
  * @param {p5.Vector} vtx Point we want to check 
- * @param {Cardioid.Shape} shape Shape we check the point is in
+ * @param {Fresco.Shape} shape Shape we check the point is in
  * @param {boolean} [approx] If the shape is not polynomial, setting approx 
  * to true will run the test as if the shape was polygonal which is faster
  * but less accurate.
@@ -1934,7 +1934,7 @@ function isInside(vtx, shape, approx = true) {
  * some extend, even though each point is spread on the original contour.
  * Note: Equidistaqnce on the contour may not imply equidistance in space.
  * Thus some shape distortion may appear, especially for polygonal shapes.
- * @param {Cardioid.Shape} shape The shape to resample
+ * @param {Fresco.Shape} shape The shape to resample
  * @param {number} [numPoints] Number of points to spread along the shape.
  * If the number is 0 or less, this will simply re-spread the existing
  * amount of vertices in the shape
@@ -1946,7 +1946,7 @@ function isInside(vtx, shape, approx = true) {
  * @param {boolean} [splineResample] To avoid distortion appearing in polygonal shapes,
  * it is a good idea to first convert it to a spline based shape.
  * It will indeed be a bit slower, but it is recommended to always leave it on.
- * @returns {Cardioid.Shape} The resampled shape.
+ * @returns {Fresco.Shape} The resampled shape.
  */
 function resample(shape, numPoints = 0, offset=true, approx=false,
                    splineResample = true) {
@@ -2039,12 +2039,12 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
 
 /**
  * Subdivides each edge of a mesh in equal sub edges.
- * @param {Cardioid.Shape} shape The Shape to subdivide 
+ * @param {Fresco.Shape} shape The Shape to subdivide 
  * @param {number} numDivision Number of subdivisions to
  * apply to each edge
  * @param {boolean} [approx] If the shape is non polygonal, this
  * will use the approximated version of the edge interpolation.
- * @returns {Cardioid.Shape} The subdivided shape
+ * @returns {Fresco.Shape} The subdivided shape
  */
 function divide(shape, numDivision, approx=false) {
   let nu_shape = shape.copy();
@@ -2095,7 +2095,7 @@ function divide(shape, numDivision, approx=false) {
 // randomly scatters points over a shape's contour or inner region
 /**
  * Randomly scatters points over a shape's contour or inner region
- * @param {Cardioid.Shape} shape The shape to scatter points over
+ * @param {Fresco.Shape} shape The shape to scatter points over
  * @param {number} numPoints Number of points to scatter
  * @param {boolean} [contour] If true, points will be scatter on the 
  * contour, else they will be scattered inside the shape. The shape 
@@ -2109,7 +2109,7 @@ function divide(shape, numDivision, approx=false) {
  * high number of attempts may be needed before a single point actually
  * lands in the shape. To avoid ending in a nearly infinite loop, we set a
  * maximum safety number of tries before aborting.
- * @returns {Array.<Cardioid.Point>} The scattered points.
+ * @returns {Array.<Fresco.Point>} The scattered points.
  */
 function scatter(shape, numPoints = 100,
   contour = true, approx = true, safety = 10000) {
@@ -2172,7 +2172,7 @@ function scatter(shape, numPoints = 100,
 
   let pts = [];
   for (let i = 0; i < vtx.length; i++) {
-    append(pts, new Cardioid.Point(vtx[i]));
+    append(pts, new Fresco.Point(vtx[i]));
   }
 
   return pts;
@@ -2194,7 +2194,7 @@ function scatter(shape, numPoints = 100,
  * @param {Array.<p5.Vector>} points Points to relax.
  * @param {number} [iterations] Number of relaxation iterations to perform.
  * @param {number} [totSamples] Number of samples to use for the Monte Carlo estimation.
- * @param {Cardioid.Shape} [shape] Shape the points may belong to.
+ * @param {Fresco.Shape} [shape] Shape the points may belong to.
  * @param {number} [minX] Bounds to constrain the relaxed points to.
  * @param {number} [minY] Bounds to constrain the relaxed points to.
  * @param {number} [maxX] Bounds to constrain the relaxed points to.
@@ -2320,9 +2320,9 @@ function relax(points,
  * The new shape will inheritate the points color,
  * it's shape will be that of the original shape times the that of the point,
  * and it's velocity will be a composition of the velocity of the points,
- * @param {Cardioid.Shape} shape Shape to copy
- * @param {Array.<Cardioid.Point>} points Points to copy the shape to.
- * @returns {Array<Cardioid.Shape>} The shape copies.
+ * @param {Fresco.Shape} shape Shape to copy
+ * @param {Array.<Fresco.Point>} points Points to copy the shape to.
+ * @returns {Array<Fresco.Shape>} The shape copies.
  */
 // and the shape owning the points
 function copyToPoints(shape, points) {
@@ -2362,8 +2362,8 @@ function copyToPoints(shape, points) {
 /**
  * Computes a shape which vertices is the interpolation between 2 shapes with
  * the same number of vertices.
- * @param {Cardioid.Shape} A Shape A
- * @param {Cardioid.Shape} B Shape B
+ * @param {Fresco.Shape} A Shape A
+ * @param {Fresco.Shape} B Shape B
  * @param {number} interp Interpolent
  * @param {boolean} [keepA] Whether to keep the properties of A
  * (isPolygonal, color, ...) or those of B
@@ -2372,7 +2372,7 @@ function copyToPoints(shape, points) {
  * the average distance between point pairs between shapes.
  * @param {number} [matchDir] Matching direction between the 2 shapes. `1` means vertex
  * `i` in shape A matches vertex `i + pointMatch` in shape B, `-1` means it matches vertex `-i - pointMatch`.
- * @returns {Cardioid.Shape} The interpolated shape.
+ * @returns {Fresco.Shape} The interpolated shape.
  */
 function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1) {
   if (A.vertices.length != B.vertices.length) {
@@ -2442,8 +2442,8 @@ function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1)
  * Computes the offset between 2 sets of points to minimize
  * average pair-wise distance
  * WARNING: Currently Non-functional
- * @param {Cardioid.Shape} A Shape A 
- * @param {Cardioid.Shape} B Shape B 
+ * @param {Fresco.Shape} A Shape A 
+ * @param {Fresco.Shape} B Shape B 
  * @returns {number} Offset between the 2 points vertices
  * @returns {number} Matching direction
  */
@@ -2603,9 +2603,9 @@ function distort(point, func, amplitude, step) {
  * The resulting shape is closed no matter what.
  * If A and B don't intersect this operation will fail and return A.
  * NOT YET IMPLEMENTED
- * @param {Cardioid.Shape} A 
- * @param {Cardioid.Shape} B 
- * @returns {Cardioid.Shape} Shape resulting fron the union.
+ * @param {Fresco.Shape} A 
+ * @param {Fresco.Shape} B 
+ * @returns {Fresco.Shape} Shape resulting fron the union.
  */
 function sUnion(A, B) {
 
@@ -2618,9 +2618,9 @@ function sUnion(A, B) {
  * considered as connected to the first.
  * The resulting shape is closed no matter what.
  * NOT YET IMPLEMENTED
- * @param {Cardioid.Shape} A 
- * @param {Cardioid.Shape} B 
- * @returns {Cardioid.Shape} Shape resulting fron the intersection.
+ * @param {Fresco.Shape} A 
+ * @param {Fresco.Shape} B 
+ * @returns {Fresco.Shape} Shape resulting fron the intersection.
  */
 function sIntersection(A, B) {
 
@@ -2633,9 +2633,9 @@ function sIntersection(A, B) {
  * considered as connected to the first.
  * The resulting shape is closed no matter what.
  * NOT YET IMPLEMENTED
- * @param {Cardioid.Shape} A 
- * @param {Cardioid.Shape} B 
- * @returns {Cardioid.Shape} Shape resulting fron the subtraction.
+ * @param {Fresco.Shape} A 
+ * @param {Fresco.Shape} B 
+ * @returns {Fresco.Shape} Shape resulting fron the subtraction.
  */
 function sSubtract(A, B) {
 

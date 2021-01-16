@@ -5,7 +5,7 @@ let nrm2;
 
 function setup() {
   createCanvas(400, 400);
-  s = new Cardioid.Polygon(50, 8);
+  s = new Fresco.Polygon(50, 8);
   s2 = s.copy();
   s2.scale.mult(createVector(1.2, 2));
   s2.position.add(50, 50);
