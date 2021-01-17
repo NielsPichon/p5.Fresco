@@ -5,9 +5,16 @@
  */
 
 /**
- * Overide of the p5 keyPressed fucntion which handles pausing with
- * the p and space keys, and saving the current frame to png
- * with the s key. Pressing the right arrow key will draw one frame.
+ * <a href="https://github.com/spite/ccapture.js">CCapture</a> object which allows for recording animations 
+ */
+let recorder;
+
+/**
+ * Overide of the p5 keyPressed function which handles various  key presses.
+ * * Pausing with the p and space keys
+ * * Saving the current frame to png with the s key
+ * * Right arrow key will draw one frame.
+ * * Display/hide the noise seed with n
  */
 function keyPressed() {
     // pause/unpause
@@ -25,14 +32,84 @@ function keyPressed() {
       saveCanvas('canvas', 'png');
     }
 
+    // Draw one frame
     if (key == 'ArrowRight') {
       redraw();
+    }
+
+    // Stop recording and save it
+    if (key == 'F1') {
+      stopRecording();
+    }
+
+    // n like noise to display the  
+    if (key == 'n') {
+      showSeed();
     }
 }
 
 
-// 
-// Alpha can be specified independantly if required
+/**
+ * Displays the random number generator seed in a
+ * pannel, or hides it if already displayed  
+ */
+function showSeed() {
+  let seedDisplay = document.getElementById('seed')
+  if (seedDisplay){
+    seedDisplay.remove();
+  }
+  else {
+    seedDisplay =  document.createElement('div');
+    seedDisplay.innerText = "meh";
+    seedDisplay.id = "seed";
+    seedDisplay.style = "position:absolute;top:10;left" +
+      ":10;padding:5px 10px;background-color:green;color:#fff;";
+    document.body.append(seedDisplay);
+  }
+}
+
+/**
+ * Creates a recorder and sets up auto recording. To stop the recording, use `stopRecording`
+ * This uses <a href="https://github.com/spite/ccapture.js">CCapture</a> under the hood.
+ * @param {number} [fps] Frame rate of the recorded animation.
+ * This will also set the draw call frequency for better pre-viz. 
+ */
+function recordAnimation(fps=60) {
+  // create a recorder
+  recorder = new CCapture({ format: 'png', framerate: fps});
+
+  // set draw framerate to capture framerate
+  frameRate(fps);
+
+  // Override the draw function to add frame recording to it
+  let drawCopy = draw;
+  let drawAndRecord = function () {
+    if (frameCount == 1) {
+      // start the recording
+      recorder.start(); 
+    }
+    drawCopy();
+    recorder.capture(document.getElementById('defaultCanvas0'));
+  }
+  draw = drawAndRecord;
+
+
+}
+
+/**
+ * Stops the recording and saves it
+ */
+function stopRecording() {
+  if (recorder) {
+    recorder.stop();
+    recorder.save();
+  }
+  else {
+    throw "No recorder was created"
+  }
+}
+
+
 /**
  * Utility to convert a color hex code string to RGBA
  * @param {string} hex Hex code 
