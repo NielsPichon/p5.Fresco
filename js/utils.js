@@ -72,11 +72,21 @@ function showSeed() {
  * Creates a recorder and sets up auto recording. To stop the recording, use `stopRecording`
  * This uses <a href="https://github.com/spite/ccapture.js">CCapture</a> under the hood.
  * @param {number} [fps] Frame rate of the recorded animation.
+ * @param {boolean} [video] Whether to export individual frames of the video or directly a video file
  * This will also set the draw call frequency for better pre-viz. 
  */
-function recordAnimation(fps=60) {
+function recordAnimation(fps=60, video=false) {
   // create a recorder
-  recorder = new CCapture({ format: 'png', framerate: fps});
+  if (video) {
+    recorder = new CCapture({
+      format: 'ffmpegserver',
+      framerate: fps,
+      extension: ".mp4",
+      codec: "mpeg4"});
+  }
+  else {
+    recorder = new CCapture({ format: 'png', framerate: fps});
+  }
 
   // set draw framerate to capture framerate
   frameRate(fps);
