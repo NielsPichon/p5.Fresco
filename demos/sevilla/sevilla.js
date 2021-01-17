@@ -9,12 +9,20 @@ const backgroundClr = '000';
 const minRadius = 10;
 const fadeWidth = 200;
 
+const margins = 110;
+
+const render = true;
+
 let r = minRadius;
 let circleCount = 0;
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(1220, 1220);
   background(colorFromHex(backgroundClr));
+
+  if (render) {
+    recordAnimation();
+  }
 }
 
 function draw() {
@@ -55,9 +63,12 @@ function draw() {
     circleCount = 0;
   }
 
+  border(margins, [0, 0, 0, 255]);
+
   // stop if circles exit canvas
   if (r * r > width * width / 4 + height * height / 4) {
     noLoop();
+    stopRecording();
   }
 
 }
