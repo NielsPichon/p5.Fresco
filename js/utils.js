@@ -88,11 +88,19 @@ function recordAnimation(fps=60) {
       // start the recording
       recorder.start(); 
     }
+    document.getElementById('rec').innerText = "Recording... " + (frameCount / fps).toFixed(1) + "s"; 
     drawCopy();
     recorder.capture(document.getElementById('defaultCanvas0'));
   }
   draw = drawAndRecord;
 
+  // Add record overlay
+  let recDisplay =  document.createElement('div');
+  recDisplay.innerText = "Recording...";
+  recDisplay.id = "rec";
+  recDisplay.style = "position:absolute;top:10;left" +
+    ":10;padding:5px 10px;background-color:green;color:#fff;";
+  document.body.append(recDisplay);
 
 }
 
@@ -103,6 +111,7 @@ function stopRecording() {
   if (recorder) {
     recorder.stop();
     recorder.save();
+    document.getElementById('rec').remove();
   }
   else {
     throw "No recorder was created"
