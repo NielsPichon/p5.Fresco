@@ -73,11 +73,13 @@ function showSeed() {
  * This uses <a href="https://github.com/spite/ccapture.js">CCapture</a> under the hood.
  * @param {number} [fps] Frame rate of the recorded animation.
  * @param {boolean} [video] Whether to export individual frames of the video or directly a video file
- * This will also set the draw call frequency for better pre-viz. 
+ * This will also set the draw call frequency for better pre-viz.
+ * WARNING! Video export is not yet implemented.
  */
 function recordAnimation(fps=60, video=false) {
   // create a recorder
   if (video) {
+    throw "not yet implemented"
     recorder = new CCapture({
       format: 'ffmpegserver',
       framerate: fps,

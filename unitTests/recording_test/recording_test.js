@@ -5,7 +5,7 @@ function setup() {
 
   s = new Fresco.Circle(200);
 
-  recordAnimation(60, true);
+  recordAnimation();
 }
 
 function draw() {
