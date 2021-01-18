@@ -1320,8 +1320,8 @@ function deepcopy(obj) {
 Fresco.Line = class extends Fresco.Shape {
   /**
    * @constructor
-   * @param {Point} pt1 First extremity Point
-   * @param {Point} pt2 Second extremity Point
+   * @param {p5.Vector} pt1 First extremity Point
+   * @param {p5.Vector} pt2 Second extremity Point
    * @param {number} resolution number of points subdividing the 
    * line (min 2, the extremities).
    */

@@ -1,19 +1,12 @@
-// Input sketch parameters here
-const dt = 1; // time step between 2 simulation steps
-//
-
+const backgroundClr = '000';
 
 function setup() {
   createCanvas(1000, 1000);
+  background(colorFromHex(backgroundClr));
+  setSeed();
 }
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(0);
-  step(dt);
-}
-
-// function called to move one step in the simulation
-function step(dt = 1) {
 }
