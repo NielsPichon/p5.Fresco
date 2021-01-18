@@ -1,19 +1,22 @@
 const numRings = 100;
-const numSegments = 12; // resolution of the meshes
+const numSegments = 24; // resolution of the meshes
 const radiusIncrement = 2; // distance between successive rings in pixels
-const backgroundClr = 30;
-const rotationSpeed = 0.05;
+const backgroundClr ='FECE2F';
+const rotationSpeed = 0.01;
 const colorOscillationSpeed = 0.01;
 const distortShape = true; // should the shape be distorted
-const noiseFreq = 0.01;
-const distortionAmount = 0.5; // as a proportion of the ring's radius
+const noiseFreq = 0.005;
+const distortionAmount = 4; // as a proportion of the ring's radius
 const minAlpha = 20;
+const ringsColor = '1A1A1A';
+const lineWeight = 1.5;
 
 let rings = [];
 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(1440, 1440);
+  setSeed();
 
   let k;
   let n;
@@ -39,19 +42,15 @@ function setup() {
 }
 
 function draw() {
-  background(backgroundClr);
-  
-  // compute color based on the frameCount to evolve it over time
-  let r = map(sin(colorOscillationSpeed * frameCount / 2), -1, 1, 100, 200);
-  let g = map(sin(colorOscillationSpeed * frameCount), -1, 1, 100, 200);
-  let b = map(cos(colorOscillationSpeed * frameCount), -1, 1, 200, 100);
+  background(colorFromHex(backgroundClr));
 
   // for each successive ring, increase the rotation, based on the current frame
   // then draw the ring
   for (let i = 0; i < numRings; i++) {  
     let a = map(i, 0, numRings, minAlpha, 255);
 
-    rings[i].color = [r, g, b, a];
+    rings[i].color = colorFromHex(ringsColor);
+    rings[i].strokeWeight = lineWeight;
     rings[i].rotation = radians(frameCount * rotationSpeed * i);
     rings[i].draw();
   }
