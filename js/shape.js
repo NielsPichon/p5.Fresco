@@ -962,11 +962,11 @@ Fresco.Shape = class {
           p2 = a.copy().mult(t01 * t01 * t01).add(b.copy().mult(
             t01 * t01)).add(c.copy().mult(t01)).add(d);
 
-          // move the bounds such that we restrict the sdrawLine to the closest half
-          if(distSq(pt, p1) <= distSq(pt, p2)) {
+          // move the bounds such that we restrict the splineine to the closest half
+          if(distSquared(pt, p1) <= distSquared(pt, p2)) {
             t1 = (t1 + t0) * 0.5;
             // if the closest half is already at less than epsilon, return
-            if (distSq(pt, p1) <= epsilon) {
+            if (distSquared(pt, p1) <= epsilon) {
               let tangent = a.mult(3 * t00 * t00).add(
                 b.mult(2 * t00)).add(c).normalize();
               // return the orthogonal to the tangent, with the orientation chosen based
@@ -982,7 +982,7 @@ Fresco.Shape = class {
           else {
             t0 = (t1 + t0) * 0.5;
             // if the closest half is already at less than epsilon, return
-            if (distSq(pt, p2) <= epsilon) {
+            if (distSquared(pt, p2) <= epsilon) {
               let tangent = a.mult(3 * t01 * t01).add(
                 b.mult(2 * t01)).add(c).normalize();
               // return the orthogonal to the tangent, with the orientation chosen based
@@ -2046,7 +2046,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
  * will use the approximated version of the edge interpolation.
  * @returns {Fresco.Shape} The subdivided shape
  */
-function divide(shape, numDivision, approx=false) {
+function subdivide(shape, numDivision, approx=false) {
   let nu_shape = shape.copy();
   let nu_vtx = [];
   let vtx;
@@ -2374,7 +2374,7 @@ function copyToPoints(shape, points) {
  * `i` in shape A matches vertex `i + pointMatch` in shape B, `-1` means it matches vertex `-i - pointMatch`.
  * @returns {Fresco.Shape} The interpolated shape.
  */
-function sInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1) {
+function shapeInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir = 1) {
   if (A.vertices.length != B.vertices.length) {
     throw "sInterpolate can only interpolate between 2 shapes with the same number of vertices. Consider using resample first";
   }

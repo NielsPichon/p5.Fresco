@@ -28,6 +28,6 @@ function draw() {
 
 
 function mouseClicked() {
-  s = divide(s, 1);
-  s2 = divide(s2, 1, approx=approx);
+  s = subdivide(s, 1);
+  s2 = subdivide(s2, 1, approx=approx);
 }

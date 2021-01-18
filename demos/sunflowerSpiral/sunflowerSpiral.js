@@ -37,7 +37,7 @@ function setup() {
   s.isPolygonal = true;
   
   if (distortSquare) {
-    s = divide(s, 4);
+    s = subdivide(s, 4);
     for (let  i = 0; i < s.vertices.length; i++) {
       let theta = normalizedPerlin(noiseFreq * (s.vertices[i].x + height / 2), noiseFreq * (s.vertices[i].y + height / 2)) * 10 * PI;
       s.vertices[i].add(p5.Vector.fromAngle(theta).mult(distortionAmount));
