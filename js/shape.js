@@ -2209,7 +2209,7 @@ function scatter(shape, numPoints = 100,
  */
 function relax(points, 
                 iterations = 1, totSamples = 1000,
-                shape = [],
+                shape = null,
                 minX = -width/2, minY = -height / 2,
                 maxX = width / 2, maxY = height / 2) {
   // we find the max radius
@@ -2281,6 +2281,8 @@ function relax(points,
       for (k = 0; k < points.length; k++) {
         pt = points[k].position();
         if (shape) {
+          print(shape);
+          print(points[k]);
           pt = shape.applyTransform(points[k]).position();
         }
         dist = pt.sub(p).mag()
