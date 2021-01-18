@@ -281,6 +281,29 @@ function colorInterp (t, colors) {
 }
 
 
+/**
+ * Draws a gradient on the background
+ * @param {Array.Array<number>} colors Colors of the gradient 
+ * @param {boolean} [vertical] Whether the gradient is vertical or horizontal
+ */
+function backgroundGradient(colors, vertical=true) {
+  strokeWeight(1);
+  if (vertical) {
+    for (let y = 0; y < height; y++) {
+      stroke(colorInterp(y / height, [colorFromHex(topBackgroundClr),
+        colorFromHex(botBackgroundClr)]));
+      line(0, y, width, y);
+    }
+  }
+  else {
+    for (let x = 0; x < width; x++) {
+      stroke(colorInterp(x / width, colors));
+      line(x, 0, x, height);
+    }
+  }
+}
+
+
 // a function that adds a border of the specified color around the canvas
 /**
  * Draws some borders on top of the current canvas.

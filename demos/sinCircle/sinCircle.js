@@ -1,20 +1,34 @@
-const backgroundClr = '000'; // color of the background
-const lineResolution = 1000; // number of points on a line
+// appearance
+const topBackgroundClr = '4BE1EC'; // color of the background
+const botBackgroundClr = '737DFE'; // color of the background
+const lineThickness = 2; // line thickness
+const lineColor = 'fff';
+const lineOpacity = 200;
+
+// line parameters
+const lineResolution = 2000; // number of points on a line
 const numLines = 100; //number of lines to draw
-const circleRadius = 0.8; // radius of the circle as a
-                          // percentage of the width
 const minSinPeriod = 3; // min number of periods in the window width
 const maxSinPeriod = 20; // max number of periods in the window width
-const sinAmplitude = 30; // amplitude of the sine wave
+const sinAmplitude = 0.02; // amplitude of the sine wave in percentage of height
 const margin = 0.1; // margin in percentage of canvas width
-const shape = 'triangle'; // shape to draw sine waves inside
-                          // of, either 'circle' or 'triangle'
+
+// Shape parameters
+const circleRadius = 0.5; // radius of the circle (or height of the triangle) as a
+                          // percentage of the width
+const shape = 'boat'; // shape to draw sine waves inside
+                          // of, either 'circle' or 'triangle' or 'boat'
+const sailOffest = 0.5; // How to offset the sail by vertically
+const smallSailOffest = 0.1; // How to offset the sail by vertically
+const sailLateralOffset = 0.05; //distance between sails
+const boatBottomRatio = 0.3; // waterLine for the boat
 
 let s; // line shape
 let yOffset;; // offset bewteen lines in pixels
 let radius; // radius of the circle in pixels
 let minFreq; // min sine wave frequency in pixels
 let maxFreq; // max sine wave frequency in pixels
+let amplitude; // amplitude of the sine wave in pixels
 
 let minYL;  // height of bottom left vertex
 let minYR;  // height of bottom right vertex
@@ -22,8 +36,8 @@ let maxYL;  // height of top left vertex
 let maxYR;  // height of top right vertex
 
 function setup() {
-  createCanvas(1050, 1485);
-  background(colorFromHex(backgroundClr));
+  createCanvas(2100, 2970);
+  // background(colorFromHex(backgroundClr));
   setSeed();
 
   // Create the line with specified resolution
@@ -33,6 +47,8 @@ function setup() {
     createVector(width * (0.5 - margin), 0), lineResolution
   );
   s.isPolygonal = true;
+  s.strokeWeight = lineThickness;
+  s.color = colorFromHex(lineColor, lineOpacity);
 
   // set initial line height
   s.position.y = height * (0.5 - margin);
@@ -47,11 +63,18 @@ function setup() {
   minFreq = 1 / width * maxSinPeriod;
   maxFreq = 1 / width * minSinPeriod;
 
+  // compute amplitude in pixels
+  amplitude = sinAmplitude * height;
+
   // init drawing bounds
   maxYL = - height / 2;
   minYL = height / 2;
   maxYR = - height / 2;
   minYR = height / 2;
+
+
+  backgroundGradient([colorFromHex(topBackgroundClr),
+      colorFromHex(botBackgroundClr)]);
 }
 
 // draw function which is automatically 
@@ -93,7 +116,7 @@ function draw() {
       // if vertex within the inner circle, align
       // it to sine wave
       if (!isInShape(createPoint(s.vertices[i].x, s.position.y), radius)) {
-        s.vertices[i].y = sinAmplitude * Math.sin(
+        s.vertices[i].y = amplitude * Math.sin(
           s.vertices[i].x * freq + phase);
       }
       else {
@@ -132,11 +155,13 @@ function draw() {
  * @param {number} dim Main dimension of the shape
  */
 function isInShape(point, dim) {
-  if (shape == 'circle') {
-    return isInCircle(point, dim);
-  }
-  else {
-    return isInTriangle(point, dim);
+  switch (shape) {
+    case 'circle':
+      return isInCircle(point, dim);
+    case 'triangle':
+      return isInTriangle(point, dim);
+    case 'boat':
+      return isInBoat(point, radius)
   }
 }
 
@@ -151,12 +176,40 @@ function isInCircle(point, radius) {
 
 
 /**
+ * Checks whether a point is inside a boat of specified radius centered on 0,0
+ * @param {p5.Vector} point point to check
+ * @param {number} radius radius of the triangle
+ */
+function isInBoat(point, radius) {
+  // check if in circle
+  if (point.magSq() < radius * radius)
+  {
+    // water line
+    if (point.y < -radius * (1 - boatBottomRatio)) {
+      return false;
+    }
+    // bottom half
+    if (point.y < 0) {
+      return true;
+    }
+    // sails
+    return isInTriangle(point.copy().add(createVector(
+      -sailLateralOffset * radius, -radius * sailOffest)), radius, true) ||
+      isInTriangle(point.copy().add(createVector(
+        sailLateralOffset * radius, -radius * smallSailOffest)).mult(createVector(-1, 1)), radius, true);
+  }
+  return false;
+}
+
+
+/**
  * Checks whther a point is inside an equilateral triangle
  * of specified height, centered on 0, 0
  * @param {p5.Vector} point point to check
  * @param {number} triHeight height of the triangle
+ * @param {boolean} halfSale Whether to only draw half the sail
  */
-function isInTriangle(point, triHeight) {
+function isInTriangle(point, triHeight, halfSail = false) {
   if (abs(point.y) > triHeight * 0.5) {
     return false;
   }
@@ -167,5 +220,10 @@ function isInTriangle(point, triHeight) {
   // of the triangle at the point height
   let x = (triHeight * 0.5 - point.y) / triHeight * (base * 0.5);
   
-  return (Math.abs(point.x) < x)
+  if (!halfSail) {
+    return (Math.abs(point.x) < x)
+  }
+  else {
+    return (point.x > 0 && point.x < x);
+  }
 }
