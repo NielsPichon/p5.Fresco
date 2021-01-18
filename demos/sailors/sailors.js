@@ -36,7 +36,7 @@ let maxYL;  // height of top left vertex
 let maxYR;  // height of top right vertex
 
 function setup() {
-  createCanvas(2100, 2970);
+  createCanvas(2000, 2500);
   // background(colorFromHex(backgroundClr));
   setSeed();
 
