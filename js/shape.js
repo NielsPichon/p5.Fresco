@@ -158,11 +158,11 @@ Fresco.Point = class extends p5.Vector{
   draw() {
     stroke(this.color);
     strokeWeight(this.radius);
-    if (owner) {
-      drawPoint(owner.applyTransform(this.position));
+    if (this.owner) {
+      drawPoint(this.owner.applyTransform(this.position()));
     }
     else {
-      drawPoint(this.position);
+      drawPoint(this.position());
     }
   }
 
@@ -1376,8 +1376,10 @@ Fresco.Circle = class extends Fresco.Shape {
       append(this.vertices,
         createPoint(this.radius * cos(angle), this.radius * sin(angle)));
       angle += angleIncr;
+      this.vertices[i].owner = this;
     }
     append(this.vertices, createPoint(this.radius, 0));
+    this.vertices[this.vertices.length - 1].owner = this;
     this.updateLengths = true;
     this.updateBounds = true;
   }
@@ -1405,9 +1407,11 @@ Fresco.Arc = class extends Fresco.Shape {
       append(this.vertices,
         createPoint(radius * cos(theta), radius * sin(theta)));
       theta += angleIncr;
+      this.vertices[i].owner = this;
     }
     if (close) {
       this.vertices.push(this.vertices[0]);
+      this.vertices[this.vertices.length - 1].owner = this;
     }
   }
 }
@@ -2002,9 +2006,8 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     t /= shape.edgeLengths[j];
     t = 1 - t;
     
-    pt = createPoint(
-      shape.edgeInterpolation(t, j, 100,
-                     approx, false));
+    pt = shape.edgeInterpolation(t, j, 100,
+      approx, false);
     
     pt.rotation = shape.vertices[j].rotation * (1 - t) +
       shape.vertices[j + 1].rotation * t;
@@ -2029,6 +2032,9 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
 
   let nu_shape = shape.copy();
   nu_shape.vertices = vtx
+  for (let i = 0; i < nu_shape.vertices.length; i++) {
+    nu_shape.vertices[i].owner = nu_shape;
+  }
   nu_shape.updateLengths = true;
   nu_shape.updateBounds = true;
   nu_shape.isPolygonal = isPolygonal;

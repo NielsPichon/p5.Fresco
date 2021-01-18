@@ -10,6 +10,7 @@ function setup() {
   s = new Fresco.Polygon(50, 5);
   for (let i = 0; i < s.vertices.length; i++) {
     s.vertices[i].color = [255, 0, 0, 255];
+    s.vertices[i].radius = 5;
   }
   
   s2 = s.copy();
@@ -19,7 +20,6 @@ function setup() {
   s.position.add(50, 50);
   
   s0 = s.copy();
-  
   
   vtx = [createPoint(10 , 0)];
   append(vtx, createPoint(-10 , 30));
@@ -33,12 +33,12 @@ function setup() {
   
   for (let i = 0; i < s3.vertices.length; i++) {
     s3.vertices[i].color = [255, 0, 0, 255];
+    s3.vertices[i].radius = 3;
   }
 }
 
 function draw() {
   background(0);
-  strokeWeight(1);
   s0.draw();
   
   s.draw();
