@@ -21,11 +21,11 @@ function draw() {
   background(0);
   s.draw();
   s2.draw();
-  let s3 = sInterpolate(s, s2, (t / 100) * (t / 100), false);
+  let s3 = shapeInterpolate(s, s2, (t / 100) * (t / 100), false);
   s3.color = [0, 255, 0, 255];
   s3.draw();
   
-  let s4 = sInterpolate(s, s2, 1 - (t / 100) * (t / 100), true);
+  let s4 = shapeInterpolate(s, s2, 1 - (t / 100) * (t / 100), true);
   s4.color = [0, 0, 255, 255];
   s4.draw();
 }

@@ -305,7 +305,7 @@ function border(thickness, color) {
  * @param {p5.Vector} pt2 point 2
  * @returns {number} Distance squared between the 2 points 
  */
-function distSq(pt1, pt2) {
+function distSquared(pt1, pt2) {
   const dx = pt1.x - pt2.x;
   const dy = pt1.y - pt2.y;
   return dx * dx + dy * dy;
