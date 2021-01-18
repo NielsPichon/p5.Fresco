@@ -10,6 +10,11 @@
 let recorder;
 
 /**
+ * The random seed used in the sketch
+ */
+let seed;
+
+/**
  * Overide of the p5 keyPressed function which handles various  key presses.
  * * Pausing with the p and space keys
  * * Saving the current frame to png with the s key
@@ -60,12 +65,46 @@ function showSeed() {
   }
   else {
     seedDisplay =  document.createElement('div');
-    seedDisplay.innerText = "meh";
+    if (!seed) {
+      seedDisplay.innerText = "undifined seed";
+      console.log("Seed was not set. Consider calling `setSeeds()`")
+    }
+    else {
+      seedDisplay.innerText = "Seed: " + seed.toFixed();
+
+    }
+    
     seedDisplay.id = "seed";
     seedDisplay.style = "position:absolute;top:10;left" +
       ":10;padding:5px 10px;background-color:green;color:#fff;";
     document.body.append(seedDisplay);
   }
+}
+
+
+/**
+ * Sets the seed for the random number generator and noise generator.
+ * 
+ * NOTE: It seems that under the hood p5 uses the native js random
+ * number genrator if no seed is set. This generator does not allow
+ * to set a seed but is somewhat faster.
+ * @param {number} [newSeed] If specified, this will set the seed for 
+ * both the random number generator and the noise generator. Otherwise
+ * it will use a random seed. 
+ */
+function setSeed(newSeed=null) {
+  // set the seed or generate a random new one
+  if (newSeed) {
+    seed = newSeed;
+  }
+  else {
+    // set random seed in [0, 1e4]
+    seed = Math.floor(Math.random() * 1e4);
+  }
+
+  // Set the seeds
+  randomSeed(seed);
+  noiseSeed(seed);
 }
 
 /**
