@@ -1843,6 +1843,34 @@ function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
 
 
 /**
+ * Check if a segment intersects a spline edge. For each intersection with the spline,
+ * this function will return true if the intersection is whitin the bounds of the edge,
+ * as well as the interpolent for the ray and the spline
+ * 
+ * @param {p5.Vector} lineP0 First end of a segment
+ * @param {p5.Vector} lineP1 Second end of a segment
+ * @param {p5.Vector} p0 control point of spline 
+ * @param {p5.Vector} p1 control point of spline
+ * @param {p5.Vector} p2 control point of spline
+ * @param {p5.Vector} p3 control point of spline
+ */
+function segmentSplineIntersection(lineP0, lineP1, p0, p1, p2, p3) {
+  let dir = lineP1.copy().sub(lineP0);
+
+  let t = lineSplineIntersection(lineP0, dir, p0, p1, p2, p3);
+
+  let t2 = [];
+  for (let i = 0; i< t.length; i++) {
+    if (t[i] <= 1) {
+      t2.push(lineP0.copy().add(dir.copy().mult(t[i])));
+    }
+  }
+
+  return t2;
+}
+
+
+/**
  * Checks whether a point is inside a givn shape. This uses the even-odd rule.
  * That is, it counts how many times a ray starting from the point intersects
  * the contour. If it is odd, the point is inside.

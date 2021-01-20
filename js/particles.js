@@ -23,18 +23,28 @@ const linear = true;
 const constant = false;
 
 
-/** reverserved variable which holds the particles in the simulation */
+/** reserved variable which holds the particles in the simulation */
 let particles = [];
-/** reverserved variable which holds the forces in the simulation */
+/** reserved variable which holds the forces in the simulation */
 let forces = [];
-/** reverserved variable which holds the colliders in the simulation */
+/** reserved variable which holds the colliders in the simulation */
 let colliders = [];
-/** reverserved variable which holds the emitters in the simulation */
+/** reserved variable which holds the emitters in the simulation */
 let emitters = [];
-
+/** reserved variable which holds the shape colliders in the simulation */
+let colliders = [];
 
 /** simulated time */
 let T = 0;
+
+
+/**
+ * Register a shape as a collider
+ * @param {Fresco.Shape} shape 
+ */
+function addColider(shape) {
+    colliders.push(shape);
+}
 
 
 /**
@@ -102,18 +112,6 @@ function rampInterpolation2D(t, time, values, linear = true) {
 
 
 /**
- * Checks whether a particle will collide with another particle
- * or a collider and resolves the collision accordingly.
- * WARNING: Not yet implemented
- * @param {Fresco.Particle} particle A particle to check the collisons for
- * @param {number} dt Timestep between frames
- */
-function solveCollision(particle, dt) {
-    throw "collision is not yet implemented";
-}
-
-
-/**
  * Utility to create a basic particle at specified position
  * @param {number} x X-coordinate of the new particle
  * @param {number} y Y-coordinate of the new particle
@@ -174,6 +172,8 @@ Fresco.Particle = class extends Fresco.Point {
      * purely cinematic approach for handling the particle motion.
      * @property {boolean} handleCollisions=false - Whether to simulate collisions.
      * WARNING: Currently not supported
+     * @property {number} bounciness=0.5 By what ratio the velocity of the particle will be
+     * attenuated upon collision with a collider.
      * @property {number} lastUpdate Time of last update.
      * @property {number} birthDate Time at creation of the particle
      * @property {p5.Vector} acceleration=0,0 - Current acceleration of the particles.
@@ -222,6 +222,8 @@ Fresco.Particle = class extends Fresco.Point {
         this.acceleration = createVector(0, 0);
         this.velocity = createVector(0, 0);
 
+        this.bounciness = 0.5; // by how much the velocity is attenuated upon collision
+
         this.isDead = false; // Because we will iterate on all particles in a loop
                              // we cannot simply kill a particle upon update. Instead
                              // we flag it as dead and will remove it before drawing 
@@ -266,6 +268,62 @@ Fresco.Particle = class extends Fresco.Point {
         this.acceleration.div(this.rho);
     }
 
+    /**
+     * Checks whether a particle will collide with another particle
+     * or a collider and resolves the collision accordingly.
+     * WARNING: Only handles collisions with shape colliders, not between individual particles 
+     * @param {Fresco.Particle} particle A particle to check the collisons for
+     * @param {p5.Vector} previousPosition A particle to check the collisons for
+     */
+    solveCollision(previousPosition) {
+        let intersection;
+        let j;
+        let normal;
+        // for each collider shape
+        for (let  i = 0; i < colliders.length; i++) {
+            // check if the particle displacement intersects with an edge
+            for (j = 0; j < colliders[i].vertices.length - 1; j++) {
+                if (colliders[i].isPolygonal) {
+                    intersection = segmentIntersection(
+                        previousPosition, this.position(),
+                        colliders[i].vertices[j], colliders[i].vertices[j + 1]);
+                }
+                else {
+                    let [p0, p1, p2, p3] = colliders[i].controlPoints(j);
+                    let p = segmentSplineIntersection(previousPosition, this.position(), p0, p1, p2, p3);
+                    if (p.length > 0) {
+                        intersection = p[0];
+                    }
+                    else {
+                        intersection = false;
+                    }
+                }
+                if (intersection) {
+                    normal = colliders[j].normalAtPoint(intersection);
+                    break;
+                }
+            }
+            if (intersection) {
+                break;
+            }
+        }
+
+        // If intersecting an edge, move the particle to the intersection point and "rebound"
+        if (intersection) {
+            // set point at intersection
+            this.setPosition(intersection);
+
+            // compute the velocity along the normal
+            let tan = normal.copy().mult(this.velocity.dot(normal));
+            
+            // subtract twice the velocity along the normal, which should
+            // give the reflection of the velocity w.r.t. the normal
+            this.velocity.sub(tan.mult(2));
+
+            // attenuate the velocity
+            this.velocity.mult(this.bounciness);
+        }
+    }
 
     /**
      * Update the properties of a particle based on the current simulation time
@@ -300,11 +358,12 @@ Fresco.Particle = class extends Fresco.Point {
             // resolve position using a velocity verlet
             if (this.simulatePhysics) {
                 // update position x(n+1) = x(n) + v(n)dt + 0.5 a(n)dt^2
+                let previousPosition = this.position();
                 this.add(this.velocity.copy().mult(dt).add(this.acceleration.copy().mult(0.5 * dt * dt)));
 
                 // solve for collisions
                 if (this.handleCollisions) {
-                    solveCollision(this, dt);
+                    this.solveCollision(previousPosition);
                 }
 
                 // update the acceleration a(n+1) = F / m
