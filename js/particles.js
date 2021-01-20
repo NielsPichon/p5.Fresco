@@ -192,6 +192,8 @@ Fresco.Particle = class extends Fresco.Point {
                             // the particle never dies
         
         this.mass = 1;
+        this.rho = 1; // the density is used for updating the acceleration. Unless using a fluidSim,
+                      // which will update the density, it will reamain equal to the mass 
         this.leaveTrail = false; // if true, this particle will
                                  // slowly define a shape
         this.trail;
@@ -231,6 +233,15 @@ Fresco.Particle = class extends Fresco.Point {
     }
 
     /**
+     * Sets the particle mass. Use this method rather than setting it manually
+     * @param {number} mass 
+     */
+    setMass(mass) {
+        this.mass = mass;
+        this.rho = mass;
+    }
+
+    /**
      * Manually casts the particle to a Point
      * @returns {Fresco.Point} The particle reinterpreted (hand "casted") 
      * to a Fresco.Point
@@ -245,14 +256,14 @@ Fresco.Particle = class extends Fresco.Point {
     }
 
     /**
-     * Updates the particle accelration base don the various forces and its mass.
+     * Updates the particle accelration based on the various forces and its mass.
      */
     updateAcceleration() {
         this.acceleration = createVector(0, 0);
         for (let i = 0; i < forces.length; i++) {
             this.acceleration.add(forces[i].applyForce(this));
         }
-        this.acceleration.div(this.mass);
+        this.acceleration.div(this.rho);
     }
 
 
@@ -435,7 +446,7 @@ Fresco.Gravity = class extends Fresco.Force {
      * @param {Fresco.Particle} particle Particle to apply the force to
      */
     applyForce(particle) {
-        return createVector(0, 1).mult(g * particle.mass);
+        return createVector(0, 1).mult(g * particle.rho);
     }
 }
 
@@ -569,6 +580,148 @@ Fresco.Drag = class extends Fresco.Force {
     applyForce(particle) {
         // - mu * v^2
         return this.velocity.copy().mult(this.velocity).mult(- this.intensity);
+    }
+}
+
+
+/**
+ * Simulates a "fluid" using Smoothed Particle Hydrodynamics.
+ * The following implementation is inspired by
+ * <a href="https://matthias-research.github.io/pages/publications/sca03.pdf">
+ * Muller et al. seminal paper</a>
+ * and based on the base implementation by
+ * <a href="https://lucasschuermann.com/writing/implementing-sph-in-2d">
+ * lucas schuermann</a>.
+ * NOTE: Rather than adding the force at the end of the forces array, this
+ * one will automatically be added to the start, in order for the density
+ * to always be calculated first at each timestep. 
+ */
+Fresco.FluidSimulation = class extends Fresco.Force {
+    /**
+     * @constructor
+     * @property {number} rho0 rest density
+     * @property {number} k gas constant which links density to pressure
+     * @property {number} viscosity fluid viscosity
+     * @property {number} h kernel radius, which is to say the falloff
+     * distance of the influence of each particle in the fluid
+     */
+    constructor() {
+        this.isDead = false;
+        forces.unshift(this); // rather than adding this force to the
+        // end of the forces array, we add it to the very beginning so
+        // that each timestep it is executed first, updating the density accordingly
+
+        this.setKernelRadius(10);
+        this.rho0 = 1000; //rest density in kg/m3
+        this.k = 2000; // gas constant which links density to pressure
+        this.viscosity = 250; //viscosity constant
+        this.lastUpdate = T; // time of the last update
+    }
+
+
+    /**
+     * Sets the kernel radius. Use this method rather than setting the kernel manually as
+     * this also updates the relevant internal constants
+     * @param {number} h Kernel radius, which is to say the falloff
+     * distance of the influence of each particle in the fluid
+     */
+    setKernelRadius(h) {
+        this.h = h;
+        this.hSquared = h * h;
+        this.POLY6 = 315.0 / (65.0 * Math.PI * Math.pow(this.h, 9));
+        this.SPIKY =  -45.0 / (Math.PI * Math.pow(this.h, 6));
+        this.VISC = 45.0 / (Math.PI * pow(this.h, 6));
+    }
+
+
+    /**
+     * Compute the poly6 kernel value at the specified distance form the center
+     * @param {number} rSq Squared distance between the particle at
+     * the center of the kernel and the other particle 
+     */
+    poly6Kernel(rSq) {
+        return this.POLY6 * Math.pow(this.hSquared - rSq, 3);
+    }
+
+
+    /**
+     * Compute the gradient of the spiky kernel value at the specified distance form the center
+     * @param {number} r Distance between the particle at
+     * the center of the kernel and the other particle 
+     */
+    spikyKernel(r) {
+        return this.SPIKY * Math.pow(this.h - r, 2);
+    }
+
+
+    /**
+     * Compute the laplacian of the spiky kernel value at the specified distance form the center
+     * @param {number} r Distance between the particle at
+     * the center of the kernel and the other particle 
+     */
+    viscosityKernel(r) {
+        return this.VISC * (this.h - r);
+    }
+
+
+    /**
+     * Updates the density for all particles
+     */
+    computeDensity() {
+        let rSq;
+        let j;
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].rho = 0;
+            for (j = 0; j < particles.length; j++) {
+                rSq = particles[i].dist(particles[j]);
+                if (rSq < this.hSquared) {
+                    particles[i].rho += particles[j].mass * this.poly6Kernel(rSq);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Updates the pressure for all particles
+     */
+    computePressure() {
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].pressure = this.k * (particles[i].rho - this.rho0);
+        }
+    }
+
+
+    /**
+     * Computes the forces on a particle of fluid created by neighbouring fluid particles.
+     * If this is a new time step, this function will also refresh the underlying grid as well as 
+     * density and pressure at each particle's position (not just that of this particle)
+     * @param {Fresco.Particle} particle 
+     */
+    applyForce(particle) {
+        if (T != this.lastUpdate) {
+            this.computeDensity();
+            this.computePressure();
+            this.lastUpdate = T;
+        }
+
+        let r;
+        let f = createVector(0, 0);
+        for (let i = 0; i < particles.length; i++) {
+            r = particle.dist(particles[i]);
+            if (r < this.h) {
+                // add pressure force from i-th particle -r(i->j) * mi * mj * (pi / rhoi^2 + pj / rhoj^2) * grad(spiky(r))
+                f.add(particles[j].copy().sub(particles[i]).normalized().mult(
+                    -particles[i].mass * particles[j].mass *
+                    (particles[i].pressure / (particles[i].rho * particles[i].rho) + particles[j].pressure / (particles[j].rho * particles[j].rho)) *
+                    this.spikyKernel(r)));
+
+                // add viscosity force from i-th particle nu * mj * (uj - ui) / rhoj * Laplacian(viscocityKernel)
+                f.add(particles[j].copy().sub(particles[i]).mult(
+                    this.viscosity * particles[j].mass / particles[j].rho * this.viscosityKernel(r)));
+            }
+        }
+        return f;
     }
 }
 
@@ -725,7 +878,7 @@ Fresco.PointEmitter = class extends Fresco.Emitter {
 
                     // assign random mass in range
                     t = random();
-                    nu_particle.mass = (1 - t) * this.minMass + t * this.maxMass;
+                    nu_particle.setMass((1 - t) * this.minMass + t * this.maxMass);
                     
                     // assign random scale
                     t = random();
@@ -826,7 +979,7 @@ Fresco.ShapeEmitter = class extends Fresco.Emitter {
 
                     // assign random mass in range
                     t = random();
-                    nu_particle.mass = (1 - t) * this.minMass + t * this.maxMass;
+                    nu_particle.setMass((1 - t) * this.minMass + t * this.maxMass);
                     
                     // assign random scale
                     t = random();
