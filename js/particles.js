@@ -286,22 +286,24 @@ Fresco.Particle = class extends Fresco.Point {
                 this.rotationOverLife, this.rotationInterpolation
             );
 
-            // resolve position
+            // resolve position using a velocity verlet
             if (this.simulatePhysics) {
-                // update the acceleration
-                this.updateAcceleration();
-                // update position based on the acceleration
-                this.velocity.add(this.acceleration.copy().mult(dt));
+                // update position x(n+1) = x(n) + v(n)dt + 0.5 a(n)dt^2
+                this.add(this.velocity.copy().mult(dt).add(this.acceleration.copy().mult(0.5 * dt * dt)));
 
-                // solve for collisions if relevant
+                // solve for collisions
                 if (this.handleCollisions) {
                     solveCollision(this, dt);
                 }
-                else {
-                    // else move the particle based on velocity
-                    this.add(this.velocity.copy().mult(dt));
-                }
+
+                // update the acceleration a(n+1) = F / m
+                let new_acceleration = this.udpateAcceleration();
+
+                // update velocity based on the acceleration v(n+1) = v(n) + (a(n) + a(n+1)) * 0.5 * dt
+                this.velocity.add(this.acceleration.copy().add(new_acceleration).mult(0.5 * dt));
                 
+                // store new velocity
+                this.acceleration = new_acceleration.copy();
             }
             else {
                 // else move the particle based on velocity only
