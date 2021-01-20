@@ -31,8 +31,6 @@ let forces = [];
 let colliders = [];
 /** reserved variable which holds the emitters in the simulation */
 let emitters = [];
-/** reserved variable which holds the shape colliders in the simulation */
-let colliders = [];
 
 /** simulated time */
 let T = 0;
@@ -261,11 +259,12 @@ Fresco.Particle = class extends Fresco.Point {
      * Updates the particle accelration based on the various forces and its mass.
      */
     updateAcceleration() {
-        this.acceleration = createVector(0, 0);
+        let nu_acceleration = createVector(0, 0);
         for (let i = 0; i < forces.length; i++) {
-            this.acceleration.add(forces[i].applyForce(this));
+            nu_acceleration.add(forces[i].applyForce(this));
         }
-        this.acceleration.div(this.rho);
+        nu_acceleration.div(this.rho);
+        return nu_acceleration;
     }
 
     /**
@@ -274,8 +273,11 @@ Fresco.Particle = class extends Fresco.Point {
      * WARNING: Only handles collisions with shape colliders, not between individual particles 
      * @param {Fresco.Particle} particle A particle to check the collisons for
      * @param {p5.Vector} previousPosition A particle to check the collisons for
+     * @param {number} epsilon Offset in pixels to move the point to,
+     * relative to a potential collision point, to avoid a the point going through
+     * the colliser as its velocity vanishes
      */
-    solveCollision(previousPosition) {
+    solveCollision(previousPosition, epsilon = 0.1) {
         let intersection;
         let j;
         let normal;
@@ -284,9 +286,13 @@ Fresco.Particle = class extends Fresco.Point {
             // check if the particle displacement intersects with an edge
             for (j = 0; j < colliders[i].vertices.length - 1; j++) {
                 if (colliders[i].isPolygonal) {
+                    // it is important to move pass the collider edge segment first. This way,
+                    // in case of imprecision in the intersection, typically due to some high velocity vector,
+                    // we only offset the intersection along the edge (worst case scenario)
+                    // which won't prevent the computation of the normal
                     intersection = segmentIntersection(
-                        previousPosition, this.position(),
-                        colliders[i].vertices[j], colliders[i].vertices[j + 1]);
+                        colliders[i].vertices[j], colliders[i].vertices[j + 1],
+                        previousPosition, this.position());
                 }
                 else {
                     let [p0, p1, p2, p3] = colliders[i].controlPoints(j);
@@ -299,7 +305,7 @@ Fresco.Particle = class extends Fresco.Point {
                     }
                 }
                 if (intersection) {
-                    normal = colliders[j].normalAtPoint(intersection);
+                    normal = colliders[i].normalAtPoint(intersection);
                     break;
                 }
             }
@@ -310,9 +316,6 @@ Fresco.Particle = class extends Fresco.Point {
 
         // If intersecting an edge, move the particle to the intersection point and "rebound"
         if (intersection) {
-            // set point at intersection
-            this.setPosition(intersection);
-
             // compute the velocity along the normal
             let tan = normal.copy().mult(this.velocity.dot(normal));
             
@@ -322,6 +325,12 @@ Fresco.Particle = class extends Fresco.Point {
 
             // attenuate the velocity
             this.velocity.mult(this.bounciness);
+
+            // offset intersection by a little distance to avoid issues where a point would
+            // end up going through the line as it's velocity vanishes
+            intersection.sub(tan.normalize().mult(epsilon));
+            // set point at intersection
+            this.setPosition(intersection);
         }
     }
 
@@ -367,7 +376,7 @@ Fresco.Particle = class extends Fresco.Point {
                 }
 
                 // update the acceleration a(n+1) = F / m
-                let new_acceleration = this.udpateAcceleration();
+                let new_acceleration = this.updateAcceleration();
 
                 // update velocity based on the acceleration v(n+1) = v(n) + (a(n) + a(n+1)) * 0.5 * dt
                 this.velocity.add(this.acceleration.copy().add(new_acceleration).mult(0.5 * dt));
@@ -665,15 +674,16 @@ Fresco.FluidSimulation = class extends Fresco.Force {
      * distance of the influence of each particle in the fluid
      */
     constructor() {
-        this.isDead = false;
+        super();
+        forces.pop();
         forces.unshift(this); // rather than adding this force to the
         // end of the forces array, we add it to the very beginning so
         // that each timestep it is executed first, updating the density accordingly
 
         this.setKernelRadius(10);
-        this.rho0 = 1000; //rest density in kg/m3
-        this.k = 2000; // gas constant which links density to pressure
-        this.viscosity = 250; //viscosity constant
+        this.rho0 = 1; //rest density
+        this.k = 2; // gas constant which links density to pressure
+        this.viscosity = 2.5; //viscosity constant
         this.lastUpdate = T; // time of the last update
     }
 
@@ -770,14 +780,15 @@ Fresco.FluidSimulation = class extends Fresco.Force {
             r = particle.dist(particles[i]);
             if (r < this.h) {
                 // add pressure force from i-th particle -r(i->j) * mi * mj * (pi / rhoi^2 + pj / rhoj^2) * grad(spiky(r))
-                f.add(particles[j].copy().sub(particles[i]).normalized().mult(
-                    -particles[i].mass * particles[j].mass *
-                    (particles[i].pressure / (particles[i].rho * particles[i].rho) + particles[j].pressure / (particles[j].rho * particles[j].rho)) *
-                    this.spikyKernel(r)));
+                f.add(particles[i].copy().sub(particle).normalize().mult(
+                    -particle.mass * particles[i].mass *
+                    (particle.pressure / (particle.rho * particle.rho) + particles[i].pressure / (particles[i].rho * particles[i].rho)) *
+                    this.spikyKernel(r)
+                ));
 
                 // add viscosity force from i-th particle nu * mj * (uj - ui) / rhoj * Laplacian(viscocityKernel)
-                f.add(particles[j].copy().sub(particles[i]).mult(
-                    this.viscosity * particles[j].mass / particles[j].rho * this.viscosityKernel(r)));
+                f.add(particles[i].velocity.copy().sub(particle.velocity).mult(
+                    this.viscosity * particles[i].mass / particles[i].rho * this.viscosityKernel(r)));
             }
         }
         return f;
