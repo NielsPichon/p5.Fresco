@@ -367,3 +367,29 @@ function gradientVec(func, step, x, y, z=null) {
   let dy = func(x, y + step, z).sub(func(x, y - step, z)).div(step);
   return dx.add(dy); 
 }
+
+
+/**
+ * Compares 2 angles in radians.
+ * @param {number} alpha 
+ * @param {number} beta
+ * @returns {number} The absolute angle difference between the 2 angles
+ */
+function compareAngles(alpha, beta) {
+  // Make sure alpha and beta are in the [0, 2PI] range
+  while (alpha < 0) {
+    alpha += 2 * Math.PI;
+  }
+
+  while (beta < 0) {
+    beta += 2 * Math.PI;
+  }
+
+  let diff = Math.abs(alpha - beta);
+
+  if (diff > Math.PI) {
+    diff = 2 * Math.PI - diff;
+  }
+
+  return diff;
+}

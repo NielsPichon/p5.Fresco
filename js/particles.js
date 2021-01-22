@@ -10,17 +10,13 @@
  * */
 const g = -9.81;
 
-
 /**
- * Boolean value to use for linear interpolation
+ * Interpolation type, for use in ramps
  */
-const linear = true;
-
-
-/**
- * Boolean value to use for constant interpolation
- */
-const constant = false;
+const interpolationType = {
+    linear: true,
+    constant: false
+}
 
 
 /** reverserved variable which holds the particles in the simulation */
@@ -45,7 +41,7 @@ let T = 0;
  * @param {boolean} linear Whether to use linear interpolation or not
  * @returns {number} The interpolated value
  */
-function rampInterpolation(t, time, values, linear = true) {
+function rampInterpolation(t, time, values, linear = interpolationType.linear) {
     if (values.length == 1) {
         return values[0];
     }
@@ -77,7 +73,7 @@ function rampInterpolation(t, time, values, linear = true) {
  * @param {boolean} linear Whether to use linear interpolation or not
  * @returns {number} The interpolated value
  */
-function rampInterpolation2D(t, time, values, linear = true) {
+function rampInterpolation2D(t, time, values, linear = interpolationType.linear) {
     if (values.length == 1) {
         return values[0];
     }
@@ -202,13 +198,13 @@ Fresco.Particle = class extends Fresco.Point {
         // we define a time for each control point.
         this.colorOverLife = [this.color];
         this.colorOverLifeTime = [0];
-        this.colorInterpolation = linear;
+        this.colorInterpolation = interpolationType.linear;
         this.scaleOverLife = [this.scale];
         this.scaleOverLifeTime = [0];
-        this.scaleInterpolation = linear;
+        this.scaleInterpolation = interpolationType.linear;
         this.rotationOverLife = [this.rotation];
         this.rotationOverLifeTime = [0];
-        this.rotationInterpolation = linear;
+        this.rotationInterpolation = interpolationType.linear;
 
         this.simulatePhysics = false; // whether to simulate physics or not
         this.handleCollisions = false; // whether to collide or not.
@@ -648,13 +644,13 @@ Fresco.Emitter = class {
         // overall scale
         this.colorOverLife = [[255, 255, 255, 255]];
         this.colorOverLifeTime = [0];
-        this.colorInterpolation = linear;
+        this.colorInterpolation = interpolationType.linear;
         this.scaleOverLife = [createVector(1, 1)];
         this.scaleOverLifeTime = [0];
-        this.scaleInterpolation = linear;
+        this.scaleInterpolation = interpolationType.linear;
         this.rotationOverLife = [0];
         this.rotationOverLifeTime = [0];
-        this.rotationInterpolation = linear;
+        this.rotationInterpolation = interpolationType.linear;
 
         // Whether the particles should simulate physics and collisions,
         // as well as leave a trail

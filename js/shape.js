@@ -10,6 +10,12 @@
  */
 var Fresco = {};
 
+
+const shadowType = {
+  hatching: 1,
+  stippling: 2   
+}
+
 /**
  * Helper function to draw a line from 2 p5.vectors.
  * Note that everything is shifted so that 0,0 is 
@@ -316,36 +322,80 @@ Fresco.Shape = class {
     this.edgeLengths = [];
   }
 
-
-  // draws the shape
   /**
    * Utility to draw the shape
    * @param {boolean} [usePointColor] Whether to use  the shape color or the
    * individual vertices color.
    * At the current time, p5.js does not support drawing shapes with
    * multiple vertices color so this will
-   * most likely result in drawing the sahpe  with the last vertex's color.
+   * most likely result in drawing the shape  with the last vertex's color.
    */
   draw(usePointColor = false) {
+    this.drawInstantiate(usePointColor);
+  }
+
+
+  /**
+   * Utility to draw the shape with a specified (optional) transform
+   * @param {boolean} [usePointColor] Whether to use  the shape color or the
+   * individual vertices color.
+   * @param {p5.Vector} [position] Position offset. If not specified,
+   * the method will use the shape's own transform.
+   * @param {p5.Vector} [scale] Scale. If `position` is specified,
+   * this will default to unit scale.
+   * @param {number} [rotation] Rotation. If `position` is specified,
+   * this will default to 0.
+   * @param {Array.<number>} color RGBA color the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * Ignored if `usePointColor`. If not specified, will default to the shape's color.
+   * @param {Array.<number>} fillColor RGBA fill color of the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * If not specified, will default to the shape's fillColor.
+   * @param {number} lineWeight Weight of the stroke.
+   * If not specified, will default to the shape's strokeWeight.
+   * At the current time, p5.js does not support drawing shapes with
+   * multiple vertices color so this will
+   * most likely result in drawing the sahpe  with the last vertex's color.
+   */
+  drawInstantiate(usePointColor = false, position=null,
+    scale=null, rotation=null, color=null, fillColor=null,
+    lineWeight=null) {
     if (this.noStroke && !usePointColor) {
       noStroke();
     } else {
-      stroke(this.color);
-      strokeWeight(this.strokeWeight);
+      if (color) {
+        stroke(color);
+      }
+      else {
+        stroke(this.color);
+      }
+      if (lineWeight) {
+        strokeWeight(lineWeight);
+      }
+      else {
+        strokeWeight(this.strokeWeight);
+      }
     }
     
     if (this.noFill) {
       noFill();
     }
     else {
-      fill(this.fillColor);
+      if (fillColor) {
+        fill(fillColor);
+      }
+      else
+      {
+        fill(this.fillColor);
+      }
     }
 
     beginShape();
     if (this.isPolygonal) {
       let vtx;
       for (let i = 0; i < this.vertices.length; i++) {
-        vtx = this.applyTransform(this.vertices[i]);
+        vtx = this.applyTransform(this.vertices[i],
+          position, scale, rotation);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
@@ -355,10 +405,12 @@ Fresco.Shape = class {
       // we add the first and last vertex twice to make sure all points
       // are part of the curve. Note that if the shape is closed, we 
       // use the last but one and second points instead
-      let vtx = this.applyTransform(this.vertices[0]);
+      let vtx = this.applyTransform(this.vertices[0],
+        position, rotation, scale);
       if (this.isClosed()) {
         vtx = this.applyTransform(
-          this.vertices[this.vertices.length - 2]);
+          this.vertices[this.vertices.length - 2],
+          position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[this.vertices.length - 2].color);
         }
@@ -369,18 +421,20 @@ Fresco.Shape = class {
 
       drawCurveVertex(vtx);
       for (let i = 0; i < this.vertices.length; i++) {
-        vtx = this.applyTransform(this.vertices[i]);
+        vtx = this.applyTransform(this.vertices[i],
+          position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
         drawCurveVertex(vtx);
       }
       vtx = this.applyTransform(
-        this.vertices[this.vertices.length - 1]);
+        this.vertices[this.vertices.length - 1],
+        position, rotation, scale);
 
       if (this.isClosed()) {
         vtx = this.applyTransform(
-          this.vertices[1]);
+          this.vertices[1], position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[1].color);
         }
@@ -474,6 +528,114 @@ Fresco.Shape = class {
 
 
   /**
+   * Draws the shadow of a 2D shape using hatching or stippling
+   * @param {number} [type] Whether to use hatching or stippling. 
+   * @param {number} [angle] Angle of the shadow. The shadow will only be cast
+   * where the normals are oriented in the shadows direction
+   * @param {number} [tolerance] Angle tolerance to consider a normal to be in
+   * the right direction for the shape to cast a shadow at the point 
+   * @param {number} [density] How many points to evaluate the normal of along the contour
+   * and draw hatches or stipples from
+   * @param {number} [length] Max length of the hatches or max distance of a stipple
+   * @param {number} [inside] Should the shadow be cast inside or outside the shape
+   * @param {number} [stipplingDensity] Max number of stipple to draw for each evaluated point
+   * @param {number} [weight] Min stroke weight of the hatching lines and stipples 
+   * @param {number} [weightRandomness] Max random amount to add to the stroke weight 
+   * @param {number} [hatchingAngle] Angle to hatch at, relative to the normal.
+   */
+  drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 8,
+    density = 100, length = 10, inside = false, stipplingDensity = 10,
+    weight = 1, weightRandomness = 0,
+    hatchingAngle = null) {
+
+    stroke(this.color);
+    
+    // retrieve the specified number of points to shade from
+    let vtx = sample(this, density, true, false);
+
+    if (weight <= 0) {
+      weight = this.strokeWeight
+    }
+
+    let nrm;
+    let alpha;
+    let mod;
+    let nu_pt;
+    let dirToNextVtx;
+    let dirToPrevVtx;
+    let t;
+    let x = createVector(1, 0);
+    // set the direction to draw the shadow
+    let nrmDir = 1;
+    if (inside) {
+      nrmDir = -1;
+    }
+    let shadowVec = p5.Vector.fromAngle(angle);
+    if (hatchingAngle && type == shadowType.hatching) {
+      shadowVec.rotate(hatchingAngle);
+    }
+    // for each seed point, check the normal and if within the shadow cone angle
+    for (let i = 0; i < vtx.length; i++) {
+      // retrieve the normal
+      nrm = this.normalAtPoint(vtx[i], 0.1);
+
+      // check if the nrm has the shadow's angle with horizontal line
+      alpha = Math.acos(nrm.dot(x));
+      if(nrm.y < 0) {
+        alpha *= -1;
+      }
+
+      let diff = compareAngles(alpha, angle);
+
+      if (diff <= tolerance) {
+        if (type == shadowType.hatching) {
+          mod = 1 - diff / tolerance;
+          strokeWeight(weight + random(0, weightRandomness));
+          drawLine(this.applyTransform(vtx[i]), this.applyTransform(
+            vtx[i]).add(shadowVec.copy().mult(length * nrmDir * mod)));
+        }
+        else {
+          // modulation due to angular distance to target shadow angle
+          mod = 1 - diff / tolerance;
+
+          // compute direction to next and previous vertex
+          if (i == 0){
+            dirToPrevVtx = createVector(0, 0);
+          }
+          else {
+            dirToPrevVtx = vtx[i - 1].position().sub(vtx[i]);
+          }
+          if (i == vtx.length - 1){
+            dirToNextVtx = createVector(0, 0);
+          }
+          else {
+            dirToNextVtx = vtx[i + 1].position().sub(vtx[i]);
+          }
+
+          // draw many points scattered around 
+          for (let j = 0; j < stipplingDensity * mod; j++) {
+            strokeWeight(weight + random(0, weightRandomness));
+            nu_pt = this.applyTransform(vtx[i]);
+            // set random normal position
+            nu_pt.add(shadowVec.copy().mult(length * nrmDir * mod * random()));
+
+            // set random position along direction to next vertex
+            t = random(-1, 1);
+            if (t >= 0) {
+              nu_pt.add(dirToNextVtx.copy().mult(t));
+            }
+            else {
+              nu_pt.add(dirToPrevVtx.copy().mult(t));
+            }
+            drawPoint(nu_pt);
+          }
+        }
+      }
+    }
+  }
+
+
+  /**
    * Sets the scale of the shape. If only x is specified,
    * a uniform scale will be used
    * @param {number} x Scale along the x axis. Will be used  as the
@@ -510,25 +672,46 @@ Fresco.Shape = class {
   }
 
 
-  // returns the world position of points
   /**
    * Returns a copy of  the specified vertex, which position has
    * been modified following this shape's transform (position, scale and rotation that is).
    * This allows to retrieve the position in world coordinates of a point form the position
-   * in the  shape referential. 
-   * @param {p5.Vector} vtx The point to  apply the transform to.
+   * in the  shape referential.
+   * This method can also be used to transform a point as if it was a part
+   * of a shape with a specified transform. This is useful for instantiating the shape for instance
+   * @param {p5.Vector} vtx The point to apply the transform to.
+   * @param {p5.Vector} [position] Offset to apply to the point.
+   * If specified, the shape transform will be ignored.
+   * @param {p5.Vector} [scale] Scale to apply to the point.
+   * If not specified and `position` is, it will default to unit scale;
+   * @param {number} [rotation] Rotation to apply to the point.
+   * If not specified and `position` is, it will default to 0.
    * @returns {p5.Vector} The transformed point. Note that because of the way the computation is done,
    * classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implement
    * the `copy` method, and usual vector arithmetics (this is the case of `Fresco.Point` and
    * `Fresco.Particle` for instance). In this case the return type will be  the same
    * as the input type.
    */
-  applyTransform(vtx) {
+  applyTransform(vtx, position=null, scale=null, rotation=null) {
+    if (position) {
+      if (!scale) {
+        scale = createVector(1, 1);
+      }
+      if (!rotation) {
+        rotation = 0;
+      }
+    }
+    else {
+      position = this.position;
+      rotation = this.rotation;
+      scale = this.scale;
+    }
+
     let nu_vtx = vtx.copy();
-    nu_vtx.x = cos(this.rotation) * vtx.x + sin(this.rotation) * vtx.y;
-    nu_vtx.y = -sin(this.rotation) * vtx.x + cos(this.rotation) * vtx.y;
-    nu_vtx.mult(this.scale);
-    nu_vtx.add(this.position);
+    nu_vtx.x = cos(rotation) * vtx.x + sin(rotation) * vtx.y;
+    nu_vtx.y = -sin(rotation) * vtx.x + cos(rotation) * vtx.y;
+    nu_vtx.mult(scale);
+    nu_vtx.add(position);
     
     return nu_vtx;
   }
@@ -760,7 +943,7 @@ Fresco.Shape = class {
         }
       }
       
-      let pt = this.vertices[edgeIdx].position().mult(1 - interp).add(
+      let pt = this.vertices[edgeIdx].copy().mult(1 - interp).add(
         this.vertices[l].position().mult(interp));
       if (world) {
         return this.applyTransform(pt);
@@ -1933,7 +2116,8 @@ function isInside(vtx, shape, approx = true) {
 
 /**
  * Resamples a shape's contour by spreading evenly a given
- * amount of points along the shape.
+ * amount of points along the shape. These points will become the
+ * new vertices of the shape
  * This may change the look of the shape, inducing some amount of smoothing to
  * some extend, even though each point is spread on the original contour.
  * Note: Equidistaqnce on the contour may not imply equidistance in space.
@@ -1968,6 +2152,37 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     offset = false;
   }
   
+  // sample the specified amount of points on the contour
+  let vtx = sample(shape, numPoints, offset, approx);
+
+  let nu_shape = shape.copy();
+  nu_shape.vertices = vtx
+  for (let i = 0; i < nu_shape.vertices.length; i++) {
+    nu_shape.vertices[i].owner = nu_shape;
+  }
+  nu_shape.updateLengths = true;
+  nu_shape.updateBounds = true;
+  nu_shape.isPolygonal = isPolygonal;
+
+  return nu_shape;
+}
+
+
+/**
+ * Samples a shape's contour by spreading evenly a given
+ * amount of points along the shape.
+ * @param {Fresco.Shape} shape The shape to resample
+ * @param {number} [numPoints] Number of points to spread along the shape.
+ * If the number is 0 or less, this will simply re-spread the existing
+ * amount of vertices in the shape
+ * @param {boolean} [offset] If true, the first vertex will be moved on the contour
+ * by half the distance between 2 succesive vertices. This may be handy to avoid
+ * the shape being skewed towards the first vertex.
+ * @param {boolean} [approx] If true, non-polygonal shape edge interpolation
+ * will be be approximated
+ * @returns {Fresco.Shape} The resampled shape.
+ */
+function sample(shape, numPoints, offset=true, approx=false) {  
   let vtx = [];
   
   let totalLength = shape.contourLength();
@@ -2030,16 +2245,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     append(vtx, shape.vertices[shape.vertices.length - 1].copy());
   }
 
-  let nu_shape = shape.copy();
-  nu_shape.vertices = vtx
-  for (let i = 0; i < nu_shape.vertices.length; i++) {
-    nu_shape.vertices[i].owner = nu_shape;
-  }
-  nu_shape.updateLengths = true;
-  nu_shape.updateBounds = true;
-  nu_shape.isPolygonal = isPolygonal;
-
-  return nu_shape;
+  return vtx;
 }
 
 
