@@ -316,36 +316,80 @@ Fresco.Shape = class {
     this.edgeLengths = [];
   }
 
-
-  // draws the shape
   /**
    * Utility to draw the shape
    * @param {boolean} [usePointColor] Whether to use  the shape color or the
    * individual vertices color.
    * At the current time, p5.js does not support drawing shapes with
    * multiple vertices color so this will
-   * most likely result in drawing the sahpe  with the last vertex's color.
+   * most likely result in drawing the shape  with the last vertex's color.
    */
   draw(usePointColor = false) {
+    this.drawInstantiate(usePointColor);
+  }
+
+
+  /**
+   * Utility to draw the shape with a specified (optional) transform
+   * @param {boolean} [usePointColor] Whether to use  the shape color or the
+   * individual vertices color.
+   * @param {p5.Vector} [position] Position offset. If not specified,
+   * the method will use the shape's own transform.
+   * @param {p5.Vector} [scale] Scale. If `position` is specified,
+   * this will default to unit scale.
+   * @param {number} [rotation] Rotation. If `position` is specified,
+   * this will default to 0.
+   * @param {Array.<number>} color RGBA color the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * Ignored if `usePointColor`. If not specified, will default to the shape's color.
+   * @param {Array.<number>} fillColor RGBA fill color of the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * If not specified, will default to the shape's fillColor.
+   * @param {number} lineWeight Weight of the stroke.
+   * If not specified, will default to the shape's strokeWeight.
+   * At the current time, p5.js does not support drawing shapes with
+   * multiple vertices color so this will
+   * most likely result in drawing the sahpe  with the last vertex's color.
+   */
+  drawInstantiate(usePointColor = false, position=null,
+    scale=null, rotation=null, color=null, fillColor=null,
+    lineWeight=null) {
     if (this.noStroke && !usePointColor) {
       noStroke();
     } else {
-      stroke(this.color);
-      strokeWeight(this.strokeWeight);
+      if (color) {
+        stroke(color);
+      }
+      else {
+        stroke(this.color);
+      }
+      if (lineWeight) {
+        strokeWeight(lineWeight);
+      }
+      else {
+        strokeWeight(this.strokeWeight);
+      }
     }
     
     if (this.noFill) {
       noFill();
     }
     else {
-      fill(this.fillColor);
+      if (fillColor) {
+        fill(fillColor);
+      }
+      else
+      {
+        fill(this.fillColor);
+      }
     }
 
     beginShape();
     if (this.isPolygonal) {
       let vtx;
       for (let i = 0; i < this.vertices.length; i++) {
-        vtx = this.applyTransform(this.vertices[i]);
+        vtx = this.applyTransform(this.vertices[i],
+          position, scale, rotation);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
@@ -355,10 +399,12 @@ Fresco.Shape = class {
       // we add the first and last vertex twice to make sure all points
       // are part of the curve. Note that if the shape is closed, we 
       // use the last but one and second points instead
-      let vtx = this.applyTransform(this.vertices[0]);
+      let vtx = this.applyTransform(this.vertices[0],
+        position, rotation, scale);
       if (this.isClosed()) {
         vtx = this.applyTransform(
-          this.vertices[this.vertices.length - 2]);
+          this.vertices[this.vertices.length - 2],
+          position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[this.vertices.length - 2].color);
         }
@@ -369,18 +415,20 @@ Fresco.Shape = class {
 
       drawCurveVertex(vtx);
       for (let i = 0; i < this.vertices.length; i++) {
-        vtx = this.applyTransform(this.vertices[i]);
+        vtx = this.applyTransform(this.vertices[i],
+          position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
         drawCurveVertex(vtx);
       }
       vtx = this.applyTransform(
-        this.vertices[this.vertices.length - 1]);
+        this.vertices[this.vertices.length - 1],
+        position, rotation, scale);
 
       if (this.isClosed()) {
         vtx = this.applyTransform(
-          this.vertices[1]);
+          this.vertices[1], position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[1].color);
         }
@@ -510,25 +558,46 @@ Fresco.Shape = class {
   }
 
 
-  // returns the world position of points
   /**
    * Returns a copy of  the specified vertex, which position has
    * been modified following this shape's transform (position, scale and rotation that is).
    * This allows to retrieve the position in world coordinates of a point form the position
-   * in the  shape referential. 
-   * @param {p5.Vector} vtx The point to  apply the transform to.
+   * in the  shape referential.
+   * This method can also be used to transform a point as if it was a part
+   * of a shape with a specified transform. This is useful for instantiating the shape for instance
+   * @param {p5.Vector} vtx The point to apply the transform to.
+   * @param {p5.Vector} [position] Offset to apply to the point.
+   * If specified, the shape transform will be ignored.
+   * @param {p5.Vector} [scale] Scale to apply to the point.
+   * If not specified and `position` is, it will default to unit scale;
+   * @param {number} [rotation] Rotation to apply to the point.
+   * If not specified and `position` is, it will default to 0.
    * @returns {p5.Vector} The transformed point. Note that because of the way the computation is done,
    * classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implement
    * the `copy` method, and usual vector arithmetics (this is the case of `Fresco.Point` and
    * `Fresco.Particle` for instance). In this case the return type will be  the same
    * as the input type.
    */
-  applyTransform(vtx) {
+  applyTransform(vtx, position=null, scale=null, rotation=null) {
+    if (position) {
+      if (!scale) {
+        scale = createVector(1, 1);
+      }
+      if (!rotation) {
+        rotation = 0;
+      }
+    }
+    else {
+      position = this.position;
+      rotation = this.rotation;
+      scale = this.scale;
+    }
+
     let nu_vtx = vtx.copy();
-    nu_vtx.x = cos(this.rotation) * vtx.x + sin(this.rotation) * vtx.y;
-    nu_vtx.y = -sin(this.rotation) * vtx.x + cos(this.rotation) * vtx.y;
-    nu_vtx.mult(this.scale);
-    nu_vtx.add(this.position);
+    nu_vtx.x = cos(rotation) * vtx.x + sin(rotation) * vtx.y;
+    nu_vtx.y = -sin(rotation) * vtx.x + cos(rotation) * vtx.y;
+    nu_vtx.mult(scale);
+    nu_vtx.add(position);
     
     return nu_vtx;
   }
