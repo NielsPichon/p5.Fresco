@@ -33,6 +33,7 @@ function draw() {
   // Draw clouds
   for (let i = 0; i < clouds.length; i++) {
     clouds[i].draw();
+    clouds[i].drawShadow(shadowType.stippling, 5 * Math.PI / 4, Math.PI / 2, 200, 20);
   }
   
   // Draw sea

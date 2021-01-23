@@ -136,6 +136,9 @@ function createCloud() {
         halfCircle(1, -1, vertex, vertices);
       }
     }
+
+    // close shape
+    vertices.push(vertices[0].copy());
   
     // center cloud and scale so that it that it always is of set width
     let scaleRatio = cloudWidth / (maxRight - maxLeft);

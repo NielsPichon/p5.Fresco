@@ -543,7 +543,7 @@ Fresco.Shape = class {
    * @param {number} [weightRandomness] Max random amount to add to the stroke weight 
    * @param {number} [hatchingAngle] Angle to hatch at, relative to the normal.
    */
-  drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 8,
+  drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 2,
     density = 100, length = 10, inside = false, stipplingDensity = 10,
     weight = 1, weightRandomness = 0,
     hatchingAngle = null) {
