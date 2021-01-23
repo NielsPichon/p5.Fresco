@@ -191,6 +191,7 @@ function createCloud() {
         horizontalDirection, vertex, vertices);
   }
 
+  
   function quarterCircle(phase, x0, y0, verticalDirection,
     horizontalDirection, vertex, vertices) {
     for (let i = 0; i < cloudResolution; i++){

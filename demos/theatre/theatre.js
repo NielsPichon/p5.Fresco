@@ -1,4 +1,4 @@
-const backgroundClr = '000';
+const backgroundClr = 'aaa';
 const numClouds = 1;
 const numWaves = 20;
 const cloudLevels = 3;
@@ -32,8 +32,19 @@ function setup() {
 function draw() {
   // Draw clouds
   for (let i = 0; i < clouds.length; i++) {
+    // set shape filled
+    clouds[i].noFill = false;
+    // change shadow color
+    clouds[i].color = [100, 100, 100, 255];
+    // draw shadow
+    clouds[i].drawShadow(shadowType.stippling, radians(180 + 45), Math.PI / 2, 200,
+      20, false, 10, 1, 0.5, true, 10);
+    // change shape fill colors
+    clouds[i].fillColor = [100, 255, 100, 255];
+    // chenge stroke color
+    clouds[i].color = [100,255,100,255];
+    // draw shape
     clouds[i].draw();
-    clouds[i].drawShadow(shadowType.stippling, 5 * Math.PI / 4, Math.PI / 2, 200, 20);
   }
   
   // Draw sea

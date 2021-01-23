@@ -11,10 +11,16 @@
 var Fresco = {};
 
 
+/**
+ * Type of shadows that can be used when drawing the shadow of a shape
+ */
 const shadowType = {
   hatching: 1,
-  stippling: 2   
+  stippling: 2,
+  full: 3,
+  vanishing: 4
 }
+
 
 /**
  * Helper function to draw a line from 2 p5.vectors.
@@ -541,93 +547,131 @@ Fresco.Shape = class {
    * @param {number} [stipplingDensity] Max number of stipple to draw for each evaluated point
    * @param {number} [weight] Min stroke weight of the hatching lines and stipples 
    * @param {number} [weightRandomness] Max random amount to add to the stroke weight 
+   * @param {boolean} [constantLength] Whether the `length` should be modulated by
+   * the angle relative to the normal
+   * @param {number} [vanishingBands] Number of bands to use when drawing a `vanishing` shadow type.
    * @param {number} [hatchingAngle] Angle to hatch at, relative to the normal.
    */
   drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 2,
-    density = 100, length = 10, inside = false, stipplingDensity = 10,
-    weight = 1, weightRandomness = 0,
+    density = 100, length = 10, inside = false, stipplingDensity = 20,
+    weight = 1, weightRandomness = 0, constantLength = true, vanishingBands = 5,
     hatchingAngle = null) {
 
     stroke(this.color);
-    
-    // retrieve the specified number of points to shade from
-    let vtx = sample(this, density, true, false);
 
-    if (weight <= 0) {
-      weight = this.strokeWeight
+    if (type == shadowType.full) {
+      this.drawInstantiate(false, this.position.copy().add(
+        p5.Vector.fromAngle(angle).mult(length)),
+        this.scale, this.rotation,
+        this.color, this.color, this.strokeWeight);
     }
+    else if (type == shadowType.vanishing) {
+      let strk = this.noStroke;
+      this.noStroke = true;
+      for (let i = vanishingBands; i > 0; i--){
+        let clr = new Array(4);
+        arrayCopy(this.color, clr);
+        let offset = length * i / vanishingBands;
+        clr[3] *= 1 - i / (vanishingBands + 1);
+        print(clr, offset)
+        this.drawInstantiate(false, this.position.copy().add(
+          p5.Vector.fromAngle(angle).mult(offset)),
+          this.scale, this.rotation,
+          clr, clr, this.strokeWeight);
+      }
+      this.noStroke = strk;
+    }
+    else {
+      // retrieve the specified number of points to shade from
+      let vtx = sample(this, density, true, false);
 
-    let nrm;
-    let alpha;
-    let mod;
-    let nu_pt;
-    let dirToNextVtx;
-    let dirToPrevVtx;
-    let t;
-    let x = createVector(1, 0);
-    // set the direction to draw the shadow
-    let nrmDir = 1;
-    if (inside) {
-      nrmDir = -1;
-    }
-    let shadowVec = p5.Vector.fromAngle(angle);
-    if (hatchingAngle && type == shadowType.hatching) {
-      shadowVec.rotate(hatchingAngle);
-    }
-    // for each seed point, check the normal and if within the shadow cone angle
-    for (let i = 0; i < vtx.length; i++) {
-      // retrieve the normal
-      nrm = this.normalAtPoint(vtx[i], 0.1);
-
-      // check if the nrm has the shadow's angle with horizontal line
-      alpha = Math.acos(nrm.dot(x));
-      if(nrm.y < 0) {
-        alpha *= -1;
+      if (weight <= 0) {
+        weight = this.strokeWeight
       }
 
-      let diff = compareAngles(alpha, angle);
+      let nrm;
+      let alpha;
+      let mod;
+      let nu_pt;
+      let dirToNextVtx;
+      let dirToPrevVtx;
+      let t;
+      let x = createVector(1, 0);
+      // set the direction to draw the shadow
+      let nrmDir = 1;
+      if (inside) {
+        nrmDir = -1;
+      }
+      let shadowVec = p5.Vector.fromAngle(angle);
+      if (hatchingAngle && type == shadowType.hatching) {
+        shadowVec.rotate(hatchingAngle);
+      }
+      // for each seed point, check the normal and if within the shadow cone angle
+      for (let i = 0; i < vtx.length; i++) {
+        // retrieve the normal
+        nrm = this.normalAtPoint(vtx[i], 0.1);
 
-      if (diff <= tolerance) {
-        if (type == shadowType.hatching) {
-          mod = 1 - diff / tolerance;
-          strokeWeight(weight + random(0, weightRandomness));
-          drawLine(this.applyTransform(vtx[i]), this.applyTransform(
-            vtx[i]).add(shadowVec.copy().mult(length * nrmDir * mod)));
+        // check if the nrm has the shadow's angle with horizontal line
+        alpha = Math.acos(nrm.dot(x));
+        if(nrm.y < 0) {
+          alpha *= -1;
         }
-        else {
-          // modulation due to angular distance to target shadow angle
-          mod = 1 - diff / tolerance;
 
-          // compute direction to next and previous vertex
-          if (i == 0){
-            dirToPrevVtx = createVector(0, 0);
-          }
-          else {
-            dirToPrevVtx = vtx[i - 1].position().sub(vtx[i]);
-          }
-          if (i == vtx.length - 1){
-            dirToNextVtx = createVector(0, 0);
-          }
-          else {
-            dirToNextVtx = vtx[i + 1].position().sub(vtx[i]);
-          }
+        let diff = compareAngles(alpha, angle);
 
-          // draw many points scattered around 
-          for (let j = 0; j < stipplingDensity * mod; j++) {
-            strokeWeight(weight + random(0, weightRandomness));
-            nu_pt = this.applyTransform(vtx[i]);
-            // set random normal position
-            nu_pt.add(shadowVec.copy().mult(length * nrmDir * mod * random()));
-
-            // set random position along direction to next vertex
-            t = random(-1, 1);
-            if (t >= 0) {
-              nu_pt.add(dirToNextVtx.copy().mult(t));
+        if (diff <= tolerance) {
+          if (type == shadowType.hatching) {
+            if (constantLength){
+              mod = 1;
             }
             else {
-              nu_pt.add(dirToPrevVtx.copy().mult(t));
+              mod = 1 - diff / tolerance;
             }
-            drawPoint(nu_pt);
+            strokeWeight(weight + random(0, weightRandomness));
+            drawLine(this.applyTransform(vtx[i]), this.applyTransform(
+              vtx[i]).add(shadowVec.copy().mult(length * nrmDir * mod)));
+          }
+          else {
+            // modulation due to angular distance to target shadow angle
+            if (constantLength){
+              mod = 1;
+            }
+            else {
+              mod = 1 - diff / tolerance;
+            }
+
+            // compute direction to next and previous vertex
+            if (i == 0){
+              dirToPrevVtx = createVector(0, 0);
+            }
+            else {
+              dirToPrevVtx = vtx[i - 1].position().sub(vtx[i]);
+            }
+            if (i == vtx.length - 1){
+              dirToNextVtx = createVector(0, 0);
+            }
+            else {
+              dirToNextVtx = vtx[i + 1].position().sub(vtx[i]);
+            }
+
+            // draw many points scattered around 
+            for (let j = 0; j < stipplingDensity * mod; j++) {
+              strokeWeight(weight + random(0, weightRandomness));
+              nu_pt = this.applyTransform(vtx[i]);
+              // set random normal position
+              let t = random();
+              nu_pt.add(shadowVec.copy().mult(length * nrmDir * mod * t));
+
+              // set random position along direction to next vertex
+              t = random(-1, 1);
+              if (t >= 0) {
+                nu_pt.add(dirToNextVtx.copy().mult(t));
+              }
+              else {
+                nu_pt.add(dirToPrevVtx.copy().mult(t));
+              }
+              drawPoint(nu_pt);
+            }
           }
         }
       }
