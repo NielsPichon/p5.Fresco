@@ -554,7 +554,7 @@ Fresco.Shape = class {
    */
   drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 2,
     density = 100, length = 10, inside = false, stipplingDensity = 20,
-    weight = 1, weightRandomness = 0, constantLength = true, vanishingBands = 5,
+    weight = 1, weightRandomness = 0, constantLength = true, vanishingBands = 10,
     hatchingAngle = null) {
 
     stroke(this.color);
@@ -573,7 +573,6 @@ Fresco.Shape = class {
         arrayCopy(this.color, clr);
         let offset = length * i / vanishingBands;
         clr[3] *= 1 - i / (vanishingBands + 1);
-        print(clr, offset)
         this.drawInstantiate(false, this.position.copy().add(
           p5.Vector.fromAngle(angle).mult(offset)),
           this.scale, this.rotation,
@@ -2531,8 +2530,6 @@ function relax(points,
       for (k = 0; k < points.length; k++) {
         pt = points[k].position();
         if (shape) {
-          print(shape);
-          print(points[k]);
           pt = shape.applyTransform(points[k]).position();
         }
         dist = pt.sub(p).mag()

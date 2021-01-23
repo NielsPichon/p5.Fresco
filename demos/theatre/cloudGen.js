@@ -1,4 +1,6 @@
-function createCloud() {
+let prevClrIdx = -1;
+
+function createCloud(angularPosition) {
     let vertices = [];
   
     // Initiate point
@@ -56,6 +58,7 @@ function createCloud() {
   
     // Move right 
     moveHorizontal(1, vertex, vertices, horizontal, horizontal + cloudMaxHorizontal);
+    let topMost = vertex.y;
     maxRight = vertex.x;
     leftOrRight = 1;
   
@@ -113,11 +116,15 @@ function createCloud() {
     }
   
     // move left to start point absiss
+    let bottomMost = vertex.y; 
     vertex.x = cloudLevelHeight * 0.5;
     vertices.push(vertex.copy());
     
     //if lower than start point, move up
     if (vertex.y < 0) {
+      if (forbidSquareClouds) {
+        return createCloud(angularPosition);
+      }
       botQuarterCircle(1, -1, vertex, vertices);
       vertex.y = cloudLevelHeight * 0.5;
       vertices.push(vertex.copy());
@@ -142,16 +149,52 @@ function createCloud() {
   
     // center cloud and scale so that it that it always is of set width
     let scaleRatio = cloudWidth / (maxRight - maxLeft);
-    let offset = (maxRight + maxLeft) / 2;
+    let offsetX = (maxRight + maxLeft) / 2;
+    let offsetY = (topMost + bottomMost) / 2;
     for (let i = 0; i < vertices.length; i++) {
-      vertices[i].x -= offset;
+      vertices[i].x -= offsetX;
+      vertices[i].y -= offsetY;
       vertices[i].x *= scaleRatio;
       vertices[i].y *= scaleRatio;
     }
   
     // Create cloud shape
     let cloud = new Fresco.Shape(vertices);
+    
+    // set random color (but different from previous cloud)
+    let clrIdx = prevClrIdx;
+    while (clrIdx == prevClrIdx) {
+      clrIdx = Math.floor(random(cloudsClr.length));
+    }
+    prevClrIdx = clrIdx;
+    cloud.color = colorFromHex(cloudsClr[clrIdx]);
+
+    // set shape as polygonal
     cloud.isPolygonal = true;
+
+    // set random position along border 
+    cloud.position = p5.Vector.fromAngle(
+      angularPosition);
+    
+    let radius;
+    // assuming the angular position is between [- PI /4, 5 PI/4]
+    // we compute the distance the edge.
+    if (angularPosition > 3 * Math.PI / 4 ||
+      angularPosition < Math.PI / 4) {
+        radius = width * 0.5 / Math.abs(Math.cos(angularPosition));
+    }
+    else {
+      radius = height * 0.5 / Math.abs(Math.sin(angularPosition));
+    }
+    // choose random position, but more towards the edge
+    let t = random();
+    t = 1 - t * t;
+    t = (1 - t) * (radius -
+    cloudsBorderThickness) + t * radius;
+    cloud.position.mult(t);
+
+    // choose random scale
+    cloud.setScale(random(cloudMinScale, cloudMaxScale));
   
     return cloud;
   }
