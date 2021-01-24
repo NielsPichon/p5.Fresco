@@ -144,6 +144,8 @@ Fresco.Particle = class extends Fresco.Point {
      * This will allow for drawing the whole
      * trajectory of the particle at once, or simply the displacement
      * since the previous position.
+     * @property {number} maxTrailLength=-1 - Maximum length of the the trail
+     * (in number of successive positions)
      * @property {Array.<Array.<number>>} colorOverLife Colors
      * to interpolate between during the life of the particles. Each color
      * should be an array of 4 RGBA values in the range [0, 255].
@@ -190,6 +192,7 @@ Fresco.Particle = class extends Fresco.Point {
         this.mass = 1;
         this.leaveTrail = false; // if true, this particle will
                                  // slowly define a shape
+        this.maxTrailLength = -1;
         this.trail;
 
         // evolve properties over time.
@@ -319,6 +322,12 @@ Fresco.Particle = class extends Fresco.Point {
     addCurrentPositionToTrail() {
         if (this.trail) {
             append(this.trail.vertices, this.asPoint());
+            if (this.maxTrailLength > 0) {
+                print("meh")
+                if (this.trail.vertices.length > this.maxTrailLength) {
+                    this.trail.vertices.splice(0, 1);
+                }
+            }
         }
         else {
             this.trail = new Fresco.Shape([this.asPoint()]);
@@ -608,6 +617,8 @@ Fresco.Emitter = class {
      * @property {boolean} simulatePhysics=false - Whether the spawned particles should simulate physics
      * @property {boolean} handleCollisions=false - Whether the spawned particles should handle collisions
      * @property {boolean} leaveTrail=false - Whether the spawned particles should leave a trail
+     * @property {number} maxTrailLength=-1 - If positive, specifies the particles maximum trial length
+     * in number of positions
      * @property {number} spawnRate=50 - Amount of particles this emitter should try spawning on each
      * simulation step. If the emitter is to burst, this is the total amount of particles that will be spawned
      * @property {number} spawnProbability=1 - Propability for a particle to be spawned. This can be used to add
@@ -657,6 +668,7 @@ Fresco.Emitter = class {
         this.simulatePhysics = false;
         this.handleCollisions = false;
         this.leaveTrail = false;
+        this.maxTrailLength = -1;
 
         // each spawn call, this is how many particles will
         // try to spawn
@@ -726,6 +738,7 @@ Fresco.PointEmitter = class extends Fresco.Emitter {
                     nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
 
                     // apply uniform properties
+                    nu_particle.color = this.colorOverLife[0];
                     nu_particle.colorOverLife = this.colorOverLife;
                     nu_particle.colorOverLifeTime = this.colorOverLifeTime;
                     nu_particle.colorInterpolation = this.colorInterpolation;
@@ -744,6 +757,7 @@ Fresco.PointEmitter = class extends Fresco.Emitter {
                     nu_particle.simulatePhysics = this.simulatePhysics;
                     nu_particle.handleCollisions = this.handleCollisions;
                     nu_particle.leaveTrail = this.leaveTrail;
+                    nu_particle.maxTrailLength = this.maxTrailLength;
 
                     nu_particle.radius = this.radius;
                 }
@@ -827,6 +841,7 @@ Fresco.ShapeEmitter = class extends Fresco.Emitter {
                     nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
 
                     // apply uniform properties
+                    nu_particle.color = this.colorOverLife[0];
                     nu_particle.colorOverLife = this.colorOverLife;
                     nu_particle.colorOverLifeTime = this.colorOverLifeTime;
                     nu_particle.colorInterpolation = this.colorInterpolation;
@@ -845,6 +860,7 @@ Fresco.ShapeEmitter = class extends Fresco.Emitter {
                     nu_particle.simulatePhysics = this.simulatePhysics;
                     nu_particle.handleCollisions = this.handleCollisions;
                     nu_particle.leaveTrail = this.leaveTrail;
+                    nu_particle.maxTrailLength = this.maxTrailLength;
 
                     nu_particle.radius = this.radius;
                 }

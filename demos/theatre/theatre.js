@@ -11,42 +11,61 @@ const waveStrokeClr = 'fff';
 const waveFillClr = '293241';
 const waveStrokeWeight = 5;
 const shadowAngle = Math.PI / 4;
+const rainClr = 'fff';
+const rainOpacity = 50;
 
 //wave settings
-const numInnerRings = 5;
-const ringRadiusOffset = 30;
-const waveBaseRadius = 160;
-const numWaveRaws = 5;
-const waveRawOffset = waveBaseRadius / 2;
-const bottomRawOffset = waveBaseRadius / 2;
-const waveMoveSpeed = 0.1;
-const waveMoveAmplitude = waveBaseRadius / 8;
+const numInnerRings = 5; // number of rings inside a wave
+const ringRadiusOffset = 30; // offset in radius between rings (pixels)
+const waveBaseRadius = 160; // radius of the largest ring of a wave
+const numWaveRaws = 5; // number of wave raws.
+const waveRawOffset = waveBaseRadius / 2; // Vertical offset between raws 
+const bottomRawOffset = waveBaseRadius / 2; // Vertical offset towards the bottom
+                                            // of the screen of the bottom most raw
+const waveMoveSpeed = 0.1; // How fast waves move
+const waveMoveAmplitude = waveBaseRadius / 8; // How far each wave can travel before coming back
 
 // Cloud settings
-const cloudLevels = 3;
-const cloudLevelHeight = 90; 
-const cloudMaxHorizontal = 200;
-const cloudMargin = 180;
-const cloudWidth = 500;
-const cloudResolution = 8;
-const minCloudNum = 8;
-const maxCloudNum = 14;
+const cloudLevels = 3; // How many times the contour of the cloud contour goes "up" on its left side.
+                       //May be increased by 1 or 2 by the generator depending of the case
+const cloudLevelHeight = 90; // How high is each "up" movement in the cloud generator. Note: this is to
+                             // be compared to the cloudMaxHorizontal parameter and considered as a 
+                             // "ratio" rather than an absolute value since the cloud will later be scaled to have constant width.
+const cloudMaxHorizontal = 200; // How far left or right a cloud contour can travel at once.
+                                // be compared to the cloudLevelHeight parameter and considered as a 
+                                // "ratio" rather than an absolute value since the cloud will later be scaled to have constant width.
+const cloudMargin = 180; // Min width of the cloud in its center.
+const cloudWidth = 500; // Fixed width of a cloud. Clouds will always be scaled down or up to mathc this fixed width;
+const cloudResolution = 8; // Number of vertices in that define the rounded parts of the cloud.
+const minCloudNum = 8; // Minimum amount of clouds to spawn
+const maxCloudNum = 14; // maximum amount of clouds to spawn
 const cloudsBorderThickness = 100; // Max distance from canvas border where a cloud could spawn
-const forbidSquareClouds = true;
+const forbidSquareClouds = true; // Whther clouds with a "squarish" bottom are allowed.
 const cloudBottomLine = 2 / 3; // ratio of the image, starting from the
                                // bottom where the bottom most cloud could be spawned
-const cloudMinScale = 1;
-const cloudMaxScale = 1.5;
-const cloudSeed = 0;
+const cloudMinScale = 1; // Minimum  scale of a cloud
+const cloudMaxScale = 1.5; // maximum scale of a cloud
+const cloudMinSpeed = 0.5; // minimum movement speed of a cloud
+const cloudMaxSpeed = 2; // maximum movement speed of a cloud
+const cloudSeed = -1; // seed to use for the random generation of the clouds. If negative, a random seed will be used
 
 // circles settings
-const minNumCircles = 5;
-const maxNumCircles = 7;
-const minCircleRadius = 5;
-const maxCircleRadius = 50;
-const circleSeed = 3108;
+const minNumCircles = 5; // Min amount of circles
+const maxNumCircles = 7; // maximum amount of circles
+const minCircleRadius = 5; // minimum radius of a circle in pixels
+const maxCircleRadius = 50; // maximum radius of a circle in pixels
+const circleSeed = 3108; // seed to use for the random generation of the circles. If negative, a random seed will be used
+
+
+// rain settings
+const rainSpeed = 100; // Speed the rain falls at
+const rainSpawnRate = 5; // Amount of rain particles to spawn at each frame
+const rainSpawnProbability = 0.5; // Probability to actually spawn a particle when asked to
+const rainTrailLenght = 2; // Amount of successive rain particle positions stored and displayed in the trail
+const preDrawStepsNum = 100; // number of simulation steps to run before the first frame
 
 let clouds = [];
+let cloudsVel = [];
 let waves = [];
 let circles = [];
 
@@ -54,28 +73,62 @@ function setup() {
   createCanvas(w, h);
   background(colorFromHex(backgroundClr));
   
+  // Create waves
+  createWave()
+
+  // create circles
+  if (circleSeed) {
+    setSeed(circleSeed);
+  }
+  else {
+    setSeed();
+  }
+  print("circles seed", seed);
+  let numCircles = random(minNumCircles, maxNumCircles);
+  for (let i = 0; i < numCircles; i++) {
+    let c = new Fresco.Polygon(random(minCircleRadius, maxCircleRadius), 64);
+    c.position = createVector(
+      random(- width / 2, width / 2), random(- height / 2 + height *
+        cloudBottomLine , height / 2));
+    c.color = colorFromHex(circlessClr[Math.floor(random(circlessClr.length))]);
+    c.noFill = false;
+    c.fillColor = c.color;
+    circles.push(c);
+  }
+
   // Create clouds
-  setSeed();
+  if (cloudSeed >= 0) {
+    setSeed(cloudSeed);
+  }
+  else {
+    setSeed(0);
+  }
+  print("clouds seed", seed);
   let maxAngle = Math.atan2(height * (cloudBottomLine - 0.5), width / 2);
   let minAngle = Math.PI - maxAngle;
   let numClouds = random(minCloudNum, maxCloudNum);
   for (let i = 0; i < numClouds; i++) {
     clouds.push(createCloud(minAngle + i / (numClouds - 1) * (maxAngle - minAngle)));
+    cloudsVel.push(random(cloudMinSpeed, cloudMaxSpeed));
   }
 
-  // Create waves
-  createWave()
+  // add rain emitter
+  let rainEmitter = new Fresco.ShapeEmitter(
+    new Fresco.Line(createPoint(-width / 2, height / 2),
+      createPoint(width / 2, height / 2)), true);
+  rainEmitter.shape.isPolygonal = true;
+  rainEmitter.minNormalV = rainSpeed;
+  rainEmitter.maxNormalV = rainSpeed;
+  rainEmitter.spawnRate = rainSpawnRate;
+  rainEmitter.spawnProbability = rainSpawnProbability;
+  rainEmitter.leaveTrail = true;
+  rainEmitter.maxTrailLength = rainTrailLenght;
+  rainEmitter.colorOverLife = [colorFromHex(rainClr, rainOpacity)]
 
-  // create circles
-  setSeed(circleSeed);
-  let numCircles = random(minNumCircles, maxNumCircles);
-  for (let i = 0; i < numCircles; i++) {
-    let c = new Fresco.Polygon(random(minCircleRadius, maxCircleRadius), 64);
-    c.position = createVector(random(- width / 2, width / 2), random(- height / 2 + height * cloudBottomLine , height / 2));
-    c.color = colorFromHex(circlessClr[Math.floor(random(circlessClr.length))]);
-    c.noFill = false;
-    c.fillColor = c.color;
-    circles.push(c);
+  // run a number of simulation steps before the first frame
+  // to make sure rain already fills the canvas
+  for (let i = 0; i < preDrawStepsNum; i++) {
+    simulationStep();
   }
 }
 
@@ -83,6 +136,18 @@ function setup() {
 // called in a loop
 function draw() {
   background(colorFromHex(backgroundClr));
+  simulationStep();
+
+  // draw rain
+  for (let  i = 0; i < particles.length; i++) {
+    // if out of screen, kill particle instead
+    if (particles[i].position.y < -height / 2) {
+      particles[i].isDead = true;
+    }
+    else {
+      particles[i].draw();
+    }
+  }
 
   // Draw circles
   for (let i = 0; i < circles.length; i++) {
@@ -100,6 +165,11 @@ function draw() {
 
   // Draw clouds
   for (let i = 0; i < clouds.length; i++) {
+    clouds[i].position.x += cloudsVel[i];
+    if (clouds[i].position.x > width / 2 + cloudWidth * clouds[i].scale.x * 0.6) {
+      clouds[i].position.x = -width / 2 - cloudWidth * clouds[i].scale.x * 0.6;
+    }
+
     let clr = clouds[i].color;
     // change shadow color
     clouds[i].color = colorFromHex(shadowClr);
@@ -142,12 +212,10 @@ function draw() {
     }
     pos.y -= waveRawOffset;
   }
-
-
-  // noLoop();
 }
 
 
+// Create a set of concentric arcs representing a single wave
 function createWave() {
   for (let i = 0; i < numInnerRings; i++) {
     let wave = new Fresco.Arc(Math.PI, waveBaseRadius - i * ringRadiusOffset, 32);
