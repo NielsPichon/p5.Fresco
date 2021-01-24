@@ -151,7 +151,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1445">line 1445</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1683">line 1683</a>
     </li></ul></dd>
     
 
@@ -218,7 +218,7 @@
     
 
     
-    <h4 class="name" id="applyTransform"><span class="type-signature"></span>applyTransform<span class="signature">(vtx)</span><span class="type-signature"> &rarr; {p5.Vector}</span></h4>
+    <h4 class="name" id="applyTransform"><span class="type-signature"></span>applyTransform<span class="signature">(vtx, position<span class="signature-attributes">opt</span>, scale<span class="signature-attributes">opt</span>, rotation<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {p5.Vector}</span></h4>
     
 
     
@@ -226,7 +226,7 @@
 
 
 <div class="description">
-    Returns a copy of  the specified vertex, which position hasbeen modified following this shape's transform (position, scale and rotation that is).This allows to retrieve the position in world coordinates of a point form the positionin the  shape referential.
+    Returns a copy of  the specified vertex, which position hasbeen modified following this shape's transform (position, scale and rotation that is).This allows to retrieve the position in world coordinates of a point form the positionin the  shape referential.This method can also be used to transform a point as if it was a partof a shape with a specified transform. This is useful for instantiating the shape for instance
 </div>
 
 
@@ -250,7 +250,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -275,10 +279,139 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">The point to  apply the transform to.</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The point to apply the transform to.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">p5.Vector</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Offset to apply to the point.If specified, the shape transform will be ignored.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>scale</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">p5.Vector</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Scale to apply to the point.If not specified and `position` is, it will default to unit scale;</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Rotation to apply to the point.If not specified and `position` is, it will default to 0.</td>
         </tr>
 
     
@@ -324,7 +457,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line526">line 526</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line746">line 746</a>
     </li></ul></dd>
     
 
@@ -439,7 +572,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line711">line 711</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line945">line 945</a>
     </li></ul></dd>
     
 
@@ -603,7 +736,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line609">line 609</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line843">line 843</a>
     </li></ul></dd>
     
 
@@ -718,7 +851,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1144">line 1144</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1378">line 1378</a>
     </li></ul></dd>
     
 
@@ -856,7 +989,7 @@
                 </td>
             
 
-            <td class="description last">Whether to use  the shape color or theindividual vertices color.At the current time, p5.js does not support drawing shapes withmultiple vertices color so this willmost likely result in drawing the sahpe  with the last vertex's color.</td>
+            <td class="description last">Whether to use  the shape color or theindividual vertices color.At the current time, p5.js does not support drawing shapes withmultiple vertices color so this willmost likely result in drawing the shape  with the last vertex's color.</td>
         </tr>
 
     
@@ -902,7 +1035,397 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line329">line 329</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line339">line 339</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="drawInstantiate"><span class="type-signature"></span>drawInstantiate<span class="signature">(usePointColor<span class="signature-attributes">opt</span>, position<span class="signature-attributes">opt</span>, scale<span class="signature-attributes">opt</span>, rotation<span class="signature-attributes">opt</span>, color, fillColor, lineWeight)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Utility to draw the shape with a specified (optional) transform
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>usePointColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Whether to use  the shape color or theindividual vertices color.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">p5.Vector</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Position offset. If not specified,the method will use the shape's own transform.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>scale</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">p5.Vector</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Scale. If `position` is specified,this will default to unit scale.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Rotation. If `position` is specified,this will default to 0.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">RGBA color the stroke of the instance,as an array of 4 values in the range [0,255].Ignored if `usePointColor`. If not specified, will default to the shape's color.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fillColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">RGBA fill color of the stroke of the instance,as an array of 4 values in the range [0,255].If not specified, will default to the shape's fillColor.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lineWeight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Weight of the stroke.If not specified, will default to the shape's strokeWeight.At the current time, p5.js does not support drawing shapes withmultiple vertices color so this willmost likely result in drawing the sahpe  with the last vertex's color.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#drawInstantiate">Fresco.Shape#drawInstantiate</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line366">line 366</a>
     </li></ul></dd>
     
 
@@ -1181,7 +1704,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line454">line 454</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line514">line 514</a>
     </li></ul></dd>
     
 
@@ -1274,7 +1797,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line402">line 402</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line462">line 462</a>
     </li></ul></dd>
     
 
@@ -1553,7 +2076,592 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line424">line 424</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line484">line 484</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="drawShadow"><span class="type-signature"></span>drawShadow<span class="signature">(type<span class="signature-attributes">opt</span>, angle<span class="signature-attributes">opt</span>, tolerance<span class="signature-attributes">opt</span>, density<span class="signature-attributes">opt</span>, length<span class="signature-attributes">opt</span>, inside<span class="signature-attributes">opt</span>, stipplingDensity<span class="signature-attributes">opt</span>, weight<span class="signature-attributes">opt</span>, weightRandomness<span class="signature-attributes">opt</span>, constantLength<span class="signature-attributes">opt</span>, vanishingBands<span class="signature-attributes">opt</span>, hatchingAngle<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Draws the shadow of a 2D shape using hatching or stippling
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Whether to use hatching or stippling.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>angle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Angle of the shadow. The shadow will only be castwhere the normals are oriented in the shadows direction</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tolerance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Angle tolerance to consider a normal to be inthe right direction for the shape to cast a shadow at the point</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>density</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    100
+                
+                </td>
+            
+
+            <td class="description last">How many points to evaluate the normal of along the contourand draw hatches or stipples from</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    10
+                
+                </td>
+            
+
+            <td class="description last">Max length of the hatches or max distance of a stipple</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>inside</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Should the shadow be cast inside or outside the shape</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stipplingDensity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    20
+                
+                </td>
+            
+
+            <td class="description last">Max number of stipple to draw for each evaluated point</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">Min stroke weight of the hatching lines and stipples</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>weightRandomness</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">Max random amount to add to the stroke weight</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constantLength</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">Whether the `length` should be modulated bythe angle relative to the normal</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vanishingBands</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    10
+                
+                </td>
+            
+
+            <td class="description last">Number of bands to use when drawing a `vanishing` shadow type.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hatchingAngle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Angle to hatch at, relative to the normal.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#drawShadow">Fresco.Shape#drawShadow</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line555">line 555</a>
     </li></ul></dd>
     
 
@@ -1815,7 +2923,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line745">line 745</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line979">line 979</a>
     </li></ul></dd>
     
 
@@ -2014,7 +3122,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line669">line 669</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line903">line 903</a>
     </li></ul></dd>
     
 
@@ -2129,7 +3237,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line542">line 542</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line776">line 776</a>
     </li></ul></dd>
     
 
@@ -2222,7 +3330,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line566">line 566</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line800">line 800</a>
     </li></ul></dd>
     
 
@@ -2337,7 +3445,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1125">line 1125</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1359">line 1359</a>
     </li></ul></dd>
     
 
@@ -2452,7 +3560,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line590">line 590</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line824">line 824</a>
     </li></ul></dd>
     
 
@@ -2710,7 +3818,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line901">line 901</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1135">line 1135</a>
     </li></ul></dd>
     
 
@@ -2825,7 +3933,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1016">line 1016</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1250">line 1250</a>
     </li></ul></dd>
     
 
@@ -2940,7 +4048,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line496">line 496</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line709">line 709</a>
     </li></ul></dd>
     
 
@@ -3033,7 +4141,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line860">line 860</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1094">line 1094</a>
     </li></ul></dd>
     
 
@@ -3230,7 +4338,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line483">line 483</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line696">line 696</a>
     </li></ul></dd>
     
 
@@ -3372,7 +4480,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line838">line 838</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1072">line 1072</a>
     </li></ul></dd>
     
 
@@ -3440,13 +4548,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#constant">constant</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#linear">linear</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 17 2021 21:04:14 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 24 2021 14:55:42 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>

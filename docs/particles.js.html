@@ -38,17 +38,13 @@
  * */
 const g = -9.81;
 
-
 /**
- * Boolean value to use for linear interpolation
+ * Interpolation type, for use in ramps
  */
-const linear = true;
-
-
-/**
- * Boolean value to use for constant interpolation
- */
-const constant = false;
+const interpolationType = {
+    linear: true,
+    constant: false
+}
 
 
 /** reverserved variable which holds the particles in the simulation */
@@ -73,7 +69,7 @@ let T = 0;
  * @param {boolean} linear Whether to use linear interpolation or not
  * @returns {number} The interpolated value
  */
-function rampInterpolation(t, time, values, linear = true) {
+function rampInterpolation(t, time, values, linear = interpolationType.linear) {
     if (values.length == 1) {
         return values[0];
     }
@@ -105,7 +101,7 @@ function rampInterpolation(t, time, values, linear = true) {
  * @param {boolean} linear Whether to use linear interpolation or not
  * @returns {number} The interpolated value
  */
-function rampInterpolation2D(t, time, values, linear = true) {
+function rampInterpolation2D(t, time, values, linear = interpolationType.linear) {
     if (values.length == 1) {
         return values[0];
     }
@@ -176,6 +172,8 @@ Fresco.Particle = class extends Fresco.Point {
      * This will allow for drawing the whole
      * trajectory of the particle at once, or simply the displacement
      * since the previous position.
+     * @property {number} maxTrailLength=-1 - Maximum length of the the trail
+     * (in number of successive positions)
      * @property {Array.&lt;Array.&lt;number>>} colorOverLife Colors
      * to interpolate between during the life of the particles. Each color
      * should be an array of 4 RGBA values in the range [0, 255].
@@ -222,6 +220,7 @@ Fresco.Particle = class extends Fresco.Point {
         this.mass = 1;
         this.leaveTrail = false; // if true, this particle will
                                  // slowly define a shape
+        this.maxTrailLength = -1;
         this.trail;
 
         // evolve properties over time.
@@ -230,13 +229,13 @@ Fresco.Particle = class extends Fresco.Point {
         // we define a time for each control point.
         this.colorOverLife = [this.color];
         this.colorOverLifeTime = [0];
-        this.colorInterpolation = linear;
+        this.colorInterpolation = interpolationType.linear;
         this.scaleOverLife = [this.scale];
         this.scaleOverLifeTime = [0];
-        this.scaleInterpolation = linear;
+        this.scaleInterpolation = interpolationType.linear;
         this.rotationOverLife = [this.rotation];
         this.rotationOverLifeTime = [0];
-        this.rotationInterpolation = linear;
+        this.rotationInterpolation = interpolationType.linear;
 
         this.simulatePhysics = false; // whether to simulate physics or not
         this.handleCollisions = false; // whether to collide or not.
@@ -351,6 +350,11 @@ Fresco.Particle = class extends Fresco.Point {
     addCurrentPositionToTrail() {
         if (this.trail) {
             append(this.trail.vertices, this.asPoint());
+            if (this.maxTrailLength > 0) {
+                if (this.trail.vertices.length > this.maxTrailLength) {
+                    this.trail.vertices.splice(0, 1);
+                }
+            }
         }
         else {
             this.trail = new Fresco.Shape([this.asPoint()]);
@@ -640,6 +644,8 @@ Fresco.Emitter = class {
      * @property {boolean} simulatePhysics=false - Whether the spawned particles should simulate physics
      * @property {boolean} handleCollisions=false - Whether the spawned particles should handle collisions
      * @property {boolean} leaveTrail=false - Whether the spawned particles should leave a trail
+     * @property {number} maxTrailLength=-1 - If positive, specifies the particles maximum trial length
+     * in number of positions
      * @property {number} spawnRate=50 - Amount of particles this emitter should try spawning on each
      * simulation step. If the emitter is to burst, this is the total amount of particles that will be spawned
      * @property {number} spawnProbability=1 - Propability for a particle to be spawned. This can be used to add
@@ -676,19 +682,20 @@ Fresco.Emitter = class {
         // overall scale
         this.colorOverLife = [[255, 255, 255, 255]];
         this.colorOverLifeTime = [0];
-        this.colorInterpolation = linear;
+        this.colorInterpolation = interpolationType.linear;
         this.scaleOverLife = [createVector(1, 1)];
         this.scaleOverLifeTime = [0];
-        this.scaleInterpolation = linear;
+        this.scaleInterpolation = interpolationType.linear;
         this.rotationOverLife = [0];
         this.rotationOverLifeTime = [0];
-        this.rotationInterpolation = linear;
+        this.rotationInterpolation = interpolationType.linear;
 
         // Whether the particles should simulate physics and collisions,
         // as well as leave a trail
         this.simulatePhysics = false;
         this.handleCollisions = false;
         this.leaveTrail = false;
+        this.maxTrailLength = -1;
 
         // each spawn call, this is how many particles will
         // try to spawn
@@ -758,6 +765,7 @@ Fresco.PointEmitter = class extends Fresco.Emitter {
                     nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
 
                     // apply uniform properties
+                    nu_particle.color = this.colorOverLife[0];
                     nu_particle.colorOverLife = this.colorOverLife;
                     nu_particle.colorOverLifeTime = this.colorOverLifeTime;
                     nu_particle.colorInterpolation = this.colorInterpolation;
@@ -776,6 +784,7 @@ Fresco.PointEmitter = class extends Fresco.Emitter {
                     nu_particle.simulatePhysics = this.simulatePhysics;
                     nu_particle.handleCollisions = this.handleCollisions;
                     nu_particle.leaveTrail = this.leaveTrail;
+                    nu_particle.maxTrailLength = this.maxTrailLength;
 
                     nu_particle.radius = this.radius;
                 }
@@ -859,6 +868,7 @@ Fresco.ShapeEmitter = class extends Fresco.Emitter {
                     nu_particle.scale = this.minScale.copy().mult(1 - t).add(this.maxScale.copy().mult(t));
 
                     // apply uniform properties
+                    nu_particle.color = this.colorOverLife[0];
                     nu_particle.colorOverLife = this.colorOverLife;
                     nu_particle.colorOverLifeTime = this.colorOverLifeTime;
                     nu_particle.colorInterpolation = this.colorInterpolation;
@@ -877,6 +887,7 @@ Fresco.ShapeEmitter = class extends Fresco.Emitter {
                     nu_particle.simulatePhysics = this.simulatePhysics;
                     nu_particle.handleCollisions = this.handleCollisions;
                     nu_particle.leaveTrail = this.leaveTrail;
+                    nu_particle.maxTrailLength = this.maxTrailLength;
 
                     nu_particle.radius = this.radius;
                 }
@@ -944,13 +955,13 @@ function simulationStep(real_time = false, dT = 0.01) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#constant">constant</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#linear">linear</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 17 2021 21:04:14 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 24 2021 14:55:42 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>

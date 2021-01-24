@@ -38,6 +38,18 @@
  */
 var Fresco = {};
 
+
+/**
+ * Type of shadows that can be used when drawing the shadow of a shape
+ */
+const shadowType = {
+  hatching: 1,
+  stippling: 2,
+  full: 3,
+  vanishing: 4
+}
+
+
 /**
  * Helper function to draw a line from 2 p5.vectors.
  * Note that everything is shifted so that 0,0 is 
@@ -186,11 +198,11 @@ Fresco.Point = class extends p5.Vector{
   draw() {
     stroke(this.color);
     strokeWeight(this.radius);
-    if (owner) {
-      drawPoint(owner.applyTransform(this.position));
+    if (this.owner) {
+      drawPoint(this.owner.applyTransform(this.position()));
     }
     else {
-      drawPoint(this.position);
+      drawPoint(this.position());
     }
   }
 
@@ -344,36 +356,80 @@ Fresco.Shape = class {
     this.edgeLengths = [];
   }
 
-
-  // draws the shape
   /**
    * Utility to draw the shape
    * @param {boolean} [usePointColor] Whether to use  the shape color or the
    * individual vertices color.
    * At the current time, p5.js does not support drawing shapes with
    * multiple vertices color so this will
-   * most likely result in drawing the sahpe  with the last vertex's color.
+   * most likely result in drawing the shape  with the last vertex's color.
    */
   draw(usePointColor = false) {
+    this.drawInstantiate(usePointColor);
+  }
+
+
+  /**
+   * Utility to draw the shape with a specified (optional) transform
+   * @param {boolean} [usePointColor] Whether to use  the shape color or the
+   * individual vertices color.
+   * @param {p5.Vector} [position] Position offset. If not specified,
+   * the method will use the shape's own transform.
+   * @param {p5.Vector} [scale] Scale. If `position` is specified,
+   * this will default to unit scale.
+   * @param {number} [rotation] Rotation. If `position` is specified,
+   * this will default to 0.
+   * @param {Array.&lt;number>} color RGBA color the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * Ignored if `usePointColor`. If not specified, will default to the shape's color.
+   * @param {Array.&lt;number>} fillColor RGBA fill color of the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * If not specified, will default to the shape's fillColor.
+   * @param {number} lineWeight Weight of the stroke.
+   * If not specified, will default to the shape's strokeWeight.
+   * At the current time, p5.js does not support drawing shapes with
+   * multiple vertices color so this will
+   * most likely result in drawing the sahpe  with the last vertex's color.
+   */
+  drawInstantiate(usePointColor = false, position=null,
+    scale=null, rotation=null, color=null, fillColor=null,
+    lineWeight=null) {
     if (this.noStroke &amp;&amp; !usePointColor) {
       noStroke();
     } else {
-      stroke(this.color);
-      strokeWeight(this.strokeWeight);
+      if (color) {
+        stroke(color);
+      }
+      else {
+        stroke(this.color);
+      }
+      if (lineWeight) {
+        strokeWeight(lineWeight);
+      }
+      else {
+        strokeWeight(this.strokeWeight);
+      }
     }
     
     if (this.noFill) {
       noFill();
     }
     else {
-      fill(this.fillColor);
+      if (fillColor) {
+        fill(fillColor);
+      }
+      else
+      {
+        fill(this.fillColor);
+      }
     }
 
     beginShape();
     if (this.isPolygonal) {
       let vtx;
       for (let i = 0; i &lt; this.vertices.length; i++) {
-        vtx = this.applyTransform(this.vertices[i]);
+        vtx = this.applyTransform(this.vertices[i],
+          position, scale, rotation);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
@@ -383,10 +439,12 @@ Fresco.Shape = class {
       // we add the first and last vertex twice to make sure all points
       // are part of the curve. Note that if the shape is closed, we 
       // use the last but one and second points instead
-      let vtx = this.applyTransform(this.vertices[0]);
+      let vtx = this.applyTransform(this.vertices[0],
+        position, rotation, scale);
       if (this.isClosed()) {
         vtx = this.applyTransform(
-          this.vertices[this.vertices.length - 2]);
+          this.vertices[this.vertices.length - 2],
+          position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[this.vertices.length - 2].color);
         }
@@ -397,18 +455,20 @@ Fresco.Shape = class {
 
       drawCurveVertex(vtx);
       for (let i = 0; i &lt; this.vertices.length; i++) {
-        vtx = this.applyTransform(this.vertices[i]);
+        vtx = this.applyTransform(this.vertices[i],
+          position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
         drawCurveVertex(vtx);
       }
       vtx = this.applyTransform(
-        this.vertices[this.vertices.length - 1]);
+        this.vertices[this.vertices.length - 1],
+        position, rotation, scale);
 
       if (this.isClosed()) {
         vtx = this.applyTransform(
-          this.vertices[1]);
+          this.vertices[1], position, rotation, scale);
         if (usePointColor) {
           stroke(this.vertices[1].color);
         }
@@ -502,6 +562,159 @@ Fresco.Shape = class {
 
 
   /**
+   * Draws the shadow of a 2D shape using hatching or stippling
+   * @param {number} [type] Whether to use hatching or stippling. 
+   * @param {number} [angle] Angle of the shadow. The shadow will only be cast
+   * where the normals are oriented in the shadows direction
+   * @param {number} [tolerance] Angle tolerance to consider a normal to be in
+   * the right direction for the shape to cast a shadow at the point 
+   * @param {number} [density] How many points to evaluate the normal of along the contour
+   * and draw hatches or stipples from
+   * @param {number} [length] Max length of the hatches or max distance of a stipple
+   * @param {number} [inside] Should the shadow be cast inside or outside the shape
+   * @param {number} [stipplingDensity] Max number of stipple to draw for each evaluated point
+   * @param {number} [weight] Min stroke weight of the hatching lines and stipples 
+   * @param {number} [weightRandomness] Max random amount to add to the stroke weight 
+   * @param {boolean} [constantLength] Whether the `length` should be modulated by
+   * the angle relative to the normal
+   * @param {number} [vanishingBands] Number of bands to use when drawing a `vanishing` shadow type.
+   * @param {number} [hatchingAngle] Angle to hatch at, relative to the normal.
+   */
+  drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 2,
+    density = 100, length = 10, inside = false, stipplingDensity = 20,
+    weight = 1, weightRandomness = 0, constantLength = true, vanishingBands = 10,
+    hatchingAngle = null) {
+
+    stroke(this.color);
+
+    if (type == shadowType.full) {
+      let dir = 1;
+      if (inside) {
+        dir = -1;
+      }
+      this.drawInstantiate(false, this.position.copy().add(
+        p5.Vector.fromAngle(angle).mult(length * dir)),
+        this.scale, this.rotation,
+        this.color, this.color, this.strokeWeight);
+    }
+    else if (type == shadowType.vanishing) {
+      let dir = 1;
+      if (inside) {
+        dir = -1;
+      }
+      let strk = this.noStroke;
+      this.noStroke = true;
+      for (let i = vanishingBands; i > 0; i--){
+        let clr = new Array(4);
+        arrayCopy(this.color, clr);
+        let offset = length * i / vanishingBands;
+        clr[3] *= 1 - i / (vanishingBands + 1);
+        this.drawInstantiate(false, this.position.copy().add(
+          p5.Vector.fromAngle(angle).mult(offset * dir)),
+          this.scale, this.rotation,
+          clr, clr, this.strokeWeight);
+      }
+      this.noStroke = strk;
+    }
+    else {
+      // retrieve the specified number of points to shade from
+      let vtx = sample(this, density, true, false);
+
+      if (weight &lt;= 0) {
+        weight = this.strokeWeight
+      }
+
+      let nrm;
+      let alpha;
+      let mod;
+      let nu_pt;
+      let dirToNextVtx;
+      let dirToPrevVtx;
+      let t;
+      let x = createVector(1, 0);
+      // set the direction to draw the shadow
+      let nrmDir = 1;
+      if (inside) {
+        nrmDir = -1;
+      }
+      let shadowVec = p5.Vector.fromAngle(angle);
+      if (hatchingAngle &amp;&amp; type == shadowType.hatching) {
+        shadowVec.rotate(hatchingAngle);
+      }
+      // for each seed point, check the normal and if within the shadow cone angle
+      for (let i = 0; i &lt; vtx.length; i++) {
+        // retrieve the normal
+        nrm = this.normalAtPoint(vtx[i], 0.1);
+
+        // check if the nrm has the shadow's angle with horizontal line
+        alpha = Math.acos(nrm.dot(x));
+        if(nrm.y &lt; 0) {
+          alpha *= -1;
+        }
+
+        let diff = compareAngles(alpha, angle);
+
+        if (diff &lt;= tolerance) {
+          if (type == shadowType.hatching) {
+            if (constantLength){
+              mod = 1;
+            }
+            else {
+              mod = 1 - diff / tolerance;
+            }
+            strokeWeight(weight + random(0, weightRandomness));
+            drawLine(this.applyTransform(vtx[i]), this.applyTransform(
+              vtx[i]).add(shadowVec.copy().mult(length * nrmDir * mod)));
+          }
+          else {
+            // modulation due to angular distance to target shadow angle
+            if (constantLength){
+              mod = 1;
+            }
+            else {
+              mod = 1 - diff / tolerance;
+            }
+
+            // compute direction to next and previous vertex
+            if (i == 0){
+              dirToPrevVtx = createVector(0, 0);
+            }
+            else {
+              dirToPrevVtx = vtx[i - 1].position().sub(vtx[i]);
+            }
+            if (i == vtx.length - 1){
+              dirToNextVtx = createVector(0, 0);
+            }
+            else {
+              dirToNextVtx = vtx[i + 1].position().sub(vtx[i]);
+            }
+
+            // draw many points scattered around 
+            for (let j = 0; j &lt; stipplingDensity * mod; j++) {
+              strokeWeight(weight + random(0, weightRandomness));
+              nu_pt = this.applyTransform(vtx[i]);
+              // set random normal position
+              let t = random();
+              nu_pt.add(shadowVec.copy().mult(length * nrmDir * mod * t));
+
+              // set random position along direction to next vertex
+              t = random(-1, 1);
+              if (t >= 0) {
+                nu_pt.add(dirToNextVtx.copy().mult(t));
+              }
+              else {
+                nu_pt.add(dirToPrevVtx.copy().mult(t));
+              }
+              drawPoint(nu_pt);
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  /**
    * Sets the scale of the shape. If only x is specified,
    * a uniform scale will be used
    * @param {number} x Scale along the x axis. Will be used  as the
@@ -538,25 +751,46 @@ Fresco.Shape = class {
   }
 
 
-  // returns the world position of points
   /**
    * Returns a copy of  the specified vertex, which position has
    * been modified following this shape's transform (position, scale and rotation that is).
    * This allows to retrieve the position in world coordinates of a point form the position
-   * in the  shape referential. 
-   * @param {p5.Vector} vtx The point to  apply the transform to.
+   * in the  shape referential.
+   * This method can also be used to transform a point as if it was a part
+   * of a shape with a specified transform. This is useful for instantiating the shape for instance
+   * @param {p5.Vector} vtx The point to apply the transform to.
+   * @param {p5.Vector} [position] Offset to apply to the point.
+   * If specified, the shape transform will be ignored.
+   * @param {p5.Vector} [scale] Scale to apply to the point.
+   * If not specified and `position` is, it will default to unit scale;
+   * @param {number} [rotation] Rotation to apply to the point.
+   * If not specified and `position` is, it will default to 0.
    * @returns {p5.Vector} The transformed point. Note that because of the way the computation is done,
    * classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implement
    * the `copy` method, and usual vector arithmetics (this is the case of `Fresco.Point` and
    * `Fresco.Particle` for instance). In this case the return type will be  the same
    * as the input type.
    */
-  applyTransform(vtx) {
+  applyTransform(vtx, position=null, scale=null, rotation=null) {
+    if (position) {
+      if (!scale) {
+        scale = createVector(1, 1);
+      }
+      if (!rotation) {
+        rotation = 0;
+      }
+    }
+    else {
+      position = this.position;
+      rotation = this.rotation;
+      scale = this.scale;
+    }
+
     let nu_vtx = vtx.copy();
-    nu_vtx.x = cos(this.rotation) * vtx.x + sin(this.rotation) * vtx.y;
-    nu_vtx.y = -sin(this.rotation) * vtx.x + cos(this.rotation) * vtx.y;
-    nu_vtx.mult(this.scale);
-    nu_vtx.add(this.position);
+    nu_vtx.x = cos(rotation) * vtx.x + sin(rotation) * vtx.y;
+    nu_vtx.y = -sin(rotation) * vtx.x + cos(rotation) * vtx.y;
+    nu_vtx.mult(scale);
+    nu_vtx.add(position);
     
     return nu_vtx;
   }
@@ -788,7 +1022,7 @@ Fresco.Shape = class {
         }
       }
       
-      let pt = this.vertices[edgeIdx].position().mult(1 - interp).add(
+      let pt = this.vertices[edgeIdx].copy().mult(1 - interp).add(
         this.vertices[l].position().mult(interp));
       if (world) {
         return this.applyTransform(pt);
@@ -990,7 +1224,7 @@ Fresco.Shape = class {
           p2 = a.copy().mult(t01 * t01 * t01).add(b.copy().mult(
             t01 * t01)).add(c.copy().mult(t01)).add(d);
 
-          // move the bounds such that we restrict the sdrawLine to the closest half
+          // move the bounds such that we restrict the splineine to the closest half
           if(distSquared(pt, p1) &lt;= distSquared(pt, p2)) {
             t1 = (t1 + t0) * 0.5;
             // if the closest half is already at less than epsilon, return
@@ -1348,8 +1582,8 @@ function deepcopy(obj) {
 Fresco.Line = class extends Fresco.Shape {
   /**
    * @constructor
-   * @param {Point} pt1 First extremity Point
-   * @param {Point} pt2 Second extremity Point
+   * @param {p5.Vector} pt1 First extremity Point
+   * @param {p5.Vector} pt2 Second extremity Point
    * @param {number} resolution number of points subdividing the 
    * line (min 2, the extremities).
    */
@@ -1404,8 +1638,10 @@ Fresco.Circle = class extends Fresco.Shape {
       append(this.vertices,
         createPoint(this.radius * cos(angle), this.radius * sin(angle)));
       angle += angleIncr;
+      this.vertices[i].owner = this;
     }
     append(this.vertices, createPoint(this.radius, 0));
+    this.vertices[this.vertices.length - 1].owner = this;
     this.updateLengths = true;
     this.updateBounds = true;
   }
@@ -1433,9 +1669,11 @@ Fresco.Arc = class extends Fresco.Shape {
       append(this.vertices,
         createPoint(radius * cos(theta), radius * sin(theta)));
       theta += angleIncr;
+      this.vertices[i].owner = this;
     }
     if (close) {
       this.vertices.push(this.vertices[0]);
+      this.vertices[this.vertices.length - 1].owner = this;
     }
   }
 }
@@ -1957,7 +2195,8 @@ function isInside(vtx, shape, approx = true) {
 
 /**
  * Resamples a shape's contour by spreading evenly a given
- * amount of points along the shape.
+ * amount of points along the shape. These points will become the
+ * new vertices of the shape
  * This may change the look of the shape, inducing some amount of smoothing to
  * some extend, even though each point is spread on the original contour.
  * Note: Equidistaqnce on the contour may not imply equidistance in space.
@@ -1992,6 +2231,37 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     offset = false;
   }
   
+  // sample the specified amount of points on the contour
+  let vtx = sample(shape, numPoints, offset, approx);
+
+  let nu_shape = shape.copy();
+  nu_shape.vertices = vtx
+  for (let i = 0; i &lt; nu_shape.vertices.length; i++) {
+    nu_shape.vertices[i].owner = nu_shape;
+  }
+  nu_shape.updateLengths = true;
+  nu_shape.updateBounds = true;
+  nu_shape.isPolygonal = isPolygonal;
+
+  return nu_shape;
+}
+
+
+/**
+ * Samples a shape's contour by spreading evenly a given
+ * amount of points along the shape.
+ * @param {Fresco.Shape} shape The shape to resample
+ * @param {number} [numPoints] Number of points to spread along the shape.
+ * If the number is 0 or less, this will simply re-spread the existing
+ * amount of vertices in the shape
+ * @param {boolean} [offset] If true, the first vertex will be moved on the contour
+ * by half the distance between 2 succesive vertices. This may be handy to avoid
+ * the shape being skewed towards the first vertex.
+ * @param {boolean} [approx] If true, non-polygonal shape edge interpolation
+ * will be be approximated
+ * @returns {Fresco.Shape} The resampled shape.
+ */
+function sample(shape, numPoints, offset=true, approx=false) {  
   let vtx = [];
   
   let totalLength = shape.contourLength();
@@ -2030,9 +2300,8 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     t /= shape.edgeLengths[j];
     t = 1 - t;
     
-    pt = createPoint(
-      shape.edgeInterpolation(t, j, 100,
-                     approx, false));
+    pt = shape.edgeInterpolation(t, j, 100,
+      approx, false);
     
     pt.rotation = shape.vertices[j].rotation * (1 - t) +
       shape.vertices[j + 1].rotation * t;
@@ -2055,13 +2324,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     append(vtx, shape.vertices[shape.vertices.length - 1].copy());
   }
 
-  let nu_shape = shape.copy();
-  nu_shape.vertices = vtx
-  nu_shape.updateLengths = true;
-  nu_shape.updateBounds = true;
-  nu_shape.isPolygonal = isPolygonal;
-
-  return nu_shape;
+  return vtx;
 }
 
 
@@ -2231,7 +2494,7 @@ function scatter(shape, numPoints = 100,
  */
 function relax(points, 
                 iterations = 1, totSamples = 1000,
-                shape = [],
+                shape = null,
                 minX = -width/2, minY = -height / 2,
                 maxX = width / 2, maxY = height / 2) {
   // we find the max radius
@@ -2678,13 +2941,13 @@ function sSubtract(A, B) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#constant">constant</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSq">distSq</a></li><li><a href="global.html#divide">divide</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#linear">linear</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sInterpolate">sInterpolate</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 17 2021 21:04:14 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 24 2021 14:55:42 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
