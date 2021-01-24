@@ -323,7 +323,6 @@ Fresco.Particle = class extends Fresco.Point {
         if (this.trail) {
             append(this.trail.vertices, this.asPoint());
             if (this.maxTrailLength > 0) {
-                print("meh")
                 if (this.trail.vertices.length > this.maxTrailLength) {
                     this.trail.vertices.splice(0, 1);
                 }

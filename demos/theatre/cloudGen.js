@@ -32,8 +32,8 @@ function createCloud(angularPosition) {
       }
   
       // Move horizontally.
-      moveHorizontal(leftOrRight, vertex, vertices, 2 * cloudLevelHeight,
-          cloudMaxHorizontal - 2 * cloudLevelHeight);
+      moveHorizontal(leftOrRight, vertex, vertices, cloudMinHorizontal,
+          cloudMaxHorizontal);
   
       // If move right, check if new position is right of max right
       // If so, store current position as max right
@@ -83,7 +83,7 @@ function createCloud(angularPosition) {
       }
       
       // Move horizontally.
-      moveHorizontal(leftOrRight, vertex, vertices, 2 * cloudLevelHeight, cloudMaxHorizontal, leftCap);
+      moveHorizontal(leftOrRight, vertex, vertices, cloudMinHorizontal, cloudMaxHorizontal, leftCap);
   
       // If move right, check if new position is right of max right
       // If so, store current position as max right
@@ -183,10 +183,10 @@ function createCloud(angularPosition) {
     // we compute the distance the edge.
     if (angularPosition > 3 * Math.PI / 4 ||
       angularPosition < Math.PI / 4) {
-        radius = width * 0.5 / Math.abs(Math.cos(angularPosition));
+        radius = circleFrameRadius / Math.abs(Math.cos(angularPosition));
     }
     else {
-      radius = height * 0.5 / Math.abs(Math.sin(angularPosition));
+      radius = circleFrameRadius / Math.abs(Math.sin(angularPosition));
     }
     // choose random position, but more towards the edge
     let t = random();

@@ -560,12 +560,20 @@ Fresco.Shape = class {
     stroke(this.color);
 
     if (type == shadowType.full) {
+      let dir = 1;
+      if (inside) {
+        dir = -1;
+      }
       this.drawInstantiate(false, this.position.copy().add(
-        p5.Vector.fromAngle(angle).mult(length)),
+        p5.Vector.fromAngle(angle).mult(length * dir)),
         this.scale, this.rotation,
         this.color, this.color, this.strokeWeight);
     }
     else if (type == shadowType.vanishing) {
+      let dir = 1;
+      if (inside) {
+        dir = -1;
+      }
       let strk = this.noStroke;
       this.noStroke = true;
       for (let i = vanishingBands; i > 0; i--){
@@ -574,7 +582,7 @@ Fresco.Shape = class {
         let offset = length * i / vanishingBands;
         clr[3] *= 1 - i / (vanishingBands + 1);
         this.drawInstantiate(false, this.position.copy().add(
-          p5.Vector.fromAngle(angle).mult(offset)),
+          p5.Vector.fromAngle(angle).mult(offset * dir)),
           this.scale, this.rotation,
           clr, clr, this.strokeWeight);
       }
