@@ -168,6 +168,8 @@ function createCloud(angularPosition) {
     }
     prevClrIdx = clrIdx;
     cloud.color = colorFromHex(cloudsClr[clrIdx]);
+    cloud.fillColor = cloud.color;
+    cloud.noFill = false;
 
     // set shape as polygonal
     cloud.isPolygonal = true;
