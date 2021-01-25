@@ -4,75 +4,41 @@
  * structured noise of various sorts
  */
 
+
+/**
+ * Container for a `Fresco.Worley` noise class instance. Not to be tempered with unless
+ * you know what you are doing.
+ */
+let worleyInstance=null;
+
 /**
  * A class for 2D/3D cellular noise
 */
-Fresco.Voronoi = class {
+Fresco.Worley = class {
   /**
    * 
    * @constructor
-   * @param {number} numCells Number of cells to create within the canvas.
-   * If `gridBased` is true, this is interpreted as the number of cell in each axis.
-   * (including the z axis if `is3D` is also true). Otherwise this is the number of points to scatter to generate cells
-   * @param {boolean} [gridBased] Whether to use a grid based approach.
-   * This will prevent animating individual cell centers but is much faster to compute.
-   * @param {boolean} [is3D] Whether to generate 3D noise. This will allow
-   * animating the z coordinate but is much slower.
-   * @property {number} gridBased Whether to use a grid based approach.
-   * @property {number} numCells Number of cells to create within the canvas.
-   * @property {boolean} is3D Whether the noise is 3D noise.
    * @property {Array.<Fresco.Point>} seeds Seed points used to generate the noise
    */
-  constructor(numCells, gridBased = false, is3D=false) {
-    this.gridBased = gridBased;
-    this.numCells = numCells;
-    this.is3D = is3D;
+  constructor() {
+    this.scatterSeeds();
+  }
+
+  /**
+   * Scatter the seeds, one per cell, in a 256 x 256 x 256 cell
+   */
+  scatterSeeds() {
     this.seeds = [];
-    
-    if (!this.gridBased) {
-      let z = 0;
-      const zDim = max([width, height]);
-      for (let i = 0; i < numCells; i++) {
-        if (is3D) {
-          z = random(zDim);
-        }
-        append(
-          this.seeds,
-          createPoint(
-            random(-width / 2, width / 2),
-            random(-height / 2, height / 2), z));
-      }
-    }
-    else {
-      let xDim = width / numCells;
-      let yDim = height / numCells;
-      let zDim = 0;
-      if (is3D) {
-        zDim = max([width, height]) / numCells;
-      }
-      this.cellSize = createVector(xDim, yDim, zDim);
-      let inCellPos = createVector(0, 0, 0);
-      let j = 0;
-      let k = 0;
-      for (let i = 0; i < numCells; i++) {
-        for (j = 0; j < numCells; j++) {
-          if (is3D) {
-            for (k = 0; k < 256; k++) {
-              inCellPos.x = random();
-              inCellPos.y = random();
-              inCellPos.z = random();
-              append(
-                this.seeds,
-                inCellPos.copy().mult(this.cellSize));
-            }
-          }
-          else {
-            inCellPos.x = random();
-            inCellPos.y = random();
-            append(
-              this.seeds,
-              inCellPos.copy().mult(this.cellSize));
-          }
+    let inCellPos = createVector(0, 0, 0);
+    let j = 0;
+    let k = 0;
+    for (let i = 0; i < 256; i++) {
+      for (j = 0; j < 256; j++) {
+        for (k = 0; k < 256; k++) {
+          inCellPos.x = random();
+          inCellPos.y = random();
+          inCellPos.z = random();
+          this.seeds.push(inCellPos.copy());
         }
       }
     }
@@ -80,154 +46,102 @@ Fresco.Voronoi = class {
 
 
   /**
-   * Given a point position (as a vector), returns the value
-   * of the voronoi noise at the specified location.
+   * Computes the position of the point in the grid with wrapping
+   * around the edges (meaning exiting right makes you enter left).
+   * In practice, this returns the modulo of x with handling of negative values.
+   * @param {number} x 1D point position towrap arouind the edges.
+   * @returns {number} The wrapped point position
+   */
+  edgeWrapPosition(x) {
+    while (x < 256) {
+      x += 256;
+    }
+    return x % 256;
+  }
+
+
+  /**
+   * Given a point position, returns the value
+   * of the F1 worley noise at the specified location.
    * @param {number} x 
    * @param {number} y 
-   * @param {number} z 
-   * @returns {number} Value of the voronoi noise at the specified location.
+   * @param {number} [z] 
+   * @returns {number} Value of the F1 worley noise at the specified location.
    * In practice this is the distance to the closest cell center remapped to [0, 1];
    */
   get(x, y, z=null) {
-    let position = createVector(x, y, z);
-    if (this.gridBased) {
-      // Retrieve the position modulo the window size
-      let inCellPos = position.copy();
-      inCellPos.x = (inCellPos.x +
-        (Math.floor(Math.abs(inCellPos.x / width)) + 1) *
-        width) % width;
-      inCellPos.y = (inCellPos.y +
-        (Math.floor(Math.abs(inCellPos.y / height)) + 1) *
-        height) % height;
-      
-      // get cell where the point lands
-      let cellX = Math.floor(inCellPos.x / this.cellSize.x);
-      let cellY = Math.floor(inCellPos.y / this.cellSize.y);
-      
-      inCellPos.x -= cellX * this.cellSize.x;
-      inCellPos.y -= cellY * this.cellSize.y;
-      
-      let cellZ = 0;
-      if(this.is3D) {
-        inCellPos.z = (inCellPos.z +
-          (Math.floor(Math.abs(
-          inCellPos.z / 256 / this.cellSize.z)) + 1) *
-          256 * this.cellSize.z) % (256 * this.cellSize.z);
-        cellZ = Math.floor(inCellPos.z / this.cellSize.z);
-        inCellPos.z -= cellZ * this.cellSize.z;
-      }
+    let inCellPos = createVector(x, y, z);
+    
+    // get cell where the point lands
+    let cellX = Math.floor(inCellPos.x);
+    let cellY = Math.floor(inCellPos.y);
 
-      let minDist = width * width + height * height;
-      let Y;
-      let Z;
-      let j = 0;
-      let k = 0;
-      let dist = 0;
-      let pt;
-      let X;
-      for (let i = -1; i < 2; i++) {
-        let X = ((cellX + i + this.numCells) % this.numCells) *
-            this.numCells;
-        for (j = -1; j < 2; j++) {
-          Y = (cellY + j + this.numCells) % this.numCells;
-          if (this.is3D) {
-            for (k = -1; k < 2; k++) {
-              Z = ((cellZ + k + 256) % 256);
-              pt = this.seeds[(X + Y) * 256 + Z].copy().add(
-                this.cellSize.copy().mult(createVector(i, j, k)));
-              dist = (pt.sub(inCellPos)).mag();
-              if (dist < minDist) {
-                minDist = dist;
-              }
-            }
-          }
-          else {
-            pt = this.seeds[X + Y].copy().add(
-              this.cellSize.copy().mult(createVector(i, j)));
+    // Retrieve the floating point part of the position
+    // which is the position within a cell
+    inCellPos.x -= cellX;
+    inCellPos.y -= cellY;
+    
+    let cellZ = 0;
+    if(z) {
+      cellZ = Math.floor(inCellPos.z);
+      inCellPos.z -= cellZ;
+    }
+
+    // arbitrary large number, larger than the diagonal of the 3 x 3 x 3 block of cells checked
+    // Which is sqrt(3) in this case
+    let minDist = 3;
+    let X;
+    let Y;
+    let Z;
+    let j = 0;
+    let k = 0;
+    let dist = 0;
+    let pt;
+    for (let i = -1; i < 2; i++) {
+      // find the specified cell with wrapping around the edges
+      X = this.edgeWrapPosition(cellX + i) * 256 * 256;
+      for (j = -1; j < 2; j++) {
+        Y = this.edgeWrapPosition(cellY + j) * 256;
+        if (z) {
+          for (k = -1; k < 2; k++) {
+            Z = this.edgeWrapPosition(cellZ + k) % 256;
+            pt = this.seeds[X + Y + Z].copy().add(createVector(i, j, k));
             dist = (pt.sub(inCellPos)).mag();
             if (dist < minDist) {
               minDist = dist;
             }
           }
         }
-      }
-      return minDist / this.cellSize.mag();
-    }
-    else {
-      let minDist = width * width + height * height;
-      let dist = 0;
-      let seed;
-      
-      // compute the "normal" of at the location of the query
-      let theta = Math.acos(position.x / width * 2);
-      let phi = Math.acos(position.y / height * 2);
-      const n1 = p5.Vector.fromAngles(theta, phi);
-      let n2;
-      for (let  i = 0; i < this.seeds.length; i++) {
-        // we compute the great-circle distance from the 
-        // normal at each point and retrieving the arccos of the
-        // dot product of the normals (the normals are computed)
-        // assuming we go around the unit circle from left to right
-        // of the image
-        // see https://preview.tinyurl.com/y7lb9tpz
-        seed = this.seeds[i].position();
-        theta = Math.acos(seed.x / width * 2);
-        phi = Math.acos(seed.y / height * 2);
-        let n2 = p5.Vector.fromAngles(theta, phi);
-        
-        dist = Math.abs(Math.acos(n1.dot(n2)));
-
-        if (dist < minDist) {
-          minDist = dist;
+        else {
+          pt = this.seeds[X + Y].copy().add(createVector(i, j, -this.seeds[X + Y].z));
+          dist = (pt.sub(inCellPos)).mag();
+          if (dist < minDist) {
+            minDist = dist;
+          }
         }
       }
-      return minDist;
     }
-  }
-  
 
-  /**
-   * a symetrical spherically mapped version of the
-   * voronoi noise which is somewhat trippy. Works best
-   * with non-cell noise
-   * @param {number} x X-coordinate of the point where to query the noise
-   * @param {number} y Y-coordinate of the point where to query the noise 
-   * @param {number} [z] Z-coordinate of the point where to query
-   * the noise. Will only be read if `this.is3D` is `true`
-   * @returns {number} Value of the voronoi noise at the specified location,
-   * in the [0, 1] range.
-   */
-  trippy(x, y, z=null) {
-    let position = createVector(x, y, z=null)
-    let minDist = width * width + height * height;
-    let dist = 0;
-    let seed;
-      
-    // compute the "normal" of at the location of the query
-    let theta = Math.acos(Math.abs(position.x / width));
-    let phi = Math.acos(Math.abs(position.y / height));
-    const n1 = p5.Vector.fromAngles(theta, phi);
-    let n2;
-    for (let  i = 0; i < this.seeds.length; i++) {
-      // we compute the great-circle distance from the 
-      // normal at each point and retrieving the arccos of the
-      // dot product of the normals (the normals are computed)
-      // assuming we go around the unit circle from left to right
-      // of the image
-      // see https://preview.tinyurl.com/y7lb9tpz
-      seed = this.seeds[i].position();
-      theta = Math.acos(Math.abs(seed.x / width));
-      phi = Math.acos(Math.abs(seed.y / height));
-      let n2 = p5.Vector.fromAngles(theta, phi);
-      
-      dist = Math.abs(Math.acos(n1.dot(n2)));
-      
-      if (dist < minDist) {
-        minDist = dist;
-      }
-    }
-    return minDist * 255;    
+    // the maximum possible distance between 2 points is 1 cell diagonal
+    return minDist / sqrt(2);
   }
+}
+
+
+/**
+ * Computes the value of some F1 worley noise at a specified query point. 
+ * F1 here means that the noise is computed from the distance to the nearest
+ * random seed point.
+ * @param {number} x X coordinate of the query point
+ * @param {number} y Y coordinate of the query point
+ * @param {number} [z] Z coordinate of the query point. If not specified the
+ * noise will only considerthe 2D coordinates of the seeds at z = 0;
+ */
+function worleyNoise(x, y, z=null) {
+  if (!worleyInstance) {
+    worleyInstance = new Fresco.Worley();
+  }
+  return worleyInstance.get(x, y, z);
 }
 
 
