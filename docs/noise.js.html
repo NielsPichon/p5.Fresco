@@ -32,75 +32,41 @@
  * structured noise of various sorts
  */
 
+
+/**
+ * Container for a `Fresco.Worley` noise class instance. Not to be tempered with unless
+ * you know what you are doing.
+ */
+let worleyInstance=null;
+
 /**
  * A class for 2D/3D cellular noise
 */
-Fresco.Voronoi = class {
+Fresco.Worley = class {
   /**
    * 
    * @constructor
-   * @param {number} numCells Number of cells to create within the canvas.
-   * If `gridBased` is true, this is interpreted as the number of cell in each axis.
-   * (including the z axis if `is3D` is also true). Otherwise this is the number of points to scatter to generate cells
-   * @param {boolean} [gridBased] Whether to use a grid based approach.
-   * This will prevent animating individual cell centers but is much faster to compute.
-   * @param {boolean} [is3D] Whether to generate 3D noise. This will allow
-   * animating the z coordinate but is much slower.
-   * @property {number} gridBased Whether to use a grid based approach.
-   * @property {number} numCells Number of cells to create within the canvas.
-   * @property {boolean} is3D Whether the noise is 3D noise.
    * @property {Array.&lt;Fresco.Point>} seeds Seed points used to generate the noise
    */
-  constructor(numCells, gridBased = false, is3D=false) {
-    this.gridBased = gridBased;
-    this.numCells = numCells;
-    this.is3D = is3D;
+  constructor() {
+    this.scatterSeeds();
+  }
+
+  /**
+   * Scatter the seeds, one per cell, in a 256 x 256 x 256 cell
+   */
+  scatterSeeds() {
     this.seeds = [];
-    
-    if (!this.gridBased) {
-      let z = 0;
-      const zDim = max([width, height]);
-      for (let i = 0; i &lt; numCells; i++) {
-        if (is3D) {
-          z = random(zDim);
-        }
-        append(
-          this.seeds,
-          createPoint(
-            random(-width / 2, width / 2),
-            random(-height / 2, height / 2), z));
-      }
-    }
-    else {
-      let xDim = width / numCells;
-      let yDim = height / numCells;
-      let zDim = 0;
-      if (is3D) {
-        zDim = max([width, height]) / numCells;
-      }
-      this.cellSize = createVector(xDim, yDim, zDim);
-      let inCellPos = createVector(0, 0, 0);
-      let j = 0;
-      let k = 0;
-      for (let i = 0; i &lt; numCells; i++) {
-        for (j = 0; j &lt; numCells; j++) {
-          if (is3D) {
-            for (k = 0; k &lt; 256; k++) {
-              inCellPos.x = random();
-              inCellPos.y = random();
-              inCellPos.z = random();
-              append(
-                this.seeds,
-                inCellPos.copy().mult(this.cellSize));
-            }
-          }
-          else {
-            inCellPos.x = random();
-            inCellPos.y = random();
-            append(
-              this.seeds,
-              inCellPos.copy().mult(this.cellSize));
-          }
+    let inCellPos = createVector(0, 0, 0);
+    let j = 0;
+    let k = 0;
+    for (let i = 0; i &lt; 256; i++) {
+      for (j = 0; j &lt; 256; j++) {
+        for (k = 0; k &lt; 256; k++) {
+          inCellPos.x = random();
+          inCellPos.y = random();
+          inCellPos.z = random();
+          this.seeds.push(inCellPos.copy());
         }
       }
     }
@@ -108,154 +74,102 @@ Fresco.Voronoi = class {
 
 
   /**
-   * Given a point position (as a vector), returns the value
-   * of the voronoi noise at the specified location.
+   * Computes the position of the point in the grid with wrapping
+   * around the edges (meaning exiting right makes you enter left).
+   * In practice, this returns the modulo of x with handling of negative values.
+   * @param {number} x 1D point position towrap arouind the edges.
+   * @returns {number} The wrapped point position
+   */
+  edgeWrapPosition(x) {
+    while (x &lt; 256) {
+      x += 256;
+    }
+    return x % 256;
+  }
+
+
+  /**
+   * Given a point position, returns the value
+   * of the F1 worley noise at the specified location.
    * @param {number} x 
    * @param {number} y 
-   * @param {number} z 
-   * @returns {number} Value of the voronoi noise at the specified location.
+   * @param {number} [z] 
+   * @returns {number} Value of the F1 worley noise at the specified location.
    * In practice this is the distance to the closest cell center remapped to [0, 1];
    */
   get(x, y, z=null) {
-    let position = createVector(x, y, z);
-    if (this.gridBased) {
-      // Retrieve the position modulo the window size
-      let inCellPos = position.copy();
-      inCellPos.x = (inCellPos.x +
-        (Math.floor(Math.abs(inCellPos.x / width)) + 1) *
-        width) % width;
-      inCellPos.y = (inCellPos.y +
-        (Math.floor(Math.abs(inCellPos.y / height)) + 1) *
-        height) % height;
-      
-      // get cell where the point lands
-      let cellX = Math.floor(inCellPos.x / this.cellSize.x);
-      let cellY = Math.floor(inCellPos.y / this.cellSize.y);
-      
-      inCellPos.x -= cellX * this.cellSize.x;
-      inCellPos.y -= cellY * this.cellSize.y;
-      
-      let cellZ = 0;
-      if(this.is3D) {
-        inCellPos.z = (inCellPos.z +
-          (Math.floor(Math.abs(
-          inCellPos.z / 256 / this.cellSize.z)) + 1) *
-          256 * this.cellSize.z) % (256 * this.cellSize.z);
-        cellZ = Math.floor(inCellPos.z / this.cellSize.z);
-        inCellPos.z -= cellZ * this.cellSize.z;
-      }
+    let inCellPos = createVector(x, y, z);
+    
+    // get cell where the point lands
+    let cellX = Math.floor(inCellPos.x);
+    let cellY = Math.floor(inCellPos.y);
 
-      let minDist = width * width + height * height;
-      let Y;
-      let Z;
-      let j = 0;
-      let k = 0;
-      let dist = 0;
-      let pt;
-      let X;
-      for (let i = -1; i &lt; 2; i++) {
-        let X = ((cellX + i + this.numCells) % this.numCells) *
-            this.numCells;
-        for (j = -1; j &lt; 2; j++) {
-          Y = (cellY + j + this.numCells) % this.numCells;
-          if (this.is3D) {
-            for (k = -1; k &lt; 2; k++) {
-              Z = ((cellZ + k + 256) % 256);
-              pt = this.seeds[(X + Y) * 256 + Z].copy().add(
-                this.cellSize.copy().mult(createVector(i, j, k)));
-              dist = (pt.sub(inCellPos)).mag();
-              if (dist &lt; minDist) {
-                minDist = dist;
-              }
-            }
-          }
-          else {
-            pt = this.seeds[X + Y].copy().add(
-              this.cellSize.copy().mult(createVector(i, j)));
+    // Retrieve the floating point part of the position
+    // which is the position within a cell
+    inCellPos.x -= cellX;
+    inCellPos.y -= cellY;
+    
+    let cellZ = 0;
+    if(z) {
+      cellZ = Math.floor(inCellPos.z);
+      inCellPos.z -= cellZ;
+    }
+
+    // arbitrary large number, larger than the diagonal of the 3 x 3 x 3 block of cells checked
+    // Which is sqrt(3) in this case
+    let minDist = 3;
+    let X;
+    let Y;
+    let Z;
+    let j = 0;
+    let k = 0;
+    let dist = 0;
+    let pt;
+    for (let i = -1; i &lt; 2; i++) {
+      // find the specified cell with wrapping around the edges
+      X = this.edgeWrapPosition(cellX + i) * 256 * 256;
+      for (j = -1; j &lt; 2; j++) {
+        Y = this.edgeWrapPosition(cellY + j) * 256;
+        if (z) {
+          for (k = -1; k &lt; 2; k++) {
+            Z = this.edgeWrapPosition(cellZ + k) % 256;
+            pt = this.seeds[X + Y + Z].copy().add(createVector(i, j, k));
             dist = (pt.sub(inCellPos)).mag();
             if (dist &lt; minDist) {
               minDist = dist;
             }
           }
         }
-      }
-      return minDist / this.cellSize.mag();
-    }
-    else {
-      let minDist = width * width + height * height;
-      let dist = 0;
-      let seed;
-      
-      // compute the "normal" of at the location of the query
-      let theta = Math.acos(position.x / width * 2);
-      let phi = Math.acos(position.y / height * 2);
-      const n1 = p5.Vector.fromAngles(theta, phi);
-      let n2;
-      for (let  i = 0; i &lt; this.seeds.length; i++) {
-        // we compute the great-circle distance from the 
-        // normal at each point and retrieving the arccos of the
-        // dot product of the normals (the normals are computed)
-        // assuming we go around the unit circle from left to right
-        // of the image
-        // see https://preview.tinyurl.com/y7lb9tpz
-        seed = this.seeds[i].position();
-        theta = Math.acos(seed.x / width * 2);
-        phi = Math.acos(seed.y / height * 2);
-        let n2 = p5.Vector.fromAngles(theta, phi);
-        
-        dist = Math.abs(Math.acos(n1.dot(n2)));
-
-        if (dist &lt; minDist) {
-          minDist = dist;
+        else {
+          pt = this.seeds[X + Y].copy().add(createVector(i, j, -this.seeds[X + Y].z));
+          dist = (pt.sub(inCellPos)).mag();
+          if (dist &lt; minDist) {
+            minDist = dist;
+          }
         }
       }
-      return minDist;
     }
-  }
-  
 
-  /**
-   * a symetrical spherically mapped version of the
-   * voronoi noise which is somewhat trippy. Works best
-   * with non-cell noise
-   * @param {number} x X-coordinate of the point where to query the noise
-   * @param {number} y Y-coordinate of the point where to query the noise 
-   * @param {number} [z] Z-coordinate of the point where to query
-   * the noise. Will only be read if `this.is3D` is `true`
-   * @returns {number} Value of the voronoi noise at the specified location,
-   * in the [0, 1] range.
-   */
-  trippy(x, y, z=null) {
-    let position = createVector(x, y, z=null)
-    let minDist = width * width + height * height;
-    let dist = 0;
-    let seed;
-      
-    // compute the "normal" of at the location of the query
-    let theta = Math.acos(Math.abs(position.x / width));
-    let phi = Math.acos(Math.abs(position.y / height));
-    const n1 = p5.Vector.fromAngles(theta, phi);
-    let n2;
-    for (let  i = 0; i &lt; this.seeds.length; i++) {
-      // we compute the great-circle distance from the 
-      // normal at each point and retrieving the arccos of the
-      // dot product of the normals (the normals are computed)
-      // assuming we go around the unit circle from left to right
-      // of the image
-      // see https://preview.tinyurl.com/y7lb9tpz
-      seed = this.seeds[i].position();
-      theta = Math.acos(Math.abs(seed.x / width));
-      phi = Math.acos(Math.abs(seed.y / height));
-      let n2 = p5.Vector.fromAngles(theta, phi);
-      
-      dist = Math.abs(Math.acos(n1.dot(n2)));
-      
-      if (dist &lt; minDist) {
-        minDist = dist;
-      }
-    }
-    return minDist * 255;    
+    // the maximum possible distance between 2 points is 1 cell diagonal
+    return minDist / sqrt(2);
   }
+}
+
+
+/**
+ * Computes the value of some F1 worley noise at a specified query point. 
+ * F1 here means that the noise is computed from the distance to the nearest
+ * random seed point.
+ * @param {number} x X coordinate of the query point
+ * @param {number} y Y coordinate of the query point
+ * @param {number} [z] Z coordinate of the query point. If not specified the
+ * noise will only considerthe 2D coordinates of the seeds at z = 0;
+ */
+function worleyNoise(x, y, z=null) {
+  if (!worleyInstance) {
+    worleyInstance = new Fresco.Worley();
+  }
+  return worleyInstance.get(x, y, z);
 }
 
 
@@ -479,13 +393,13 @@ function curlNoise3D(noiseFunc, step, x, y, z=null) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Voronoi.html">Voronoi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Worley.html">Worley</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li><li><a href="global.html#worleyInstance">worleyInstance</a></li><li><a href="global.html#worleyNoise">worleyNoise</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 24 2021 14:55:42 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Mon Jan 25 2021 20:59:55 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
