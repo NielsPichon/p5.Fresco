@@ -356,3 +356,33 @@ function curlNoise3D(noiseFunc, step, x, y, z=null) {
   // compute the cross product of the gradient with the noise
   return grad.cross(n);
 }
+
+/**
+ * Computes the fractal noise from a noise function
+ * @param {Function} noiseFunc Noise function to use a generator for each octave layer.
+ * @param {number} octaves Number of octaves, or in another words, layers of noise
+ * with a higher frequency
+ * @param {number} lacunarity Lacunarity describes how fast subsequent octaves fade.
+ * A smaller value will mean they will be less visible faster.
+ * @param {number} x X-coordinate of the point where to query the noise  
+ * @param {number} y Y-coordinate of the point where to query the noise  
+ * @param {number} [z] Z-coordinate of the point where to query the noise
+ * @returns {number} Value of the fractal noise at the point of query in the [0,1] range.
+ */
+function fractalNoise(noiseFunc, octaves, lacunarity, x, y, z=null) {
+  let n = 0;
+  let norm = 0;
+  let fade = 1;
+  for (let i = 0; i < octaves; i++) {
+    norm += fade;
+    if (z) {
+      n += fade * noiseFunc(x * (i + 1), y * (i + 1), z * (i + 1));
+    }
+    else {
+      n += fade * noiseFunc(x * (i + 1), y * (i + 1));
+    }
+    fade *= lacunarity
+  }
+
+  return n /= norm;
+}

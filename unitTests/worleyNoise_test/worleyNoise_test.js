@@ -1,4 +1,7 @@
 const backgroundClr = '000';
+const octaves = 2;
+const lacunarity = 0.3;
+const noiseFreq = 0.02;
 
 function setup() {
   createCanvas(150, 150);
@@ -11,7 +14,9 @@ function setup() {
 function draw() {
   for (let i = 0; i < width; i++) {
     for (let j = 0; j < height; j++) {
-      stroke(worleyNoise(0.1 * i, 0.1 * j, 0.1 * frameCount) * 255);
+      let n = 255 * fractalNoise(worleyNoise, octaves, lacunarity,
+        i * noiseFreq, j * noiseFreq, frameCount * noiseFreq);
+      stroke(n);
       point(i, j);
     }
   }
