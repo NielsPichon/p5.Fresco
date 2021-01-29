@@ -29,6 +29,31 @@ let colliders = [];
 let emitters = [];
 
 
+/**
+ * Return a list of all particles alive
+ */
+function getParticles() {
+    return particles;
+}
+
+
+/**
+ * Return i-th particle alive
+ * @param {number} Index of the particle to retrieve
+ */
+function getParticle(idx) {
+    return particles[idx];
+}
+
+
+/**
+ * Return the number of particles alive
+ */
+function getParticlesNum() {
+    return particles.length;
+}
+
+
 /** simulated time */
 let T = 0;
 
@@ -116,7 +141,7 @@ function solveCollision(particle, dt) {
  * @param {number} [z] Z-coordinate of the new particle
  */
 function createParticle(x, y, z = null) {
-    return new Fresco.Particle(createPoint(x, y));
+    return new Fresco.Particle(createPoint(x, y, z));
 }
 
 
