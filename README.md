@@ -13,8 +13,12 @@ jsdoc -r ./js -R README.md -d ./docs
 
 ## Demos
 
-* [Buddha](./demos/buddha/buddha.js)
-Scatteriung points on a sphere and then moving then along some ridged noise projected on the sphere gave the following buddha looking picture. 
-![buddha render](./images/buddha.png)
+### [Buddha](./demos/buddha/buddha.js)
+
+Scattering points on a sphere and then moving then along some ridged noise projected on the sphere gave the following buddha looking picture.
 Tweaking the parameters give many interesting results that can be explored.
+
+![buddha render](./images/buddha.png)
+
+
 
