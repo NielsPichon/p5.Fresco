@@ -35,7 +35,7 @@ function setup() {
         // move point along radial direction
         rings[i - 1].vertices[k].add(rings[i - 1].vertices[k].copy().normalize().mult(n));
       }
-      // make sure the shape reamins closed
+      // make sure the shape remains closed
       rings[i - 1].vertices[rings[i - 1].vertices.length - 1] =  rings[i - 1].vertices[0].copy();
     }
   }
