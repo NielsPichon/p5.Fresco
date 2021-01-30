@@ -18,8 +18,8 @@ jsdoc -r ./js -R README.md -d ./docs
 Scattering points on a sphere and then moving then along some ridged noise projected on the sphere gave the following buddha looking picture.
 Tweaking the parameters give many interesting results that can be explored.
 
-<img src="./images/buddha.png" alt="buddha render" width="250"/>
-<img src="./images/buddha.png" alt="buddha render" width="250"/>
+<img src="./images/buddha.png" alt="buddha render" width="500"/>
+
 
 
 
