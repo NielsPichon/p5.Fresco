@@ -39,7 +39,7 @@ and each new vertex is displaced based on underlying perlin noise.
 ### [Butterfly, Roses, and ondulations](./demos/butterfly/butterfly.js)
 
 Many concentric circles, with various opacity, each deformed following some noise.
-Depending on the displacement amplitude, we can very different renders, from butterflies,
+Depending on the displacement amplitude, we can have very different renders, from butterflies,
 to roses and ondulating, soothing shapes.
 
 <img src="./images/butterfly.png" alt="butterfly render" width="500"/>
@@ -48,16 +48,16 @@ to roses and ondulating, soothing shapes.
 
 ### [Dunes](./demos/hillsAndDunes/dunes.js)
 
-Just plaing with moving around a sin wave (or to be precise the absolute value of a sin wave) laterally
+Just playing with moving around a sine wave (or to be precise the absolute value of a sine wave) laterally
 while pushing it down. Again, offset and noise amplitude, as well as color and opacity, or even adding a bit
-of "shadow" can lead to radically differnet results. Our favourite results are when the period of the oscillations are very large,
-with the some light shadow and large noise. This creates some dreamy dunes.
+of "shadow" can lead to radically different results. Our favourite results are when the period of the oscillations are very large,
+with some light shadow and large noise. This creates some dreamy dunes.
 
 <img src="./images/dunes.png" alt="dunes render" width="500"/>
 
 ### [Mantis](./demos/mantis/mantis.js)
 
-This project started as a tree generator. When turning symmetry on, we realised that is generated shapes evoquing animal faces, and insects, 
+This project started as a tree generator. When turning symmetry on, we realised that it generated shapes evoquing animal faces, and insects, 
 with an African tribal mask feel to them. After a bit of tweaking, we managed to round off the "trees" to create smoother shapes. This mantis 
 is a very nice example of a both minimal and yet rich piece.  
 
@@ -87,7 +87,7 @@ This work is inspired by the work of [Julien Gachadoat](https://www.instagram.co
 a circle is suggested to the viewer by the addition of chaos under the form of sine waves. This work takes the revert approach where
 each row of the image will receive a sine wave with increasing frequency as we go down the image. For each row the phase is randomized,
 giving the effect of looking at the sea. Once this is done, each point along the sine wave has its position checked against some shapes,
-in our case a collection of triangles and half shapes, and if the point is inside, it is flatten to the row height. Thius in turn draws a
+in our case a collection of triangles and half shapes, and if the point is inside, it is flatten to the row height. This in turn draws a
 small boat as the only peaceful point of focus in a sea of chaos.
 
 <img src="./images/sailors.png" alt="sailors render" width="500"/>
@@ -95,7 +95,7 @@ small boat as the only peaceful point of focus in a sea of chaos.
 ### [Sevilla](./demos/sevilla/sevilla.js)
 
 One of the recurrent themes we like to explore with the Fresco.p5 library is that of distorting shapes with noise. Here, we draw strips of lines, 
-displacing only the bottom half of the picture (we have added some fade to the displacment magnitude based on the pixels y coordinates to avoid so
+displacing only the bottom half of the picture (we have added some fade to the displacement magnitude based on the pixels y coordinates to avoid so
 harsh distortion line). The result is a motif which ressembles the erratic fabric movements of the flamenco dancers you can sometimes see in the 
 streets of Sevilla.
 
@@ -106,7 +106,7 @@ streets of Sevilla.
 We wanted to try and draw a piece which resembles the old school theatre decor, with its waves and clouds hand crafted with papier maché, and,
 always, some discernable love for the craft. For the clouds, we draw some rectangular giggly lines which we then round the corners off. Lots of
 trial and error here went into making sure the clouds actually close correctly. Add some shadows, some concentric half circles for the waves, 
-animated with some simple horizontal offset, and an extra particle system for some soft rain, and you get something which hopeffuly captures some
+animated with some simple horizontal offset, and an extra particle system for some soft rain, and you get something which hopefully captures some
 of the feeling of these old decors.
 
 <img src="./images/theatre.png" alt="theatre render" width="500"/>

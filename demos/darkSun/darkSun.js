@@ -1,11 +1,11 @@
-const polyShape = false;
-const partNum = 10;
-const noiseFreq = 0.005;
-const noiseAmplitude = 0.012;
-const circleRadius = 400;
+const polyShape = true;
+const partNum = 100;
+const noiseFreq = 0.01;
+const noiseAmplitude = 0.1;
+const circleRadius = 500;
 const maxPartCount = 30000;
-const circleModulation = 50;
-const circleModFreq = 0.1;
+const circleModulation = 10;
+const circleModFreq = 10;
 const particlesRadius = 0.1;
 
 let e;
@@ -13,10 +13,11 @@ let partCount = 0;
 
 
 function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
+  createCanvas(1440, 1440);
   background(0);
+  setSeed();
 
-  e = new Fresco.ShapeEmitter(new Fresco.Circle(150, 24));
+  e = new Fresco.ShapeEmitter(new Fresco.Square(1000));
   e.shape.isPolygonal = polyShape;
   e.minV = createVector(0, 0);
   e.maxV = createVector(0, 0);
@@ -26,6 +27,7 @@ function setup() {
   e.spawnRate = partNum;
   e.colorOverLife = [[255, 255, 255, 50], [255, 255, 255, 50]];
   e.radius = particlesRadius;
+
 }
 
 function draw() {
@@ -36,7 +38,9 @@ function draw() {
   }
   for (let i = 0; i < particles.length; i++) {
     let radius_i = circleRadius + noise((particles[i].x + width / 2) * circleModFreq, (particles[i].y  + height / 2) * circleModFreq) * circleModulation;
-    if (particles[i].magSq() > radius_i * radius_i) {
+
+    // kill particle if it gets out
+    if (Math.abs(particles[i].x)  > radius_i || Math.abs(particles[i].y) > radius_i) {
       particles[i].velocity = createVector(0, 0); 
       particles[i].isDead = true;
     } 
