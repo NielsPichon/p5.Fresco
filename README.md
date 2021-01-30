@@ -30,7 +30,7 @@ Generating some cute boobs with some randomized colors, and arc properties
 
 ### [Breathing](./demos/breathing/breathing.js)
 
-Inspired by the cardioid video from D.Shiffman over at the coding train,
+Inspired by the cardioid video from D. Shiffman over at the [coding train](https://www.youtube.com/watch?v=bl3nc_a1nvs),
 Each line starts at the same point and links another point on the circle. Then each line is subdivided
 and each new vertex is displaced based on underlying perlin noise.
 
