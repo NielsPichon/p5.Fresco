@@ -1,15 +1,19 @@
-const backgroundClr = '000';
-const noiseFreq = 0.01;
+const backgroundClr = 'E6EDFE';
+const particleClr = ['132995', 'F9BCC2'];
+const particleAlpha = 255;
+const lineWeight = 1;
+const noiseFreq = 0.001;
 const sphereRadius = 0.3;
 const particleNum = 1000;
 const noiseAmplitude = 10;
 const addRotation = false;
-const rotationSpeed = 0.00001;
+const rotationSpeed = 0.0001;
 const scatterStart = false;
 const symmetry = true;
-const trail = false;
-const noiseTransform = 'vector';
+const trail = true;
+const noiseTransform = '';
 let noiseType = ridgedNoise;
+const record = true;
 
 let radius;
 
@@ -28,17 +32,24 @@ function setup() {
       let y = random(-radius, radius);
       let z = random(-radius, radius);
       let p = createVector(x, y, z);
+
       // Project point on sphere
       p.normalize().mult(radius);
+
       // Create particle at point
       createParticle(p.x, p.y, p.z);
-
     } 
     else {
       let theta = i * 2 * Math.PI / particleNum - PI / 2;
       createParticle(Math.cos(theta) * radius, 0, Math.sin(theta) * radius);
     }
     getParticle(i).leaveTrail = trail;
+    getParticle(i).color = colorFromHex(particleClr[Math.floor(random(0, particleClr.length))], particleAlpha);
+    getParticle(i).radius = lineWeight;
+  }
+
+  if (record) {
+    recordAnimation();
   }
 }
 
@@ -63,6 +74,7 @@ function draw() {
   for (let i = 0; i < getParticlesNum(); i++) {
     // Retrieve i-th particle
     let p = getParticle(i);
+
     // Get 2D noise vector
     let x = p.x;
     let y = p.y;
