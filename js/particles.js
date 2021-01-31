@@ -72,7 +72,7 @@ function rampInterpolation(t, time, values, linear = interpolationType.linear) {
     }
 
     let interp = 0;
-    while (interp < time.length - 1 && time[interp + 1] > t) {
+    while (interp < time.length - 1 && time[interp + 1] <= t) {
         interp ++;
     }
     if (linear) {
@@ -91,6 +91,51 @@ function rampInterpolation(t, time, values, linear = interpolationType.linear) {
 
 
 /**
+ * Time interpolation along a ramp, either constant or linear for an array of values
+ * @param {number} t Current time, to use in the interpolation
+ * @param {Array.<number>} time Array of time stamps at which a given value is reached
+ * @param {Array.<Array.<number>>} values Array of array values to interpolate among.
+ * All arrays should have the same length
+ * @param {boolean} linear Whether to use linear interpolation or not
+ * @returns {number} The interpolated value
+ */
+function rampArrayInterpolation(t, time, values, linear = interpolationType.linear) {
+    let nu_array = new Array(values[0].length);
+
+    if (values.length == 1 || t <= 0) {
+        arrayCopy(values[0], nu_array);
+        return nu_array;
+    }
+    if (t >= time[time.length - 1]) {
+        arrayCopy(values[values.lenght - 1], nu_array);
+        return nu_array;        
+    }
+
+    let interp = 0;
+    while (interp < time.length - 1 && time[interp + 1] <= t) {
+        interp ++;
+    }
+    if (linear) {
+        if (interp >= time.length - 1) {
+            arrayCopy(values[interp], nu_array);
+            return nu_array;
+        }
+        else {
+            let a = (t - time[interp]) / (time[interp + 1] - time[interp]);
+            for (let i = 0; i < values[0].length; i++) {
+                nu_array[i] = (1 - a) * values[interp][i] + a * values[interp + 1][i];
+            }
+            return nu_array;
+        }
+    }
+    else {
+        arrayCopy(values[interp], nu_array);
+        return nu_array;
+    }
+}
+
+
+/**
  * Time interpolation along a ramp, either constant or linear for a p5.Vector
  * @param {number} t Current time, to use in the interpolation
  * @param {Array.<number>} time Array of time stamps at which a given value is reached
@@ -103,7 +148,7 @@ function rampInterpolation2D(t, time, values, linear = interpolationType.linear)
         return values[0];
     }
     let interp = 0;
-    while (interp < time.length - 1 && time[interp + 1] > t) {
+    while (interp < time.length - 1 && time[interp + 1] <= t) {
         interp ++;
     }
     if (linear) {
@@ -297,7 +342,7 @@ Fresco.Particle = class extends Fresco.Point {
             }
 
             // update color and transform
-            this.color = rampInterpolation(
+            this.color = rampArrayInterpolation(
                 t, this.colorOverLifeTime,
                 this.colorOverLife, this.colorInterpolation
             );

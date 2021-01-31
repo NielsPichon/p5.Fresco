@@ -16,12 +16,13 @@ function setup() {
 
   // convert points to particles and set tangential velocity
   f = new Fresco.Gravity();
+  firework(0, 0);
 }
 
 function draw() {
   background(3, 1, 44);
   for (let i = 0; i < particles.length; i++) {
-    particles[i].draw();
+    getParticle(i).draw();
   }
 
   if (random() <= fireProb) {
@@ -48,29 +49,18 @@ function firework(x, y) {
     p.spawnRate = 50;
     p.burst = true;
     p.leaveTrail = true;
-    let t = Math.floor(random(0, colors.length));
     
     // fade the color toward the end of life
+    let t = Math.floor(random(0, colors.length));
     let endCol = new Array(4);
     arrayCopy(colors[t], endCol);
     endCol[3] = 0;
     p.colorOverLife = [colors[t], endCol];
     p.colorOverLifeTime = [0, p.maxLife];
+    print(p.colorOverLife)
   }
 }
-
 
 function mouseClicked() {
   firework(mouseX - width / 2, -mouseY + height / 2)
-}
-
-function keyPressed() {
-  if (key == 'p') {
-    if (isLooping()) {
-      noLoop();
-    }
-    else {
-      loop();
-    }
-  }
 }

@@ -125,5 +125,3 @@ We are trying really hard to resolve bugs as they come but if you find somes, fe
 * `normalAtPoint` ignores the shape transforms.
 * `drawInstantiate` does not work with non-polygonal shapes.
 * `isInside` has glitches which register points at the vertical of some corners as inside the shape when they should not be.
-* `colorOverLife` interpolation is broken which will prevent proper definition of particles color if multiple colors are used.
-* Particles ignore opacity.
