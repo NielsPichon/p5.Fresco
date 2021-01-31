@@ -1156,7 +1156,7 @@ Fresco.Shape = class {
    * 
    * The normal itself is taken as the orthogonal to the tangent at the found point, and is oriented
    * depending on whether the shape is described in a clockwise fashion, to always face outwards.
-   * @param {p5.Vector} pt 
+   * @param {p5.Vector} pt Point in SHAPE's coordinate
    * @param {number} [epsilon] Distance tolerance in the distance of the point to the edge to
    * consider it is actually on the edge
    * @param {number} [resolution] Maximum number of subdivisions for a spline edge. Because we add 2
@@ -2262,7 +2262,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
  * the shape being skewed towards the first vertex.
  * @param {boolean} [approx] If true, non-polygonal shape edge interpolation
  * will be be approximated
- * @returns {Fresco.Shape} The resampled shape.
+ * @returns {Fresco.Shape} Samples along the shape's contour
  */
 function sample(shape, numPoints, offset=true, approx=false) {  
   let vtx = [];
@@ -2403,7 +2403,7 @@ function subdivide(shape, numDivision, approx=false) {
  * high number of attempts may be needed before a single point actually
  * lands in the shape. To avoid ending in a nearly infinite loop, we set a
  * maximum safety number of tries before aborting.
- * @returns {Array.<Fresco.Point>} The scattered points.
+ * @returns {Array.<Fresco.Point>} The scattered points in WORLD coordinates.
  */
 function scatter(shape, numPoints = 100,
   contour = true, approx = true, safety = 10000) {

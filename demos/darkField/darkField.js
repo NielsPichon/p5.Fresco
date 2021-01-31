@@ -2,7 +2,7 @@ const polyShape = true;
 const partNum = 10;
 const noiseFreq = 0.01;
 const noiseAmplitude = 0.01;
-const emitterSize = [200];
+const emitterSize = [200, 200, 200];
 const borderSize = 500;
 const maxPartCount = 50000;
 const circleModulation = 1;
@@ -28,7 +28,7 @@ function setup() {
     e.minV = createVector(0, 0);
     e.maxV = createVector(0, 0);
     e.minNormalV = 1; // Make sure all particles start with equal normal velocity
-    e.leaveTrail = true;
+    e.leaveTrail = false;
     e.burst = false;
     e.spawnRate = partNum;
     e.setColor(colorFromHex(lineClr, opacity));

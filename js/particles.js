@@ -107,7 +107,6 @@ function rampArrayInterpolation(t, time, values, linear = interpolationType.line
         return nu_array;
     }
     if (t >= time[time.length - 1]) {
-        print(t, time[time.length - 1])
         arrayCopy(values[values.length - 1], nu_array);
         return nu_array;        
     }
@@ -253,6 +252,7 @@ Fresco.Particle = class extends Fresco.Point {
      * not be manually deleted and this boolean should be used instead.
      * @property {boolean} stopSimulate=false - Prevents the particle from further being updated.
      * The particle will remain alive and can still be drawn.
+     * @property {Fresco.Point} previousPosition=null - Position at the previous timestep.
      */
     constructor(position) {
         super(position);
@@ -296,6 +296,8 @@ Fresco.Particle = class extends Fresco.Point {
 
         this.stopSimulate = false; // if true the particle will not be updated anymore, and
                                    // drawLastMove will return without doing anything
+
+        this.previousPosition; // Position at previous time step
         // register this particle in the simulation
         append(particles, this);
     }
@@ -359,6 +361,9 @@ Fresco.Particle = class extends Fresco.Point {
         for (let i = 0; i < forces.length; i++) {
             this.acceleration.add(forces[i].applyForce(this));
         }
+        // Only now do we update the previous position as it may be necessary to
+        // know it to compute some forces / accelerations
+        this.storePreviousPosition();
         this.acceleration.div(this.mass);
     }
 
@@ -399,7 +404,7 @@ Fresco.Particle = class extends Fresco.Point {
                 this.updateAcceleration();
                 // update position based on the acceleration
                 this.velocity.add(this.acceleration.copy().mult(dt));
-
+                
                 // solve for collisions if relevant
                 if (this.handleCollisions) {
                     solveCollision(this, dt);
@@ -411,6 +416,8 @@ Fresco.Particle = class extends Fresco.Point {
                 
             }
             else {
+                // buffer position before move , as previous position
+                this.storePreviousPosition();
                 // else move the particle based on velocity only
                 this.add(this.velocity.copy().mult(dt));
             }
@@ -440,6 +447,14 @@ Fresco.Particle = class extends Fresco.Point {
             this.trail = new Fresco.Shape([this.asPoint()]);
             this.trail.strokeWeight = this.radius;
         }
+    }
+
+    /**
+     * Saves the current position as the previous position.
+     * Call before applying any movement to the particle
+     */
+    storePreviousPosition() {
+        this.previousPosition = this.asPoint();
     }
 
     /**
@@ -484,16 +499,18 @@ Fresco.Particle = class extends Fresco.Point {
      */
     drawLastMove() {
         if (!this.stopSimulate) {
-            if (this.trail) {
-                if (this.trail.vertices.length > 1) {
-                    stroke(this.color);
-                    strokeWeight(this.radius);
-                    // Draw the line between the start point and current one
-                    drawLine(
-                        this.trail.vertices[this.trail.vertices.length - 1],
-                        this.trail.vertices[this.trail.vertices.length - 2]
-                    );
-                }
+            stroke(this.color);
+            strokeWeight(this.radius);
+
+            let start = this.previousPosition;
+            // account for the case where we may have stored the postion in the
+            // trail instead of the previousPosition buffer 
+            if (!start && this.leaveTrail) {
+                start = this.trail.vertices[this.trail.vertices - 2];
+            }
+            if (start) {
+                // Draw the line between the start point and current one
+                drawLine(this, this.previousPosition);
             }
         }
     }
@@ -960,7 +977,7 @@ Fresco.ShapeEmitter = class extends Fresco.Emitter {
                     nu_particle.velocity.y = (1 - t) * this.minV.y + t * this.maxV.y
 
                     // add the normal velocity
-                    nrmV = this.shape.normalAtPoint(nu_particle, 1e-1);
+                    nrmV = this.shape.normalAtPoint(this.shape.toLocalCoordinates(nu_particle), 1e-1);
                     t = random();
                     nrmV.mult((1 - t) * this.minNormalV + t * this.maxNormalV);
                     nu_particle.velocity.add(nrmV);
