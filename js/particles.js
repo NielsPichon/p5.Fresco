@@ -107,7 +107,8 @@ function rampArrayInterpolation(t, time, values, linear = interpolationType.line
         return nu_array;
     }
     if (t >= time[time.length - 1]) {
-        arrayCopy(values[values.lenght - 1], nu_array);
+        print(t, time[time.length - 1])
+        arrayCopy(values[values.length - 1], nu_array);
         return nu_array;        
     }
 
@@ -312,6 +313,43 @@ Fresco.Particle = class extends Fresco.Point {
         nu_point.scale = this.scale.copy();
         return nu_point;
     }
+
+
+    /**
+     * Sets a particle's color and changes colorOverLife so that the particle's
+     * color stays at the specified colro
+     * @param {Array.<number>} color Particle color as an array of RGBA values in the [0, 255] range 
+     */
+    setColor(color) {
+        this.color = color;
+        this.colorOverLife = [color];
+        this.colorOverLifeTime = [0];
+    }
+
+
+    /**
+     * Sets a particle's sacle and changes scaleOverLife so that the particle's
+     * scale stays at the specified scale
+     * @param {Array.<p5.Vector>} scale Particle scale
+     */
+    setScale(scale) {
+        this.scale = scale;
+        this.scaleOverLife = [scale];
+        this.scaleOverLifeTime = [0];
+    }
+
+
+    /**
+     * Sets a particle's rotation and changes rotationOverLife so that the particle's
+     * rotation stays at the specified colro
+     * @param {number} rotation Particle rotation in radians
+     */
+    setRotation(rotation) {
+        this.rotation = rotation;
+        this.rotationOverLife = [rotation];
+        this.rotationOverLifeTime = [0];
+    }
+
 
     /**
      * Updates the particle accelration base don the various forces and its mass.
@@ -755,6 +793,36 @@ Fresco.Emitter = class {
         append(emitters, this);
     }
 
+    /**
+     * Makes the required changes such that the spawned particles will have a fixed color, specified by the user
+     * @param {Array.<number>} color Array of RGBA values in the [0, 255] range;
+     */
+    setColor(color) {
+        this.colorOverLife = [color];
+        this.colorOverLifeTime = [0];
+    }
+
+
+    /**
+     * Sets spawned particle's sacle and changes scaleOverLife so that the particle's
+     * scale stays at the specified scale
+     * @param {Array.<p5.Vector>} scale Particle scale
+     */
+    setScale(scale) {
+        this.scaleOverLife = [scale];
+        this.scaleOverLifeTime = [0];
+    }
+
+
+    /**
+     * Sets spawned particle's rotation  Over Life so that the particle's
+     * rotation stays at the specified colro
+     * @param {number} rotation Particle rotation in radians
+     */
+    setRotation(rotation) {
+        this.rotationOverLife = [rotation];
+        this.rotationOverLifeTime = [0];
+    }
     /**
      * Creates some particles
      */

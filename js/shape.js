@@ -214,6 +214,13 @@ Fresco.Point = class extends p5.Vector{
       this.color[3] == pt.color[3];    
   }
 
+  /**
+   * Sets the point color
+   * @param {Array.<number>} color Array of RGBA values in the range [0, 255] 
+   */
+  setColor(color) {
+    this.color = color;
+  }
 
   /**
    * Returns a copy of the position of the point as a
@@ -682,6 +689,30 @@ Fresco.Shape = class {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Sets the shape's color
+   * @param {Array.<number>} [contourColor] Color of the contour as an array of RGBA values in the range [0, 255].
+   * If not specified this shape will have no contour.
+   * @param {Array.<number>} [fillColor] Color of the fill as an array of RGBA values in the range [0, 255].
+   * If not specified the shape will have no fill. 
+   */
+  setColor(contourColor=null, fillColor=null) {
+    if (contourColor) {
+      this.color = contourColor;
+      this.noStroke = false
+    }
+    else {
+      this.noStroke = true;
+    }
+    if (fillColor) {
+      this.fillColor = fillColor;
+      this.noFill = false
+    }
+    else {
+      this.noFill = true;
     }
   }
 

@@ -31,7 +31,7 @@ function setup() {
     e.leaveTrail = true;
     e.burst = false;
     e.spawnRate = partNum;
-    e.colorOverLife = colorFromHex(lineClr, opacity);
+    e.setColor(colorFromHex(lineClr, opacity));
     e.radius = particlesRadius;
   }
 
