@@ -564,11 +564,17 @@ Fresco.Shape = class {
   drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 2,
     density = 100, length = 10, inside = false, stipplingDensity = 20,
     weight = 1, weightRandomness = 0, constantLength = true, vanishingBands = 10,
-    hatchingAngle = null) {
+    hatchingAngle = null, color=null) {
 
-    stroke(this.color);
+    if (!color) {
+      color = this.color;
+    }
+
+    stroke(color);
 
     if (type == shadowType.full) {
+      let shapeNoFill = this.noFill;
+      this.noFill = false;
       let dir = 1;
       if (inside) {
         dir = -1;
@@ -576,9 +582,13 @@ Fresco.Shape = class {
       this.drawInstantiate(false, this.position.copy().add(
         p5.Vector.fromAngle(angle).mult(length * dir)),
         this.scale, this.rotation,
-        this.color, this.color, this.strokeWeight);
+        color, color, this.strokeWeight);
+      
+      this.noFill = shapeNoFill;
     }
     else if (type == shadowType.vanishing) {
+      let shapeNoFill = this.noFill;
+      this.noFill = false;
       let dir = 1;
       if (inside) {
         dir = -1;
@@ -587,7 +597,7 @@ Fresco.Shape = class {
       this.noStroke = true;
       for (let i = vanishingBands; i > 0; i--){
         let clr = new Array(4);
-        arrayCopy(this.color, clr);
+        arrayCopy(color, clr);
         let offset = length * i / vanishingBands;
         clr[3] *= 1 - i / (vanishingBands + 1);
         this.drawInstantiate(false, this.position.copy().add(
@@ -596,6 +606,7 @@ Fresco.Shape = class {
           clr, clr, this.strokeWeight);
       }
       this.noStroke = strk;
+      this.noFill = shapeNoFill;
     }
     else {
       // retrieve the specified number of points to shade from
