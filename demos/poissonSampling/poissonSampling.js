@@ -9,7 +9,8 @@ const blackAsLarge = true;
 const minOpacity = 0;
 const maxOpacity = 255;
 const displayRadius = 3;
-const imgPath = 'igm.jpg'
+const imgPath = 'img.jpg'
+const imgSize = 1440;
 
 let img;
 let grid;
@@ -110,9 +111,25 @@ function addPointToGrid(pt) {
  */
 function getInterpolentAtPoint(pt) {
   let [idx, x, y] = getGridCoordinates(pt);
-  let xImg = Math.round(x * img.width / width);
-  let yImg = Math.round(y * img.height / height);
+
+  // center rescaled image
+  let xScaledImg = x - (width - imgSize) / 2;
+  let yScaledImg = y - (height - imgSize) / 2;
+
+  // if not in image, return black
+  if (xScaledImg < 0 || xScaledImg >= imgSize || yScaledImg < 0 || yScaledImg >= imgSize) {
+    if (!blackAsLarge) {
+      return 1;
+    }
+    return 0;
+  }
+
+  // unscale image
+  let xImg = Math.round(xScaledImg * img.width / imgSize);
+  let yImg = Math.round(yScaledImg * img.height / imgSize);
+
   idx = xImg + yImg * img.width;
+
   let intensity = 0;
   for (let i = 0; i < 3; i++) {
     intensity += img.pixels[idx * 4 + i];
@@ -139,8 +156,6 @@ function getOpacityAtPoint(pt) {
 
 
 function getGridCoordinates(pt) {
-  // let x = Math.floor(pt.x + width / 2);
-  // let y = Math.floor(height / 2 - pt.y);
   let x = Math.floor(pt.x);
   let y = Math.floor(pt.y);
   return [x + y * width, x, y];
