@@ -29,7 +29,7 @@ const speed = 0.03;
 const strip = false;
 
 const animalSeed = 1133;
-const record = false;
+const record = true;
 
 
 let firstBranching = true;
