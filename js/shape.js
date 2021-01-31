@@ -373,6 +373,8 @@ Fresco.Shape = class {
   drawInstantiate(usePointColor = false, position=null,
     scale=null, rotation=null, color=null, fillColor=null,
     lineWeight=null) {
+
+    print(rotation)
     if (this.noStroke && !usePointColor) {
       noStroke();
     } else {
@@ -419,11 +421,11 @@ Fresco.Shape = class {
       // are part of the curve. Note that if the shape is closed, we 
       // use the last but one and second points instead
       let vtx = this.applyTransform(this.vertices[0],
-        position, rotation, scale);
+        position, scale, rotation);
       if (this.isClosed()) {
         vtx = this.applyTransform(
           this.vertices[this.vertices.length - 2],
-          position, rotation, scale);
+          position, scale, rotation);
         if (usePointColor) {
           stroke(this.vertices[this.vertices.length - 2].color);
         }
@@ -435,7 +437,7 @@ Fresco.Shape = class {
       drawCurveVertex(vtx);
       for (let i = 0; i < this.vertices.length; i++) {
         vtx = this.applyTransform(this.vertices[i],
-          position, rotation, scale);
+          position, scale, rotation);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
@@ -443,11 +445,11 @@ Fresco.Shape = class {
       }
       vtx = this.applyTransform(
         this.vertices[this.vertices.length - 1],
-        position, rotation, scale);
+        position, scale, rotation);
 
       if (this.isClosed()) {
         vtx = this.applyTransform(
-          this.vertices[1], position, rotation, scale);
+          this.vertices[1], position, scale, rotation);
         if (usePointColor) {
           stroke(this.vertices[1].color);
         }
@@ -790,11 +792,11 @@ Fresco.Shape = class {
     }
 
     let nu_vtx = vtx.copy();
-    nu_vtx.x = cos(rotation) * vtx.x + sin(rotation) * vtx.y;
-    nu_vtx.y = -sin(rotation) * vtx.x + cos(rotation) * vtx.y;
+    nu_vtx.x = Math.cos(rotation) * vtx.x + Math.sin(rotation) * vtx.y;
+    nu_vtx.y = -Math.sin(rotation) * vtx.x + Math.cos(rotation) * vtx.y;
     nu_vtx.mult(scale);
     nu_vtx.add(position);
-    
+
     return nu_vtx;
   }
 
@@ -1158,12 +1160,21 @@ Fresco.Shape = class {
    * depending on whether the shape is described in a clockwise fashion, to always face outwards.
    * @param {p5.Vector} pt Point in SHAPE's coordinate
    * @param {number} [epsilon] Distance tolerance in the distance of the point to the edge to
-   * consider it is actually on the edge
+   * consider it is actually on the edge. If not specified, a value of 0.1 is taken for non polygonal shapes,
+   * and 1e-3 for polygonal ones. In most cases this should result in acceptable tolerance values.
    * @param {number} [resolution] Maximum number of subdivisions for a spline edge. Because we add 2
    * points by sub-edge each iteration, it is  recommended to uses a power of 2.
    * @returns {p5.Vector} Normal to the shape's contour at the specified poitn
    */
-  normalAtPoint(pt, epsilon = 1e-8, resolution = 128) {
+  normalAtPoint(pt, epsilon = null, resolution = 128) {
+    if (!epsilon) {
+      if (this.isPolygonal) {
+        epsilon = 1e-3;
+      }
+      else {
+        epsilon = 1e-1;
+      }
+    }
     if (this.isPolygonal) {
       let c;
       let vec;

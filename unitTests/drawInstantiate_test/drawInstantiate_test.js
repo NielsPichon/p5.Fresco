@@ -34,9 +34,9 @@ function draw() {
     pos.y += offset;
     pos.x  = -width / 2;
     for (let j = 0; j < numShapes; j++) {
-
       pos.x += offset;
       s.drawInstantiate(false, pos, scale, rot[idx], clr[idx], null, lineWeight[idx]);
+      s.isPolygonal = !s.isPolygonal;
       rot[idx] += 0.01;
       idx ++;
     }

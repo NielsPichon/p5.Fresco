@@ -121,7 +121,4 @@ of the feeling of these old decors.
 
 ## Known issue
 We are trying really hard to resolve bugs as they come but if you find somes, feel free to open an issue for it. The currently open bugs are:
-* `normalAtPoint` may often fail. If this is the case, increase the epsilon.
-* `normalAtPoint` ignores the shape transforms.
-* `drawInstantiate` does not work with non-polygonal shapes.
 * `isInside` has glitches which register points at the vertical of some corners as inside the shape when they should not be.
