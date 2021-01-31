@@ -15,6 +15,13 @@ jsdoc -r ./js -R README.md -d ./docs
 
 Bellow are a collection of pieces all created leveraging the Fresco.p5 and the native p5.js APIs.
 
+### [Windows to the soul](./demos/darkField/darkField.js)
+
+Playing with shape particle emitters and some noise field to displace particles. Loads of different effects can be obtained with minimal parameter tweaks. 
+We're super excited about what we'll turn out. More in this series to come... 
+
+<img src="./images/windowsToTheSoul.png" alt="windowsToTheSoul render" width="500"/>
+
 ### [Buddha](./demos/buddha/buddha.js)
 
 Scattering points on a sphere and then moving then along some ridged noise projected on the sphere gave the following buddha looking picture.
@@ -110,3 +117,13 @@ animated with some simple horizontal offset, and an extra particle system for so
 of the feeling of these old decors.
 
 <img src="./images/theatre.png" alt="theatre render" width="500"/>
+
+
+## Known issue
+We are trying really hard to resolve bugs as they come but if you find somes, feel free to open an issue for it. The currently open bugs are:
+* `normalAtPoint` may often fail. If this is the case, increase the epsilon.
+* `normalAtPoint` ignores the shape transforms.
+* `drawInstantiate` does not work with non-polygonal shapes.
+* `isInside` has glitches which register points at the vertical of some corners as inside the shape when they should not be.
+* `colorOverLife` interpolation is broken which will prevent proper definition of particles color if multiple colors are used.
+* Particles ignore opacity.
