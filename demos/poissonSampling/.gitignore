@@ -1,3 +1,7 @@
-./js 
+./js/
+./js/noise.js
+./js/particle.js
+./js/shape.js
+./js/utils.js
 img.jpg 
 style.css 

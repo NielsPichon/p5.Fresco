@@ -1,3 +1,7 @@
-./demos/poissonSampling/js 
+./demos/poissonSampling/js/
+./demos/poissonSampling/js/noise.js
+./demos/poissonSampling/js/particle.js
+./demos/poissonSampling/js/shape.js
+./demos/poissonSampling/js/utils.js
 ./demos/poissonSampling/img.jpg 
 ./demos/poissonSampling/style.css 
