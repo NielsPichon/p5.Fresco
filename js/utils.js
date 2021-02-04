@@ -393,3 +393,18 @@ function compareAngles(alpha, beta) {
 
   return diff;
 }
+
+
+/**
+ * Linearly interpolates between 2 vectors
+ * @param {p5.Vector} start Start vector to interpolate between
+ * @param {p5.Vector} stop Stop vector to interpolate between
+ * @param {number} amount interpolent in range [0, 1] 
+ */
+function lerpVector(start, stop, amount) {
+  let lVec = createVector(0, 0, 0);
+  lVec.x = lerp(start.x, stop.x, amount);
+  lVec.y = lerp(start.y, stop.y, amount);
+  lVec.z = lerp(start.z, stop.z, amount);
+  return lVec;
+}

@@ -374,7 +374,6 @@ Fresco.Shape = class {
     scale=null, rotation=null, color=null, fillColor=null,
     lineWeight=null) {
 
-    print(rotation)
     if (this.noStroke && !usePointColor) {
       noStroke();
     } else {
