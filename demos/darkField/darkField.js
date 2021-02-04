@@ -1,17 +1,17 @@
 const polyShape = true;
 const partNum = 10;
-const noiseFreq = 0.01;
-const noiseAmplitude = 0.01;
-const emitterSize = [200, 200, 200];
+const noiseFreq = 0.1;
+const noiseAmplitude = 100;
+const emitterSize = [1000];
 const borderSize = 500;
-const maxPartCount = 50000;
-const circleModulation = 1;
-const circleModFreq = 0.01;
-const particlesRadius = 0.01;
+const maxPartCount = 30000;
+const circleModulation = 100;
+const circleModFreq = 10;
+const particlesRadius = 0.1;
 const lineClr = 'fff';
 const opacity = 255;
 
-const record = false;
+const record = true;
 
 let partCount = 0;
 
@@ -19,7 +19,7 @@ let partCount = 0;
 function setup() {
   createCanvas(1440, 1440);
   background(0);
-  setSeed(6804);
+  setSeed();
 
   // Create a number of emitters
   for (let i = 0; i < emitterSize.length; i++) {
