@@ -15,6 +15,9 @@ const noisyPaths = true;
 const noiseFreq = 1;
 const noiseAmplitude = 0.001;
 const refreshAlways = true;
+const randomInitRotation = true;
+const swirl = true;
+const swirlAmount = 0.05;
 
 
 let shapes = []
@@ -30,6 +33,11 @@ function setup() {
   s.color = colorFromHex(lineClr, lineAlpha);
   s.noFill = false;
   s.fillColor = colorFromHex(fillClr1, fillAlpha1);
+
+  if (randomInitRotation) {
+    s.rotation = random(0, 2 * Math.PI);
+    s.freezeTransform();
+  }
 
   // set vertices initial velocity along circle normals
   for (let i = 0; i < s.vertices.length; i++) {
@@ -88,6 +96,22 @@ function draw() {
 
         // make sure the velocity keeps its magnitude
         s.vertices[i].velocity.normalize().mult(amplitude);
+      }
+      if (swirl) {
+        let amplitude = s.vertices[i].velocity.mag();
+
+        // keep only the velocity direction
+        s.vertices[i].velocity.normalize();
+
+        // linear interpolation between tangential direction and velocity direction
+        let n = s.vertices[i].copy().normalize();
+        let x = n.x;
+        n.x = -n.y;
+        n.y = x;
+        s.vertices[i].velocity = lerpVector(s.vertices[i].velocity, n, swirlAmount);
+
+        // make sure the velocity keeps its magnitude
+        s.vertices[i].velocity.normalize().mult(amplitude);        
       }
 
       // move particle
