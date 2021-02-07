@@ -1,9 +1,13 @@
-const backgroundClr = '000';
-const particlesClr = 'fff';
-const particleWeight = -2;
+const backgroundClr = '080d19';
+const particlesClr1 = 'f72585';
+const particlesClr2 = 'f2e9e4';
+const particlesOpacity = 1;
+const particleWeight = 3; // if 0 or less, will use the cell size
+const trail = true;
 
-const gridResolution = 50; // amount of grid cells along height and width
-const particlesNum = 1000; // number of particles
+const gridResolution = 100; // amount of grid cells along height and width
+const particlesNum = 5000; // number of particles. Make sure it is smaller
+                           // than gridResolution * gridResolution
 
 const speed = 1; // movement speed of the particles as an inte
 
@@ -19,7 +23,12 @@ let cellX;
 let cellY;
 
 function setup() {
+  if (particlesNum >= gridResolution * gridResolution) {
+    throw "The number of pqrticles must be less than the number of cells"
+  }
+
   createCanvas(1440, 1440);
+  background(colorFromHex(backgroundClr));
   setSeed();
 
   // init the grid
@@ -39,19 +48,20 @@ function setup() {
       pos = createVector(random(-width / 2, width / 2), random(-height / 2, height / 2));
     }
     let p = createParticle(pos.x, pos.y);
-    p.color = colorFromHex(particlesClr);
     if (particleWeight > 0) {
       p.radius = particleWeight;
     }
     else {
       p.radius = cellX / 2;
     }
-
-    // choose direction randomly
+    
+    // choose direction randomly and set color accordingly
     if (random() <= dirRatio) {
+      p.color = colorFromHex(particlesClr1, particlesOpacity);
       p.velocity = createVector(dir1[0] * speed, dir1[1] * speed);
     }
     else {
+      p.color = colorFromHex(particlesClr2, particlesOpacity);
       p.velocity = createVector(dir2[0] * speed, dir2[1] * speed);
     }
     // register cell
@@ -62,7 +72,9 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  if (!trail) {
+    background(colorFromHex(backgroundClr));
+  }
 
   // draw the collision grid
   if (drawGrid) {
@@ -78,21 +90,23 @@ function draw() {
     // retrieve i-th  particle
     let p = getParticle(i);
 
+    // store current position as the previous position
+    p.previousPosition = p.position();
+
     // to simplify the problem we only check the arrival position to see if we can move
     let new_pos = p.position().add(p.velocity);
-
+    let wrap = false
     // wrap around borders
     if (Math.abs(new_pos.x) >= width / 2) {
       new_pos.x = -Math.sign(new_pos.x) * (width / 2 - 1);
+      wrap = true;
     }
     if (Math.abs(new_pos.y) >= height / 2) {
       new_pos.y = -Math.sign(new_pos.y) * (height / 2 - 1);
+      wrap = true;
     }
 
     if (checkIfCellEmpty(new_pos, i)) {
-      // store current position as the previous position
-      p.previousPosition = p.position();
-
       // deregister previous cell
       registerCell(p, i, false);
 
@@ -104,7 +118,15 @@ function draw() {
       registerCell(p, i, true);
     }
 
-    p.draw();
+    // if the particle hasn't wrapped around, draw the trail
+    // from previous position
+    // else simply draw the particle
+    if (trail && !wrap) {
+      p.drawLastMove();
+    }
+    else {
+      p.draw();
+    }
   }
 }
 
