@@ -1,20 +1,29 @@
-const backgroundClr = 'ffd166';
-const lineClr = 'fff';
-const lineAlpha = 0;
-const fillClr1 = 'ef476f';
-const fillAlpha1 = 128;
-const fillClr2 = '118ab2';
-const fillAlpha2 = 128;
-const numPoints = 100;
-const initRadius = 500;
-const speed = 1;
-const margin = 200;
-const randomInitVelocity = true;
-const initRandomAmount = 1;
-const noisyPaths = true;
-const noiseFreq = 1;
-const noiseAmplitude = 0.001;
-const refreshAlways = true;
+// color settings
+const backgroundClr = '011627';
+const lineClr = 'F4DBBD';
+const lineAlpha = 255;
+const fillClr1 = 'F4DBBD';
+const fillAlpha1 = 255;
+const fillClr2 = '011627';
+const fillAlpha2 = 255;
+const lineWeight = 2;
+
+
+const numPoints = 500; // number of points along the initial circle
+const initRadius = 1000; // circle radius at start
+const speed = 10; // how fast points move
+const margin = 100; // how far from the border should the invisible
+                    // wall be for points to bounce on
+
+const randomInitVelocity = false; // whether each point should have a random initial velocity
+const initRandomAmount = 5;
+
+const noisyPaths = false; // whether the velocity of the points should be modulated by some noise
+const noiseFreq = 100;
+const noiseAmplitude =  0.5;
+
+const refreshAlways = false; // whther to clear each frame before drawing
+
 
 
 let shapes = []
@@ -30,6 +39,7 @@ function setup() {
   s.color = colorFromHex(lineClr, lineAlpha);
   s.noFill = false;
   s.fillColor = colorFromHex(fillClr1, fillAlpha1);
+  s.strokeWeight = lineWeight;
 
   // set vertices initial velocity along circle normals
   for (let i = 0; i < s.vertices.length; i++) {
@@ -42,7 +52,6 @@ function setup() {
   // make sure the shape remains closed
   s.vertices[s.vertices.length - 1].velocity = s.vertices[0].velocity.copy();
 
-
   // Split shape in half
   s1 = s.copy();
 
@@ -52,7 +61,7 @@ function setup() {
   }
 
   s.vertices.splice(0, Math.floor(s.vertices.length / 2));
-  s1.vertices.splice(Math.floor(s1.vertices.length / 2) + 1, Math.floor(s1.vertices.length / 2));
+  s1.vertices.splice(Math.floor(s1.vertices.length / 1) + 1, Math.floor(s1.vertices.length / 1));
 
   // set second half color
   s1.fillColor = colorFromHex(fillClr2, fillAlpha2);

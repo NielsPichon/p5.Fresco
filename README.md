@@ -119,6 +119,20 @@ of the feeling of these old decors.
 <img src="./images/theatre.png" alt="theatre render" width="500"/>
 
 
+### [Bandana](./demos/bandana/bandana.js)
+
+This demo started as a water ripples generator. The idea is to have a circle, described as splines between a series of points. The circle grows until any point
+encounters a point and then it reflects. With a very low resolution of the circle (e.g. 5 points) we get something that vaguely resembles the natural phenomenon
+of ripples along thesurface of a lake bounding of the bank. However, because our ripples never fade, they start to create interesting patterns. By increasing the
+resolution, because the distance between the points of the circle will grow over time, we soon get some grid like patterns. Forcing this trait further by cutting
+the circle in 2 halves, with a different fill, one of the color of the background and the other of the water front color, we finally got some bandana motif looking
+patterns.
+We have also implemented the possibility to add noise to the points' velocity, as well as give each point a random starting velocity, which also give interesting
+results, but because it breaks the symmetry, the results are less hypnotic. 
+
+<img src="./images/bandana.png" alt="bandana render" width="500"/>
+
+
 ## Known issue
 We are trying really hard to resolve bugs as they come but if you find somes, feel free to open an issue for it. The currently open bugs are:
 * `isInside` has glitches which register points at the vertical of some corners as inside the shape when they should not be.
