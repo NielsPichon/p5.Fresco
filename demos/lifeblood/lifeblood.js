@@ -1,35 +1,42 @@
-const backgroundClr = '080d19';
-const particlesClr1 = 'f72585';
-const particlesClr2 = 'f2e9e4';
-const particlesOpacity = 1;
+const backgroundClr = '000';
+const particlesClr1 = ['60D394'];
+const particlesClr2 = ['AAF683', 'FFD97D'];
+const particlesOpacity = 255;
+const randomParticleColor = []; // if not empty, particles will randomly select a color
+                                // from this array instead of the color assigned to their direction
 const particleWeight = 3; // if 0 or less, will use the cell size
-const trail = true;
+const trail = false; // If true, particles will leave a trail which never disappears
+const shootingStar = true; // If true, particles will leave a short trail which will disappear over time
+const fadeSpeed = 0.2; // Value in [0, 1] which defines how fast the trail fades
+const clearUpPeriod = 0; // if strictly larger than 0, every period, the fade speed will reach 1 to clear up the sky  
+const addBorder = true;
+const borderClr = '000';
+const borderThickness = 100;
 
-const gridResolution = 100; // amount of grid cells along height and width
-const particlesNum = 5000; // number of particles. Make sure it is smaller
-                           // than gridResolution * gridResolution
+const gridResolution = 200; // amount of grid cells along height and width
+const particleDensity = 0.5; // number of particles as a fraction of the number of cells
 
-const speed = 1; // movement speed of the particles as an inte
+const speed = 3; // movement speed of the particles as an inte
 
 const dirRatio = 0.5; // proportion of particles going along the first direction
-const dir1 = [0, 1]; // directions along which particles move
-const dir2 = [1, 0];
+const dir1 = 0; // directions along which particles move as an angle in degrees
+const dir2 = 90;
 
 const drawGrid = false; // debug functionality which draws the underlying grid
 
+const record = false; // if true, records the animation
 
 let grid = []
 let cellX;
 let cellY;
 
 function setup() {
-  if (particlesNum >= gridResolution * gridResolution) {
-    throw "The number of pqrticles must be less than the number of cells"
-  }
-
   createCanvas(1440, 1440);
   background(colorFromHex(backgroundClr));
   setSeed();
+  
+  // compute amount of particles
+  let particlesNum = gridResolution * gridResolution * particleDensity;
 
   // init the grid
   for (let i = 0; i < gridResolution * gridResolution; i++) {
@@ -57,15 +64,24 @@ function setup() {
     
     // choose direction randomly and set color accordingly
     if (random() <= dirRatio) {
-      p.color = colorFromHex(particlesClr1, particlesOpacity);
-      p.velocity = createVector(dir1[0] * speed, dir1[1] * speed);
+      p.velocity = p5.Vector.fromAngle(radians(dir1)).mult(speed);
+      p.color = colorFromHex(particlesClr1[Math.floor(random(0, particlesClr1.length))]);
     }
     else {
-      p.color = colorFromHex(particlesClr2, particlesOpacity);
-      p.velocity = createVector(dir2[0] * speed, dir2[1] * speed);
+      p.velocity = p5.Vector.fromAngle(radians(dir2)).mult(speed);
+      p.color = colorFromHex(particlesClr2[Math.floor(random(0, particlesClr2.length))]);
     }
+
+    if (randomParticleColor.length > 0) {
+      p.color = colorFromHex(randomParticleColor[Math.floor(random(0, randomParticleColor.length))]);
+    }
+
     // register cell
     registerCell(p, i, true);
+  }
+
+  if (record) {
+    recordAnimation();
   }
 }
 
@@ -73,7 +89,14 @@ function setup() {
 // called in a loop
 function draw() {
   if (!trail) {
-    background(colorFromHex(backgroundClr));
+    let opacity = 255;
+    if (shootingStar) {
+      opacity = fadeSpeed * 255;
+      if (clearUpPeriod > 0) {
+        opacity = lerp(1, fadeSpeed, Math.abs(Math.sin(frameCount / clearUpPeriod * Math.PI))) * 255;
+      }
+    }
+    background(colorFromHex(backgroundClr, opacity));
   }
 
   // draw the collision grid
@@ -128,6 +151,8 @@ function draw() {
       p.draw();
     }
   }
+
+  border(borderThickness, colorFromHex(borderClr));
 }
 
 
