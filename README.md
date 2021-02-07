@@ -16,14 +16,19 @@ jsdoc -r ./js -R README.md -d ./docs
 You can find a template for your own creations [here](./demos/demoTemplate/).
 
 Bellow are a collection of pieces all created leveraging the Fresco.p5 and the native p5.js APIs.
-
-### [Lifeblood](./demos/lifeblood/lifeblood.js)
+### [Lifeblood, Electronic Jungle and Electronic Sheep](./demos/lifeblood/lifeblood.js)
 
 We found the Biham–Middleton–Levine traffic model on Wikipedia's math portal. Essentially 2 sets of particles are moved in one or the other direction.
 If the spot where the particle should move is taken, the particle stops, until it is freed. Playing with the density of particles we can obtain a variety of emerging structures.
 This idea of emerging order from chaos is something that really caught our attention.
 
 <img src="./images/lifeblood.png" alt="lifeblood render" width="500"/>
+
+Now you can also, in a perlin flow manner, add some noise to the velocity of the particles. Noise types also give radically different results. Interestingly, more noise will
+allow for a higher particle amount without traffic jams forming, while resulting traffing jams will have less coherent forms.
+
+<img src="./images/electronicJungle.png" alt="lifeblood render" width="500"/>
+<img src="./images/electronicSheep.png" alt="lifeblood render" width="500"/>
 
 ### [Bandana](./demos/bandana/bandana.js)
 
