@@ -1,14 +1,21 @@
-const backgroundClr = '000';
-const lineClr = 'fff'
-const lineWeight = 1;
-const pointWeight = 5;
+const backgroundClr = '000'; // background color
+const lineClr = ['023e8a', '0077b6', '0096c7','00b4d8', '48cae4', '90e0ef', 'ade8f4', 'caf0f8']; // colors to randomly choose from
+const lineWeight = 0.5; // how thick each line is
+const pointWeight = 0; // how thick each node point is. if 0 it will not be drawn
 
-const maxRecursion = 10;
-const maxChildren = 5;
-const stopProbabilityIncr = 0.1;
-const numChildrenDecrement = 0.5;
-const initNodesNum = 3;
-const radialIncr = 50;
+const maxRecursion = 5; // max depth of a the tree
+const maxChildren = 50; // max number of children for the root node
+const stopProbabilityIncr = 0.2; // How fast the probability of a branch to stop increases with tree depth
+const numChildrenDecrement = 15; // How fast the number number of branchs per node decreases with tree depth
+const initNodesNum = 3; // number of nodes on the first circle
+const radialIncr = 100; // how far appart each "circle" is
+const maxSpan = 2 * Math.PI; // Which angular span the tree covers.
+const centerAngle = 0; // angle the tree faces
+
+const rotationSpeed = 0.02; // how fast the shape spins
+const animateTreeSpanSpeed = .01; // if > 0 the span of the tree will oscillate
+
+const record = false; // whether to record the animation
 
 
 let rootNode;
@@ -18,33 +25,58 @@ function setup() {
   background(colorFromHex(backgroundClr));
   setSeed();
 
+  // create the root node
   rootNode = new Node(0);
+
+  // clear its children
   rootNode.children = [];
 
+  // spaen a set amount of initial branches which will each spawn their own children
   for (let i = 0; i < initNodesNum; i++) {
     rootNode.children.push(new Node(1));
   }
 
-  rootNode.alphaWeight = 2 * Math.PI;
-  rootNode.alpha = 0;
+  // the root node can spawn branches around a set angle
+  rootNode.alphaWeight = maxSpan;
+  rootNode.alpha = centerAngle;
 
-  stroke(colorFromHex(lineClr));
-  strokeWeight(pointWeight * 2);
-  drawPoint(rootNode);
-
-  rootNode.drawChildren();
+  if (pointWeight > 0) {
+    stroke(randomColorFromHex(lineClr));
+    strokeWeight(pointWeight * 2);
+    drawPoint(rootNode);
+  }
 }
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
+  if (rotationSpeed > 0 || animateTreeSpanSpeed > 0) {
+    // sraw background
+    background(colorFromHex(backgroundClr));
+
+    // rotate the shape
+    if (rotationSpeed > 0) {
+      rootNode.alpha += rotationSpeed;
+    }
+
+    if (animateTreeSpanSpeed > 0) {
+      rootNode.alphaWeight = maxSpan * map(Math.cos((frameCount - 1) * animateTreeSpanSpeed), -1, 1, 0, 1);
+    }
+
+    // redraw tree
+    rootNode.drawChildren();
+  }
+  else {
+    rootNode.drawChildren();
+    noLoop();
+  }
 }
 
 
 class Node extends Fresco.Point {
   constructor(recursionLvl) {
     super(createVector(0, 0));
-    this.color = lineClr;
+    this.color = randomColorFromHex(lineClr);
     this.weight = null;
     this.recursionLvl = recursionLvl;
     this.children = [];
@@ -53,7 +85,6 @@ class Node extends Fresco.Point {
 
   spawnChildren() {
     let t = random();
-    print(t, stopProbabilityIncr * this.resursionLvl, this.recursionLvl, stopProbabilityIncr)
     // if max recursion depth is reached or stop instruction is randomly reached
     if (this.recursionLvl >= maxRecursion || t < stopProbabilityIncr * this.recursionLvl) {
       // terminal nodes have a weight of 1
@@ -66,6 +97,9 @@ class Node extends Fresco.Point {
     for (let i = 0; i < numChildren; i++) {
       // spawn new node children
       this.children.push(new Node(this.recursionLvl + 1));
+    }
+    if (this.children.length <= 0) {
+      this.weight = 1;
     }
   }
 
@@ -105,8 +139,10 @@ class Node extends Fresco.Point {
       stroke(this.children[i].color);
       strokeWeight(lineWeight);
       drawLine(this, this.children[i]);
-      strokeWeight(pointWeight);
-      drawPoint(this.children[i]);
+      if (pointWeight > 0) {
+        strokeWeight(pointWeight);
+        drawPoint(this.children[i]);
+      }
       this.children[i].drawChildren()
       alpha += this.children[i].alphaWeight / 2;
     }

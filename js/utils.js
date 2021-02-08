@@ -196,6 +196,11 @@ function colorFromHex(hex, A = 255) {
 }
 
 
+function randomColorFromHex(colorArray, alpha) {
+  return colorFromHex(colorArray[Math.floor(random(0, colorArray.length))], alpha);
+}
+
+
 /**
  * Handmade tailored interpolant between 0 and 1 in an S shaped manner
  * (obtained by solving a 4th order polynomial with 0 derivative in 0
