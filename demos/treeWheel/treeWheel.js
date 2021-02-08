@@ -3,12 +3,12 @@ const lineClr = 'fff'
 const lineWeight = 1;
 const pointWeight = 5;
 
-const maxRecursion = 5;
+const maxRecursion = 10;
 const maxChildren = 5;
 const stopProbabilityIncr = 0.1;
 const numChildrenDecrement = 0.5;
 const initNodesNum = 3;
-const radialIncr = 100;
+const radialIncr = 50;
 
 
 let rootNode;
@@ -27,6 +27,10 @@ function setup() {
 
   rootNode.alphaWeight = 2 * Math.PI;
   rootNode.alpha = 0;
+
+  stroke(colorFromHex(lineClr));
+  strokeWeight(pointWeight * 2);
+  drawPoint(rootNode);
 
   rootNode.drawChildren();
 }
@@ -49,8 +53,9 @@ class Node extends Fresco.Point {
 
   spawnChildren() {
     let t = random();
+    print(t, stopProbabilityIncr * this.resursionLvl, this.recursionLvl, stopProbabilityIncr)
     // if max recursion depth is reached or stop instruction is randomly reached
-    if (this.recursionLvl >= maxRecursion || t > stopProbabilityIncr * this.resursionLvl) {
+    if (this.recursionLvl >= maxRecursion || t < stopProbabilityIncr * this.recursionLvl) {
       // terminal nodes have a weight of 1
       this.weight = 1;
       return;
@@ -83,23 +88,18 @@ class Node extends Fresco.Point {
       return;
     }
 
-    // retrieve the weights of each child of the root node
-    let weights = new Array(this.children.length);
-    for (let i = 0; i < this.children.length; i++) {
-      weights[i] = this.children[i].getWeight();
-    }
+    // pre-compute children weights
+    this.getWeight();
 
-    // deduce angular weight
+    // deduce angular weight as a fraction of this node's weights * angular weight
     for (let i = 0; i < this.children.length; i++) {
-      weights[i] /= this.getWeight();
-      weights[i] *= this.alphaWeight;
-      this.children[i].alphaWeight = weights[i];
+      this.children[i].alphaWeight = this.children[i].getWeight() / this.getWeight() * this.alphaWeight;
     }
 
     // draw first raw of nodes
-    let alpha = this.alpha - weights[0] / 2 - this.alphaWeight / 2;
+    let alpha = this.alpha - this.alphaWeight / 2;
     for (let i = 0; i < this.children.length; i++) {
-      alpha += weights[i] / 2;
+      alpha += this.children[i].alphaWeight / 2;
       this.children[i].setPosition(p5.Vector.fromAngle(alpha).mult(radialIncr * (this.recursionLvl + 1)));
       this.children[i].alpha = alpha;
       stroke(this.children[i].color);
@@ -108,7 +108,7 @@ class Node extends Fresco.Point {
       strokeWeight(pointWeight);
       drawPoint(this.children[i]);
       this.children[i].drawChildren()
-      alpha += weights[i] / 2;
+      alpha += this.children[i].alphaWeight / 2;
     }
   }
 }
