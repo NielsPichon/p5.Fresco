@@ -1,29 +1,37 @@
-const backgroundClr = '000'; // background color
-const lineClr = ['023e8a', '0077b6', '0096c7','00b4d8', '48cae4', '90e0ef', 'ade8f4', 'caf0f8']; // colors to randomly choose from
-const lineWeight = 0.5; // how thick each line is
-const pointWeight = 0; // how thick each node point is. if 0 it will not be drawn
+const backgroundClr = '10002b'; // background color
 
-const maxRecursion = 5; // max depth of a the tree
-const maxChildren = 50; // max number of children for the root node
+const lineClr = ['7400b8', '6930c3', '5e60ce', '5390d9', '4ea8de', '48bfe3', '56cfe1', '64dfdf', '72efdd', '80ffdb']; // colors to randomly choose from
+const lineAlpha = 255;
+const lineWeight = 2; // how thick each line is
+
+const pointClr = ['fff']; // colors to randomly choose from
+const pointAlpha = 255;
+const pointWeight = 2; // how thick each node point is. if 0 it will not be drawn
+
+
+const maxRecursion = 12 ; // max depth of the tree
+const maxChildren = 15; // max number of children for the root node
 const stopProbabilityIncr = 0.2; // How fast the probability of a branch to stop increases with tree depth
-const numChildrenDecrement = 15; // How fast the number number of branchs per node decreases with tree depth
-const initNodesNum = 3; // number of nodes on the first circle
-const radialIncr = 100; // how far appart each "circle" is
-const maxSpan = 2 * Math.PI; // Which angular span the tree covers.
-const centerAngle = 0; // angle the tree faces
+const numChildrenDecrement = 0.1; // How fast the number of branchs per node decreases with tree depth
+const initNodesNum = 5; // number of nodes on the first circle
+const radialIncr = 80 * 1.44; // how far appart each "circle" is
+const maxSpan = 1.8 * Math.PI; // Which angular span the tree covers.
+const centerAngle = Math.PI / 2; // angle the tree faces
 
-const rotationSpeed = 0.02; // how fast the shape spins
-const animateTreeSpanSpeed = .01; // if > 0 the span of the tree will oscillate
+const rotationSpeed = 0; // how fast the shape spins
+const radiusSpeed = 2 * Math.PI / (4 * 60); // how fast the size oscillates
+const animateTreeSpanSpeed = 2 * Math.PI / (4 * 60); // if > 0 the span of the tree will oscillate
 
-const record = false; // whether to record the animation
+const record = true; // whether to record the animation
 
 
 let rootNode;
+let radius = radialIncr;
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(1440, 1440);
   background(colorFromHex(backgroundClr));
-  setSeed();
+  setSeed(359); //7865
 
   // create the root node
   rootNode = new Node(0);
@@ -31,7 +39,7 @@ function setup() {
   // clear its children
   rootNode.children = [];
 
-  // spaen a set amount of initial branches which will each spawn their own children
+  // spawn a set amount of initial branches which will each spawn their own children
   for (let i = 0; i < initNodesNum; i++) {
     rootNode.children.push(new Node(1));
   }
@@ -41,17 +49,21 @@ function setup() {
   rootNode.alpha = centerAngle;
 
   if (pointWeight > 0) {
-    stroke(randomColorFromHex(lineClr));
+    stroke(randomColorFromHex(lineClr, lineAlpha));
     strokeWeight(pointWeight * 2);
     drawPoint(rootNode);
+  }
+
+  if (record){
+    recordAnimation();
   }
 }
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  if (rotationSpeed > 0 || animateTreeSpanSpeed > 0) {
-    // sraw background
+  if (rotationSpeed > 0 || animateTreeSpanSpeed > 0 ||  radiusSpeed > 0) {
+    // draw background
     background(colorFromHex(backgroundClr));
 
     // rotate the shape
@@ -60,7 +72,11 @@ function draw() {
     }
 
     if (animateTreeSpanSpeed > 0) {
-      rootNode.alphaWeight = maxSpan * map(Math.cos((frameCount - 1) * animateTreeSpanSpeed), -1, 1, 0, 1);
+      rootNode.alphaWeight = maxSpan * map(Math.cos(Math.PI + (frameCount - 1) * animateTreeSpanSpeed), -1, 1, 0, 1);
+    }
+
+    if (radiusSpeed > 0) {
+      radius = radialIncr * map(Math.cos(Math.PI + (frameCount - 1) * radiusSpeed), -1, 1, 0, 1);
     }
 
     // redraw tree
@@ -70,13 +86,18 @@ function draw() {
     rootNode.drawChildren();
     noLoop();
   }
+
+  if (record && frameCount == 4 * 60) {
+    stopRecording();
+  }
 }
 
 
 class Node extends Fresco.Point {
   constructor(recursionLvl) {
     super(createVector(0, 0));
-    this.color = randomColorFromHex(lineClr);
+    this.color = randomColorFromHex(lineClr,lineAlpha);
+    this.pointColor = randomColorFromHex(pointClr, pointAlpha);
     this.weight = null;
     this.recursionLvl = recursionLvl;
     this.children = [];
@@ -134,12 +155,13 @@ class Node extends Fresco.Point {
     let alpha = this.alpha - this.alphaWeight / 2;
     for (let i = 0; i < this.children.length; i++) {
       alpha += this.children[i].alphaWeight / 2;
-      this.children[i].setPosition(p5.Vector.fromAngle(alpha).mult(radialIncr * (this.recursionLvl + 1)));
+      this.children[i].setPosition(p5.Vector.fromAngle(alpha).mult(radius * (this.recursionLvl + 1)));
       this.children[i].alpha = alpha;
       stroke(this.children[i].color);
       strokeWeight(lineWeight);
       drawLine(this, this.children[i]);
       if (pointWeight > 0) {
+        stroke(this.children[i].pointColor);
         strokeWeight(pointWeight);
         drawPoint(this.children[i]);
       }

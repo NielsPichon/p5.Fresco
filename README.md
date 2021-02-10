@@ -16,6 +16,15 @@ jsdoc -r ./js -R README.md -d ./docs
 You can find a template for your own creations [here](./demos/demoTemplate/).
 
 Bellow are a collection of pieces all created leveraging the Fresco.p5 and the native p5.js APIs.
+
+### [Peacock](./demos/peacock/peacock.js)
+
+Recursivity is a very powerful tool for procedural art. It allows from a very little set of rules to obtain seamingly
+complex resuls. This is the case for instance with this circular recursive tree. Each branch gives birth to a series of branches, each of which give birth to a series of branch and so on. When time comes to draw, the weight of a branch, and thus
+the space in takes in the canvas is computed as the sum of that of all the sub branches. Animating the maximum allowed angle for the root branch and the size of each branch we obtain this peacock trying to woo the viewer.
+
+<img src="./images/peacock.png" alt="peacock render" width="500"/>
+
 ### [Lifeblood, Electronic Jungle and Electronic Sheep](./demos/lifeblood/lifeblood.js)
 
 We found the Biham–Middleton–Levine traffic model on Wikipedia's math portal. Essentially 2 sets of particles are moved in one or the other direction.
