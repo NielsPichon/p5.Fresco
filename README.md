@@ -21,7 +21,7 @@ Bellow are a collection of pieces all created leveraging the Fresco.p5 and the n
 
 Recursivity is a very powerful tool for procedural art. It allows from a very little set of rules to obtain seamingly
 complex resuls. This is the case for instance with this circular recursive tree. Each branch gives birth to a series of branches, each of which give birth to a series of branch and so on. When time comes to draw, the weight of a branch, and thus
-the space in takes in the canvas is computed as the sum of that of all the sub branches. Animating the maximum allowed angle for the root branch and the size of each branch we obtain this peacock trying to woo the viewer.
+the space it takes in the canvas is computed as the sum of that of all the sub branches. Animating the maximum allowed angle for the root branch and the size of each branch we obtain this peacock trying to woo the viewer.
 
 <img src="./images/peacock.png" alt="peacock render" width="500"/>
 
