@@ -1,15 +1,16 @@
-const backgroundClr = '000'; // backfround color
-const particleColorOverLife = ['00f', '0f0', 'f00']; // particle color
-const particleOpacity = 50; // opacity of the particles
-const noiseFreq = 0.01; // freq if the curl noise
-const noiseIntensity = 1; // intensity of the curl turbulence
-const attractorIntensity = 3; // intensity multiplier for the attractor
-const emitterRadius = 300; // emitter radius
+const backgroundClr = '000000'; // backfround color
+const particleColorOverLife = ['000', '000', '000', '1e2586', '1e2586', '2d00f7', 'f20089', '000']; // particle color
+const particleOpacity = 255; // opacity of the particles
+const noiseFreq = 0.1; // freq if the curl noise
+const noiseIntensity = 0.2; // intensity of the curl turbulence
+const attractorIntensity = 1; // intensity multiplier for the attractor
+const emitterRadius = 400; // emitter radius
 const attractorRadius = 150; // attractor radius
 const pushPower = -1; // must be negative. How repulsive the attractor is. Will forbid particles entering its radius.
-const pullPower = -2; // must be negative and smaller than push power. How attractive the attractor is.
+const pullPower = -4; // must be negative and smaller than push power. How attractive the attractor is.
 const fadeOverTime = 10; // fades the trails over time
 const noiseAnimateSpeed = 0.1; // moves the underlying noise
+const particleWeight = 10;
 
 
 class CurlForce extends Fresco.Force {
