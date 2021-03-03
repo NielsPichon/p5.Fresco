@@ -391,16 +391,13 @@ Fresco.Shape = class {
       }
     }
     
+    let fill = this.fillColor;
     if (this.noFill) {
       noFill();
     }
     else {
       if (fillColor) {
-        fill(fillColor);
-      }
-      else
-      {
-        fill(this.fillColor);
+        this.fillColor = fillColor;
       }
     }
 
@@ -461,6 +458,8 @@ Fresco.Shape = class {
       drawCurveVertex(vtx);
     }
     endShape();
+
+    this.fillColor = fill;
   }
 
 
