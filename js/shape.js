@@ -1184,42 +1184,89 @@ Fresco.Shape = class {
         epsilon = 1e-1;
       }
     }
+
+    [projection, closest_edge_idx, percentage, closest_dist] = this.projectOnShape(pt, resolution);
+
+    if (closest_dist > epsilon) {
+      console.log("[in getNormalAtPoint] Some error may have " +
+      "occured as the specified point was not found to belong to the shape");
+    }
+
     if (this.isPolygonal) {
-      let c;
-      let vec;
-      let l;
-      let edge;
-      // first retrieve which edge the point belongs to 
+      edge = this.vertices[closest_edge_idx + 1].position().sub(this.vertices[closest_edge_idx]);
+      edge = edge.normalize();
+      // the normal is the orthogonal vector to the edge, which orientation depends
+      // on whether the shape is described clockwise or anticlockwise
+      if (this.isClockwise()) {
+        return createVector(-edge.y, edge.x);
+      }
+      else {
+        return createVector(edge.y, -edge.x);
+      }
+    }
+    else {
+      // retrieve the edge spline equation coefficients
+      [a, b, c, d] = catmullRom(...this.controlPoints(closest_edge_idx));
+
+      let tangent = a.mult(3 * percentage * percentage).add(
+        b.mult(2 * percentage)).add(c).normalize();
+      // return the orthogonal to the tangent, with the orientation chosen based
+      // on whether the shape is discribed in a clockwise fashion
+      if (this.isClockwise()) {
+        return createVector(-tangent.y, tangent.x);
+      }
+      else {
+        return createVector(tangent.y, -tangent.x);
+      }
+    }
+  }
+
+  
+  /**
+   * Projects a point the shape. This is not a "true" projection. A more accurate description would
+   * be that this method finds the closest point on the shape. This is because we project on each edge
+   * and keep the closest egde. The subtelty is that if the projection is not actually on the edge
+   * (but further along the edge direction), we'll cap to the esge limits.
+   * @param {Fresco.Point} pt Point to project 
+   * @param {number} resolution Resolution for the distance estimation
+   * @returns {Array <p5.Vector, number, number, number>} Projection, Index of the closest edge,
+   * Percentage along the edge where the point is, Distance from the projection to the point
+   */
+  projectOnShape(pt, resolution=128) {
+    closest_edge_idx = 0;
+    closest_dist = Number.MAX_VALUE;
+    projection;
+    percentage;
+    // project on each edge, and keep the closest projection
+    if (this.isPolygonal) {
       for (let i = 0; i < this.vertices.length - 1; i++) {
-        // compute the cross product of the vector from the first vertex
-        // to the point with the edges vector.
-        vec = pt.copy().sub(this.vertices[i]);
         edge = this.vertices[i + 1].position().sub(this.vertices[i]);
-        c = p5.Vector.cross(vec, edge);
-        // if c is the zero vector, this means the 2 vectors are 
-        // colinear and thus the point may belong to the edge
-        // Note: we compare the magnitude to some espilon to avoid 
-        // false negatives, e.g. the point near misses
-        // because of numerical issues.
-        if (c.magSq() < epsilon) {
-          l = vec.dot(edge);
-          // if 0 < AC.AB < AB.AB wher A and B are the edges ends and C the point to test,
-          // this means the point belongs to the vector
-          if (l >= 0 && l <= edge.magSq()) {
-            edge = edge.normalize();
-            // the normal is the orthogonal vector to the edge, which orientation depends
-            // on whether the shape is described clockwise or anticlockwise
-            if (this.isClockwise()) {
-              return createVector(-edge.y, edge.x);
-            }
-            else {
-              return createVector(edge.y, -edge.x);
-            }
+        dirToPoint = pt.copy().sub(this.vertices[i]);
+        proj_dist = edge.dot(dirToPoint);
+        projPercentage = proj_dist / edge.magSq();
+        if (projPercentage <= 1) {
+          if (projPercentage >= 0) {
+            proj_pt = edge.copy().mult(projPercentage);
+          }
+          else {
+            projPercentage = 0;
+            proj_pt = this.vertices[i].position();
           }
         }
+        else {
+          projPercentage = 1;
+          proj_pt = this.vertices[i + 1].position();
+        }
+        orthogonal = dirToPoint.sub(proj_pt);
+        distSq = orthogonal.magSq();
+
+        if (distSq < closest_dist) {
+          closest_edge_idx = i;
+          closest_dist = distSq;
+          projection = proj_pt;
+          percentage = projPercentage;
+        }
       }
-      console.log("[in getNormalAtPoint] Some error may have " +
-        "occured as the specified point was not found to belong to the shape");
     }
     else {
       let a, b, c, d;
@@ -1230,9 +1277,8 @@ Fresco.Shape = class {
       let t1;
       let p1, p2;
       const incr = 1 / (resolution - 1);
-      let vertex;
       for (let i = 0; i < this.vertices.length - 1; i++) {
-        // retrieve the edge sdrawLine equation coefficients
+        // retrieve the edge spline equation coefficients
         [a, b, c, d] = catmullRom(...this.controlPoints(i));
 
         t0 = 0;
@@ -1250,42 +1296,26 @@ Fresco.Shape = class {
           // move the bounds such that we restrict the splineine to the closest half
           if(distSquared(pt, p1) <= distSquared(pt, p2)) {
             t1 = (t1 + t0) * 0.5;
-            // if the closest half is already at less than epsilon, return
-            if (distSquared(pt, p1) <= epsilon) {
-              let tangent = a.mult(3 * t00 * t00).add(
-                b.mult(2 * t00)).add(c).normalize();
-              // return the orthogonal to the tangent, with the orientation chosen based
-              // on whether the shape is discribed in a clockwise fashion
-              if (this.isClockwise()) {
-                return createVector(-tangent.y, tangent.x);
-              }
-              else {
-                return createVector(tangent.y, -tangent.x);
-              }
-            }            
           }
           else {
             t0 = (t1 + t0) * 0.5;
-            // if the closest half is already at less than epsilon, return
-            if (distSquared(pt, p2) <= epsilon) {
-              let tangent = a.mult(3 * t01 * t01).add(
-                b.mult(2 * t01)).add(c).normalize();
-              // return the orthogonal to the tangent, with the orientation chosen based
-              // on whether the shape is discribed in a clockwise fashion
-              if (this.isClockwise()) {
-                return createVector(-tangent.y, tangent.x);
-              }
-              else {
-                return createVector(tangent.y, -tangent.x);
-              }
-            }     
           }
         }
+
+        dist = distSquared(pt, p1);
+        if (dist < closest_dist) {
+          closest_dist = dist;
+          projection = p1;
+          percentage = t0;
+          closest_edge_idx = i;
+        }
       }
-      console.log("[in getNormalAtPoint] Some error may have " +
-        "occured as the specified point was not found to belong to the shape");
     }
+
+    closest_dist = Math.sqrt(closest_dist);
+    return [projection, closest_edge_idx, percentage, closest_dist];
   }
+
 
   // returns normals to points in local coordinates.
   // If the shape is open, the first and last points will use the only
