@@ -700,6 +700,48 @@ Fresco.Drag = class extends Fresco.Force {
 }
 
 
+Fresco.CurlForce = class extends Fresco.Force {
+    constructor(intensity, noiseFreq) {
+      super();
+      this.intensity = intensity;
+      this.noiseFreq = noiseFreq;
+    }
+  
+    applyForce(particle) {
+      return curlNoise2D(
+        perlin, 0.01,
+        (particle.x + width / 2) * this.noiseFreq,
+        (particle.y + height / 2) * this.noiseFreq).mult(this.intensity)
+    }
+}
+  
+
+Fresco.VanDerWaals = class extends Fresco.Force {
+constructor(intensity, radius, pushPower, pullPower, x = 0, y = 0) {
+    if (pushPower > 0) {
+    throw "Push power must be negative"
+    }
+    if (pullPower > pushPower) {
+    throw "If the pull power becomes larger than the push power, the force will diverge"
+    }
+    super();
+    this.intensity = intensity;
+    this.radius = radius;
+    this.position = createVector(x, y);
+    this.pushPower = pushPower;
+    this.pullPower = pullPower;
+}
+
+applyForce(particle) {
+    let normalizedDist = particle.dist(this.position) / this.radius;
+    let amplitude = this.intensity *
+    (Math.pow(normalizedDist, this.pushPower) -
+    Math.pow(normalizedDist, this.pullPower));
+    return this.position.copy().sub(particle).normalize().mult(amplitude);
+}
+}
+
+
 /**
  * A template emitter class, which is to say a class which will create particles over time
  * following some set properties. Each particle's oewn properties will be chosen randomly

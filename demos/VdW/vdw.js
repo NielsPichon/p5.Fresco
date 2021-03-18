@@ -51,7 +51,6 @@ class VanDerWaals extends Fresco.Force {
       Math.pow(normalizedDist, this.pullPower));
     return this.position.copy().sub(particle).normalize().mult(amplitude);
   }
-
 }
 
 function setup() {
