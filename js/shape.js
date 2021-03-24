@@ -1185,15 +1185,15 @@ Fresco.Shape = class {
       }
     }
 
-    [projection, closest_edge_idx, percentage, closest_dist] = this.projectOnShape(pt, resolution);
+    let [projection, closest_edge_idx, percentage, closest_dist] = this.projectOnShape(pt, resolution);
 
     if (closest_dist > epsilon) {
-      console.log("[in getNormalAtPoint] Some error may have " +
+      console.log("[in normalAtPoint] Some error may have " +
       "occured as the specified point was not found to belong to the shape");
     }
 
     if (this.isPolygonal) {
-      edge = this.vertices[closest_edge_idx + 1].position().sub(this.vertices[closest_edge_idx]);
+      let edge = this.vertices[closest_edge_idx + 1].position().sub(this.vertices[closest_edge_idx]);
       edge = edge.normalize();
       // the normal is the orthogonal vector to the edge, which orientation depends
       // on whether the shape is described clockwise or anticlockwise
@@ -1233,20 +1233,23 @@ Fresco.Shape = class {
    * Percentage along the edge where the point is, Distance from the projection to the point
    */
   projectOnShape(pt, resolution=128) {
-    closest_edge_idx = 0;
-    closest_dist = Number.MAX_VALUE;
-    projection;
-    percentage;
+    let closest_edge_idx = 0;
+    let closest_dist = Number.MAX_VALUE;
+    let projection;
+    let percentage;
     // project on each edge, and keep the closest projection
     if (this.isPolygonal) {
       for (let i = 0; i < this.vertices.length - 1; i++) {
-        edge = this.vertices[i + 1].position().sub(this.vertices[i]);
-        dirToPoint = pt.copy().sub(this.vertices[i]);
-        proj_dist = edge.dot(dirToPoint);
-        projPercentage = proj_dist / edge.magSq();
+        // project on line
+        let  edge = this.vertices[i + 1].position().sub(this.vertices[i]);
+        let dirToPoint = pt.copy().sub(this.vertices[i]);
+        let proj_dist = edge.dot(dirToPoint);
+        let projPercentage = proj_dist / edge.magSq();
+        let proj_pt;
+        // restrict projection to segment
         if (projPercentage <= 1) {
           if (projPercentage >= 0) {
-            proj_pt = edge.copy().mult(projPercentage);
+            proj_pt = edge.copy().mult(projPercentage).add(this.vertices[i]);
           }
           else {
             projPercentage = 0;
@@ -1257,8 +1260,8 @@ Fresco.Shape = class {
           projPercentage = 1;
           proj_pt = this.vertices[i + 1].position();
         }
-        orthogonal = dirToPoint.sub(proj_pt);
-        distSq = orthogonal.magSq();
+        let orthogonal = dirToPoint.sub(proj_pt);
+        let distSq = orthogonal.magSq();
 
         if (distSq < closest_dist) {
           closest_edge_idx = i;

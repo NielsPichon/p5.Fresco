@@ -253,6 +253,7 @@ Fresco.Particle = class extends Fresco.Point {
      * @property {boolean} stopSimulate=false - Prevents the particle from further being updated.
      * The particle will remain alive and can still be drawn.
      * @property {Fresco.Point} previousPosition=null - Position at the previous timestep.
+     * @property {boolean} normalizeV=false - If True, velocity will be normalized before applying to position
      */
     constructor(position) {
         super(position);
@@ -260,6 +261,8 @@ Fresco.Particle = class extends Fresco.Point {
         this.lifetime = -1; // a negative life time means
                             // the particle never dies
         
+        this.normalizeV = false;
+
         this.mass = 1;
         this.leaveTrail = false; // if true, this particle will
                                  // slowly define a shape
@@ -405,6 +408,10 @@ Fresco.Particle = class extends Fresco.Point {
                 // update position based on the acceleration
                 this.velocity.add(this.acceleration.copy().mult(dt));
                 
+                if (this.normalizeV) {
+                    this.velocity.normalize();
+                }
+
                 // solve for collisions if relevant
                 if (this.handleCollisions) {
                     solveCollision(this, dt);
@@ -418,6 +425,11 @@ Fresco.Particle = class extends Fresco.Point {
             else {
                 // buffer position before move , as previous position
                 this.storePreviousPosition();
+
+                if (this.normalizeV) {
+                    this.velocity.normalize();
+                }
+
                 // else move the particle based on velocity only
                 this.add(this.velocity.copy().mult(dt));
             }
@@ -709,7 +721,7 @@ Fresco.CurlForce = class extends Fresco.Force {
   
     applyForce(particle) {
       return curlNoise2D(
-        perlin, 0.01,
+        perlin, Math.min(0.01, this.noiseFreq / 2),
         (particle.x + width / 2) * this.noiseFreq,
         (particle.y + height / 2) * this.noiseFreq).mult(this.intensity)
     }
@@ -793,6 +805,7 @@ Fresco.Emitter = class {
      * on a single simulation step and then stop.
      * @property {boolean} isDead=false - If true, this emitter will be deleted at the end of the next
      * simulation step. Do not destroy this emitter manually, use this boolean instead.
+     * @property {boolean} normalizeV=false - If True, velocity will be normalized before applying to position
      */
     constructor() {
         // particles will be spawned with a random initial velocity
@@ -808,6 +821,8 @@ Fresco.Emitter = class {
         // same with mass
         this.minMass = 1;
         this.maxMass = 1;
+
+        this.normalizeV = false;
 
         // same thing with its scale (except it will be uniform)
         this.minScale = createVector(.1, .1);
@@ -945,6 +960,8 @@ Fresco.PointEmitter = class extends Fresco.Emitter {
                     nu_particle.rotationOverLifeTime = this.rotationOverLifeTime;
                     nu_particle.rotationInterpolation = this.rotationInterpolation;
 
+                    nu_particle.normalizeV = this.normalizeV;
+
                     // apply particle overall scale to its scale over life
                     for (let j = 0; j < nu_particle.scaleOverLife.length; j++) {
                         nu_particle.scaleOverLife[j].mult(nu_particle.scale);
@@ -1047,6 +1064,8 @@ Fresco.ShapeEmitter = class extends Fresco.Emitter {
                     nu_particle.rotationOverLife = this.rotationOverLife;
                     nu_particle.rotationOverLifeTime = this.rotationOverLifeTime;
                     nu_particle.rotationInterpolation = this.rotationInterpolation;
+
+                    nu_particle.normalizeV = this.normalizeV;
 
                     // apply particle overall scale to its scale over life
                     for (let j = 0; j < nu_particle.scaleOverLife.length; j++) {
