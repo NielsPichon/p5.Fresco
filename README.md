@@ -155,6 +155,20 @@ of the feeling of these old decors.
 
 <img src="./images/theatre.png" alt="theatre render" width="500"/>
 
+### [Holi](./demos/holi/holi.js)
+
+This project started as an attempt to make a physarum inspired work, somewhat like [Sage Jenson's work](https://www.sagejenson.com/physarum).
+Because we have always been too lazy to pickup shaders
+we decided to embrace the limitation of running on CPU and went for a low res grid. Interestingly with enough particles/agent/physarum organisms, and the right
+color, the piece ended up looked like a colored chalk cloud, evocing the Indian festival Holi which celebrates spring (I think?).
+
+On the tech side, we have a grid with a number of "compounds", each having a density of 0 to 1 in each cell. These diffuse and evaporate over time.
+Then a number of "agents"/physarum organism move such that they always try to go towards what they think is best for them. This notion of "best" is very personal:
+each agent is either a hater or a lover. Lovers will always go towards the (randomly selected) max density of compound they love, haters avoid it. Often time, the results
+were better with having only haters or only lovers. Should we see some hidden meaning here? ^^
+
+<img src="./images/holi.png" alt="holi render" width="500"/>
+
 
 ## Known issue
 We are trying really hard to resolve bugs as they come but if you find somes, feel free to open an issue for it. The currently open bugs are:

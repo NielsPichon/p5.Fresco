@@ -1,23 +1,39 @@
 const backgroundClr = '000';
-const gridResolution = 100; // number of cells in each direction. WARNING! SLOW!
-const noiseFreq = 0.01; // frequency of the noise when initialising with some noise
+const gridResolution = 150; // number of cells in each direction. WARNING! SLOW!
+const noiseFreq = 0.1; // frequency of the noise when initialising with some noise
 const numCompounds = 10; // number of compounds == colors
 const diffusionSpeed = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]; // how fast each color diffuses
 const evaporationSpeed = [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02]; // how fast each colors disappears
+
 const compoundClr = [
   'f72585', 'b5179e', '7209b7', '560bad', '480ca8', '3a0ca3', '3f37c9', '4361ee', '4895ef', '4cc9f0'
 ]; // color of each compound
+
+// const compoundClr = [
+//   '00296b', '003f88', '00509d', 'fdc500', '00296b', '003f88', '00509d', 'fdc500',  '00296b',  '003f88',
+// ]; // color of each compound
+
+// const compoundClr = [
+//   '0a1128', '001f54', '034078', '1282a2', 'fefcfb','0a1128', '001f54', '034078', '1282a2', 'fefcfb',
+// ]; // color of each compound
+
+// const compoundClr = [
+//   '390099', '9e0059', 'ff0054', 'ff5400', 'ffbd00', '390099', '9e0059', 'ff0054', 'ff5400', 'ffbd00'
+// ]; // color of each compound
+
 const fillAmount = 1; // how much compound the agents leave behind
-const numAgents = 100; // number of agents
-const randomActionProb = 0.01; // probability that an agent makes a random move
+const numAgents = 200; // number of agents
+const randomActionProb = 0.5; // probability that an agent makes a random move
 const emptyInit = true; // whether the scene should initially be empty or filled with noise
 const allHaters = true; // whether all agents should hate another compound
-const allLovers = true; // whether all agents should love another compound. Love is stronger than hate
-const spawnInCircle = false; // whether agents should all spawn within a circle
+const allLovers = false; // whether all agents should love another compound. Love is stronger than hate
+const spawnInCircle = true; // whether agents should all spawn within a circle
 const circleRadius = 10; // radius of the spawn circle
-const angle = Math.PI / 4; // angle at which the agents look and turn
-const cellSizeMult = 0.5; // display size of each cell
+const angle = Math.PI / 2; // angle at which the agents look and turn
+const cellSizeMult = 0.4; // display size of each cell
 const screenRes = 1000; // resolution of the image in pixels
+
+const record = true;
 
 let cells = [];
 let clrs = []; // colors converted to rgb
@@ -214,6 +230,10 @@ function setup() {
         ((random() > 0.5) && !allHaters) || allLovers
       )
     )
+  }
+  
+  if (record) {
+    recordAnimation();
   }
 }
 
