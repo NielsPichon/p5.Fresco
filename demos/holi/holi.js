@@ -30,8 +30,8 @@ const allLovers = false; // whether all agents should love another compound. Lov
 const spawnInCircle = true; // whether agents should all spawn within a circle
 const circleRadius = 10; // radius of the spawn circle
 const angle = Math.PI / 2; // angle at which the agents look and turn
-const cellSizeMult = 0.4; // display size of each cell
-const screenRes = 1000; // resolution of the image in pixels
+const cellSizeMult = 0.7; // display size of each cell
+const screenRes = 1080; // resolution of the image in pixels
 
 const record = true;
 
