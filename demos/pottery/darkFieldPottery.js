@@ -1,47 +1,54 @@
-// cryogenization
-// const polyShape = true;
-// const partNum = 10;
-// const noiseFreq = 0.1;
-// const noiseAmplitude = 100;
-// const emitterSize = [1000];
-// const borderSize = 500;
-// const maxPartCount = 30000;
-// const circleModulation = 100;
-// const circleModFreq = 10;
-// const particlesRadius = 0.1;
-// const lineClr = 'fff';
-// const opacity = 255;
-
+// dark field parameters
 const polyShape = true;
 const partNum = 10;
 const noiseFreq = 0.01;
-const noiseAmplitude = 0.3;
+const noiseAmplitude = 0.6;
 const emitterSize = [1000];
 const borderSize = 500;
 const maxPartCount = 10000;
 const circleModulation = 100;
-const circleModFreq = 10;
-const particlesRadius = 0.1;
-const lineClr = 'fff';
+const circleModFreq = 100;
+const particlesRadius = 0.2;
+const lineClr = '220901';
 const opacity = 255;
+const backgroundClr = 'ffe5d9';
+
+
+// pot parameters
+const numLevels = 3;
+const potResolution = 64;
+const baseWidth = 0.2;
+const baseMaxX = 1 + baseWidth;
+const basePower = 2;
+const circleBase = true;
+const nextX = [0.6, 0.5];
+const nextDX = [-1, 0];
 
 const record = false;
 
 let partCount = 0;
+let pot;
 
 
 function setup() {
   createCanvas(1440, 1440);
-  background(0);
+  background(colorFromHex(backgroundClr));
   setSeed();
 
   // Create a number of emitters
   for (let i = 0; i < emitterSize.length; i++) {
-    let e = new Fresco.ShapeEmitter(new Fresco.Square(emitterSize[i]));
+    pot = new Pot(
+        numLevels, numLevels, emitterSize[i], potResolution, circleBase,
+        baseWidth, basePower, baseMaxX, nextX, nextDX
+    );
+    let AABB = pot.getBoundingBox();
+    pot.position.y -= (AABB[0].y + AABB[1].y) / 2;
+    let e = new Fresco.ShapeEmitter(pot);
     e.shape.isPolygonal = polyShape;
     e.minV = createVector(0, 0);
     e.maxV = createVector(0, 0);
-    e.minNormalV = 1; // Make sure all particles start with equal normal velocity
+    e.minNormalV = -1; // Make sure all particles start with equal normal velocity
+    e.maxNormalV = -1;
     e.leaveTrail = false;
     e.burst = false;
     e.spawnRate = partNum;
@@ -56,6 +63,8 @@ function setup() {
 }
 
 function draw() {
+    // pot.draw();
+    // noLoop();
   simulationStep();
   partCount += partNum;
   if (partCount >= maxPartCount) {
@@ -65,7 +74,7 @@ function draw() {
     let radius_i = borderSize + noise((particles[i].x + width / 2) * circleModFreq, (particles[i].y  + height / 2) * circleModFreq) * circleModulation;
 
     // kill particle if it gets out
-    if (Math.abs(particles[i].x)  > radius_i || Math.abs(particles[i].y) > radius_i) {
+    if (!isInside(particles[i], pot, true)) {
       particles[i].velocity = createVector(0, 0); 
       particles[i].isDead = true;
     } 

@@ -308,7 +308,7 @@ Fresco.Shape = class {
    * @property {number} strokeWeight=1 Stroke weight to draw the shape's contour with.
    * @property {boolean} updateBounds=true Whether the bounding box of the shape currently needs recomputing.
    * @property {Array.<p5.Vector>} [BoundingBox] of the shape described as the top left and bottom right corners.
-   * DO NOT CALL DIRECTLY. Use boundingBox() instead.
+   * DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
    * @property {boolean} updateLengths=true Whether the edge lengths currently need recomputing.
    * @property {Array.<number>} [edgeLengths] Length of the edges of the shape
    */
@@ -330,7 +330,7 @@ Fresco.Shape = class {
     this.strokeWeight = 1;
     this.updateBounds = true; // whether the bounding box should be recomputed
     // This contains the bounding box opposite corners, provided it has been calculated
-    this.boundingBox = []; // DO NOT CALL DIRECTLY. Use boundingBox() instead.
+    this.boundingBox = []; // DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
     this.updateLengths = true; // whether the edge length should be recomputed
     this.edgeLengths = [];
   }

@@ -29,8 +29,8 @@ class Pot extends Fresco.Shape {
       else {
         x = lerp(baseWidth, baseMaxX, x);
       }
-      vertices.push(createVector(x, y));
-      vertices.unshift(createVector(-x, y));
+      vertices.push(createPoint(x, y));
+      vertices.unshift(createPoint(-x, y));
     }
 
     let maxX = 1 + baseWidth;
@@ -55,8 +55,8 @@ class Pot extends Fresco.Shape {
       for (let j = 0; j < segmentRes; j++) {
         let y = (j + 1) / segmentRes;
         x = ((a * y + b) * y + c) * y + d;
-        vertices.push(createVector(x, y + i + 1));
-        vertices.unshift(createVector(-x, y + i + 1));
+        vertices.push(createPoint(x, y + i + 1));
+        vertices.unshift(createPoint(-x, y + i + 1));
 
         if (x > maxX) {
           maxX = x;
