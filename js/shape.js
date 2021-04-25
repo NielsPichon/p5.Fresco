@@ -391,7 +391,7 @@ Fresco.Shape = class {
       }
     }
     
-    let fill = this.fillColor;
+    let fillBuffer = this.fillColor;
     if (this.noFill) {
       noFill();
     }
@@ -399,6 +399,7 @@ Fresco.Shape = class {
       if (fillColor) {
         this.fillColor = fillColor;
       }
+      fill(this.fillColor);
     }
 
     beginShape();
@@ -459,7 +460,7 @@ Fresco.Shape = class {
     }
     endShape();
 
-    this.fillColor = fill;
+    this.fillColor = fillBuffer;
   }
 
 
@@ -1149,9 +1150,6 @@ Fresco.Shape = class {
   }
 
 
-  // 
-  // 
-  // 
   /**
    * Retrieve the normal at a given point along the contour.
    * 

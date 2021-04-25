@@ -413,3 +413,18 @@ function lerpVector(start, stop, amount) {
   lVec.z = lerp(start.z, stop.z, amount);
   return lVec;
 }
+
+
+function randomInt(start, end=null) {
+  if (end) {
+    return start + Math.floor(random(end - start));
+  }
+  else {
+    return Math.floor(random(start))
+  }
+}
+
+function randomSelect(objects) {
+  let idx = randomInt(objects.length);
+  return objects[idx];
+}
