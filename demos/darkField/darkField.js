@@ -11,7 +11,7 @@ const particlesRadius = 0.1;
 const lineClr = 'fff';
 const opacity = 255;
 
-const record = true;
+const record = false;
 
 let partCount = 0;
 
