@@ -1,10 +1,11 @@
 // color parameters
 const backgroundClr = 'fff0cf';
-const colors = ['ef476f', 'ffd166', '06d6a0', '118ab2'];
+const backgroundAlpha = 0; // how fast the shape will fade in the background. 0 means no fade
+const fillColors = ['ef476f', 'ffd166', '06d6a0', '118ab2'];
 const outlineColor = '073b4c';
-const alpha = 255;
-const outlineAlpha = 255;
-const lineThickness = 2;
+const fillAlpha = 10; // 10 for best results
+const outlineAlpha = 255; // 255 for best results
+const lineThickness = 2; // 2 for best results
 const interpSpeed = 1 / 120;
 // bubbles parameters
 const initRadius = 400; // radius of the initial circle 
@@ -16,9 +17,10 @@ const newBubbleRate = 1; // How many frames should there be between each bubble 
 const removeProbability = 0.2; // probability the new bubble will subtract from the shape
 const resampleCount = 100; // If not 0, after every new bubble the shape will be resampled
 // shrinking parameters
-const shrinkSpeed = 1 / 300; // how fast will the shape shrink by half
+const shrinkSpeed = 1 / 150; // how fast will the shape shrink by half
 //record
-const record = true;
+const record = false;
+const drawingSeed = null;
 
 
 let s; // shape
@@ -30,15 +32,15 @@ let scale = 0; // sacling factor
 function setup() {
   createCanvas(1440, 1400);
   background(colorFromHex(backgroundClr));
-  setSeed();
+  setSeed(drawingSeed);
   s = new Fresco.Circle(initRadius, initRes);
   s.strokeWeight = lineThickness;
   s.noFill = false;
   s.color = colorFromHex(outlineColor, outlineAlpha);
 
   // convert colors to rgba
-  for (let i = 0; i < colors.length; i++) {
-    shapeColors.push(colorFromHex(colors[i], alpha));
+  for (let i = 0; i < fillColors.length; i++) {
+    shapeColors.push(colorFromHex(fillColors[i], fillAlpha));
   }
 
   // Add the first color at the end of the array to make a cyclic interpolation
@@ -52,7 +54,9 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  // background(colorFromHex(backgroundClr));
+  if (backgroundAlpha > 0) {
+    background(colorFromHex(backgroundClr, backgroundAlpha));
+  }
   s.fillColor = colorInterp(t, shapeColors);
   s.draw();
   if (frameCount % newBubbleRate == 0) {
