@@ -1,33 +1,69 @@
-const backgroundClr = '000';
-const lineThickness = 3;
-const initRadius = 100; // radius of the initial circle 
+// color parameters
+const backgroundClr = 'fff0cf';
+const colors = ['ef476f', 'ffd166', '06d6a0', '118ab2'];
+const outlineColor = '073b4c';
+const alpha = 255;
+const outlineAlpha = 255;
+const lineThickness = 2;
+const interpSpeed = 1 / 120;
+// bubbles parameters
+const initRadius = 400; // radius of the initial circle 
 const initRes = 100; // number of vertices of the initial shape
-const minBubbleRadius = 5; // minimum radius of a bubble
-const maxBubbleRadius = 30; // maximum radius of a bubble
+const minBubbleRadius = 10; // minimum radius of a bubble
+const maxBubbleRadius = 100; // maximum radius of a bubble
 const bubbleRes = 24; // number of vertices forming each bubble should they be full
 const newBubbleRate = 1; // How many frames should there be between each bubble formation
 const removeProbability = 0.2; // probability the new bubble will subtract from the shape
 const resampleCount = 100; // If not 0, after every new bubble the shape will be resampled
+// shrinking parameters
+const shrinkSpeed = 1 / 300; // how fast will the shape shrink by half
+//record
+const record = true;
 
-let s;
-let dTheta = 2 * Math.PI / bubbleRes;
+
+let s; // shape
+let dTheta = 2 * Math.PI / bubbleRes; //angular resolution
+let shapeColors = []; // color buffer in rgba
+let t = 0; // color interpolant
+let scale = 0; // sacling factor
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(1440, 1400);
   background(colorFromHex(backgroundClr));
   setSeed();
   s = new Fresco.Circle(initRadius, initRes);
   s.strokeWeight = lineThickness;
+  s.noFill = false;
+  s.color = colorFromHex(outlineColor, outlineAlpha);
+
+  // convert colors to rgba
+  for (let i = 0; i < colors.length; i++) {
+    shapeColors.push(colorFromHex(colors[i], alpha));
+  }
+
+  // Add the first color at the end of the array to make a cyclic interpolation
+  shapeColors.push(shapeColors[0]);
+
+  if (record) { 
+    recordAnimation()
+  }
 }
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  // background(colorFromHex(backgroundClr));
+  s.fillColor = colorInterp(t, shapeColors);
   s.draw();
   if (frameCount % newBubbleRate == 0) {
     addOrRemoveBubble();
   }
+
+  t += interpSpeed;
+  t = t % 1; 
+
+  scale = 1 / Math.pow(2, frameCount * shrinkSpeed);
+  s.setScale(scale); 
 }
 
 function addOrRemoveBubble() {
@@ -35,6 +71,8 @@ function addOrRemoveBubble() {
   let add = random() > removeProbability;
   // randomly choose the bubble's radius
   let radius = random() * (maxBubbleRadius - minBubbleRadius) + minBubbleRadius;
+  // apply scaling factor
+  radius *= scale;
   // randomly choose a vertex to grow from
   let vertex = Math.floor(random() * s.vertices.length);
 
