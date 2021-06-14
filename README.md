@@ -169,6 +169,11 @@ were better with having only haters or only lovers. Should we see some hidden me
 
 <img src="./images/holi.png" alt="holi render" width="500"/>
 
+### [Bubbles](./demos/bubbles/bubbles.js)
+
+Bubbles are fun! In this project we randomly spawn them on the contour of a shape and add or subtract them to the shape. With a bit of smoothing and the right transparency, it makes for a colourful and fun work. Note that the boolean operations here are very simplistic and error prone but we don't care given the strong smoothing more or less remove remove most issues. We'll probably look into proper vectorial booleans in the near future. But for now enjoy these bubbles of color.
+
+<img src="./images/bubbles.png" alt="bubbles render" width="500"/>
 
 ## Known issue
 We are trying really hard to resolve bugs as they come but if you find somes, feel free to open an issue for it. The currently open bugs are:
