@@ -20,7 +20,8 @@ let angle = 37; // variable storing the angle between leaves
 
 function setup() {
   // create canvas
-  createCanvas(1000, 1000);
+  createSVGCanvas(1000, 1000);
+
   // Set the random seed
   setSeed();
 

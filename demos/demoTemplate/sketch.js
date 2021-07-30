@@ -1,7 +1,7 @@
 const backgroundClr = '000';
 
 function setup() {
-  createCanvas(1000, 1000);
+  createSVGCanvas(1000, 1000);
   background(colorFromHex(backgroundClr));
   setSeed();
 }

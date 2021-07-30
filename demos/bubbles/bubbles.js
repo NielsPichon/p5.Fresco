@@ -1,9 +1,12 @@
 // color parameters
-const backgroundClr = 'fff0cf';
-const backgroundAlpha = 0; // how fast the shape will fade in the background. 0 means no fade
-const fillColors = ['ef476f', 'ffd166', '06d6a0', '118ab2'];
-const outlineColor = '073b4c';
-const fillAlpha = 10; // 10 for best results
+// const backgroundClr = 'fff0cf';
+const backgroundClr = '730020';
+const backgroundAlpha = 10; // how fast the shape will fade in the background. 0 means no fade
+// const fillColors = ['ef476f', 'ffd166', '06d6a0', '118ab2'];
+const fillColors = ['9c002c', 'ff5e7b', 'd00', 'c9184a'];
+// const outlineColor = '073b4c';
+const outlineColor = 'd00';
+const fillAlpha = 50; // 10 for best results
 const outlineAlpha = 255; // 255 for best results
 const lineThickness = 2; // 2 for best results
 const interpSpeed = 1 / 120;
@@ -17,9 +20,9 @@ const newBubbleRate = 1; // How many frames should there be between each bubble 
 const removeProbability = 0.2; // probability the new bubble will subtract from the shape
 const resampleCount = 100; // If not 0, after every new bubble the shape will be resampled
 // shrinking parameters
-const shrinkSpeed = 1 / 150; // how fast will the shape shrink by half
+const shrinkSpeed = 1 / 150; // how fast will the shape shrink by half // best at 1 /600
 //record
-const record = false;
+const record = true;
 const drawingSeed = null;
 
 

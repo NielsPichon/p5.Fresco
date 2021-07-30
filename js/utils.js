@@ -14,6 +14,19 @@ let recorder;
  */
 let seed;
 
+
+/**
+ * 
+ */
+let isSVGCanvas = false;
+
+function createSVGCanvas(w, h)
+{
+  isSVGCanvas = true;
+  createCanvas(w, h, SVG);
+}
+
+
 /**
  * Overide of the p5 keyPressed function which handles various  key presses.
  * * Pausing with the p and space keys
@@ -34,7 +47,13 @@ function keyPressed() {
 
     // save current frame to png
     if (key == 's') {
-      saveCanvas('canvas', 'png');
+      if (isSVGCanvas) {
+        save();
+      }
+      else 
+      {
+        saveCanvas('canvas', 'png');
+      }
     }
 
     // Draw one frame

@@ -15,7 +15,7 @@ let rings = [];
 
 
 function setup() {
-  createCanvas(1440, 1440);
+  createSVGCanvas(1440, 1440);
   setSeed();
 
   let k;
@@ -54,4 +54,6 @@ function draw() {
     rings[i].rotation = radians(frameCount * rotationSpeed * i);
     rings[i].draw();
   }
+
+  noLoop();
 }

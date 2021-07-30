@@ -21,7 +21,7 @@ const colorOpacity = 128;
 let s;
 
 function setup() {
-  createCanvas(700, 1000);
+  createSVGCanvas(700, 1000);
   background(colorFromHex(backgroundClr));
 
   // convert colors to rgba
