@@ -268,9 +268,10 @@ Fresco.Point = class extends p5.Vector{
   }
 
   toJSON() {
+    // export the point as a dictionary of coordinates, normalized to the [0, 1] range
     return {
-      x: this.x,
-      y: this.y
+      x: (this.x / width) + 0.5,
+      y: (this.y / height) + 0.5
     }
   }
 }
