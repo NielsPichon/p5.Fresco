@@ -266,6 +266,13 @@ Fresco.Point = class extends p5.Vector{
     arrayCopy(this.color, nu_pt.color);
     return nu_pt;
   }
+
+  toJSON() {
+    return {
+      x: this.x,
+      y: this.y
+    }
+  }
 }
 
 
@@ -335,6 +342,17 @@ Fresco.Shape = class {
     this.edgeLengths = [];
   }
 
+  toJSON() {
+    let points = []
+    for (let i = 0; i < this.vertices.length; i++) {
+      points.push(this.vertices[i].toJSON());
+    } 
+    return {
+      vertices: points,
+      isPolygonal: this.isPolygonal
+    }
+  }
+
   /**
    * Utility to draw the shape
    * @param {boolean} [usePointColor] Whether to use  the shape color or the
@@ -346,7 +364,6 @@ Fresco.Shape = class {
   draw(usePointColor = false) {
     this.drawInstantiate(usePointColor);
   }
-
 
   /**
    * Utility to draw the shape with a specified (optional) transform
