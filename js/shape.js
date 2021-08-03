@@ -119,6 +119,28 @@ function drawCircle(center, radius) {
 
 
 /**
+ * Converts an array of shapes to JSON and saves it to file.
+ * WARNING: Will freeze any  existing transform. 
+ * @param {Array<Fresco.Shape>} shapes 
+ */
+function shapesToFile(shapes, filename) {
+  buffer = [];
+  for (let i = 0; i < shapes.length; i++) {
+    buffer.push(shapes[i].toJSON());
+  }
+  jsonData =  {
+    shapes: buffer
+  };
+  let content = JSON.stringify(jsonData)
+
+  let a = document.createElement("a");
+  let file = new Blob([content], {type: 'text/plain'});
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+}
+
+/**
  * Helper function which draws a normal to a vertex of a shape.
  * 
  * @param {p5.Vector} normal Normal we want to draw. It should be 
@@ -343,7 +365,13 @@ Fresco.Shape = class {
     this.edgeLengths = [];
   }
 
+  /**
+   * Returns a minimal description of the shape
+   * WARNING: Freezes the transform
+   * @returns The JSON friendly dict represnting the shape
+   */
   toJSON() {
+    this.freezeTransform()
     let points = []
     for (let i = 0; i < this.vertices.length; i++) {
       points.push(this.vertices[i].toJSON());
@@ -356,9 +384,14 @@ Fresco.Shape = class {
     }
   }
 
+  /**
+   * JSONify the shape and saves it to file
+   * WARNING: Freezes the transform
+   * @param {string} filename Filename to save the shape to
+   */
   toFile(filename) {
     let jsonData = this.toJSON()
-    let content = json.stringify(jsonData)
+    let content = JSON.stringify(jsonData)
 
     let a = document.createElement("a");
     let file = new Blob([content], {type: 'text/plain'});
@@ -1538,7 +1571,6 @@ Fresco.Geometry = class {
     this.objectsScale = []; //stores the initial scale of the objects
     this.objectsPosition = []; //stores the initial position of the objects
   }
-
 
   /**
    * Draws all objects. Every object must have a `draw` method of its own.
