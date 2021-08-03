@@ -349,9 +349,22 @@ Fresco.Shape = class {
       points.push(this.vertices[i].toJSON());
     } 
     return {
+      canvas_width: width,
+      canvas_height: height, 
       vertices: points,
       isPolygonal: this.isPolygonal
     }
+  }
+
+  toFile(filename) {
+    let jsonData = this.toJSON()
+    let content = json.stringify(jsonData)
+
+    let a = document.createElement("a");
+    let file = new Blob([content], {type: 'text/plain'});
+    a.href = URL.createObjectURL(file);
+    a.download = filename;
+    a.click();
   }
 
   /**

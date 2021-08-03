@@ -18,7 +18,7 @@ function axi_draw(shapes) {
 }
 
 function axi_config(config) {
-    send_request(shapes, "config");
+    send_request(config, "config");
     console.log('Sent config to axidraw');
 }
 
