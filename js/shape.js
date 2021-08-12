@@ -1579,7 +1579,7 @@ Fresco.Shape = class {
    */
   splitShape(intersections) {
     if (intersections.length == 0) {
-      return this.copy();
+      return [this.copy()];
     }
     let subShapes = [];
     let prev_idx = 0;
@@ -1641,6 +1641,11 @@ Fresco.Shape = class {
 
     this.freezeTransform();
 
+    // if the other shape is not closed, then the boolean should return the original shape
+    if (!shape.isClosed()) {
+      return [this];
+    }
+
     // retrieve all intersection points
     let intersections = this.getIntersectionsPoints(shape);
 
@@ -1666,8 +1671,13 @@ Fresco.Shape = class {
       }
     });
 
-    remainingShapes[0].isPolygonal = true;
-    return mergeContours(remainingShapes);
+    if (remainingShapes.length > 0) {
+      remainingShapes[0].isPolygonal = true;
+      return mergeContours(remainingShapes);
+    }
+    else {
+      return [];
+    }
   }
 
   /**
@@ -1683,6 +1693,11 @@ Fresco.Shape = class {
     }
 
     this.freezeTransform();
+
+    // if the other shape is not closed, then the boolean should return the original shape
+    if (!shape.isClosed()) {
+      return [this];
+    }
 
     // retrieve all intersection points
     let intersections = this.getIntersectionsPoints(shape);
