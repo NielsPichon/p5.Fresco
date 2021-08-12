@@ -1,4 +1,5 @@
 const backgroundClr = '000';
+const debugColors = true;
 
 // camera settings 
 const xSkewDeg = 33; // angle that perspective line have with the horizontal axis in deg
@@ -91,7 +92,9 @@ class Box {
   draw() {
     this.faces.forEach(face => {
       if (face != null) {
-        face.setColor([random() * 255, random() * 255, random() * 255]);
+        if (debugColors) {
+          face.setColor([random() * 255, random() * 255, random() * 255]);
+        }
         face.draw()
       }
     })
