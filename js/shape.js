@@ -1627,6 +1627,7 @@ Fresco.Shape = class {
     return subShapes;
   }
 
+
   /**
    * Subtract the specified shape from this one. As of now, this will remove the overlapped parts entirely,
    * not even leaving a contour.
@@ -1653,11 +1654,11 @@ Fresco.Shape = class {
       // if there are only 2 vertices we check the midpoint
       if (s.vertices.length == 2) {
         let midPoint = s.vertices[0].copy().add(s.vertices[1]).mult(0.5);
-        isIn = isInside(midPoint, this, true);
+        isIn = isInside(midPoint, shape, true);
       }
       else {
         // else we take a random point
-        isIn = isInside(s.vertices[1], this, true);
+        isIn = isInside(s.vertices[1], shape, true);
       }
 
       if (!isIn) {
@@ -1665,25 +1666,51 @@ Fresco.Shape = class {
       }
     });
 
-    // Now merge shapes together
-    let nuShape = remainingShapes[0];
-    nuShape.isPolygonal = this.isPolygonal;
-    let outShapes = [];
-    remainingShapes.shift();
-    remainingShapes.forEach(s => {
-      if (s.vertices[0] == nuShape[nuShape.vertices.length - 1]) {
-        s.vertices.shift();
-        s.vertices.forEach(vtx => nuShape.push(vtx));
+    remainingShapes[0].isPolygonal = true;
+    return mergeContours(remainingShapes);
+  }
+
+  /**
+   * Invert operation of the subtract path finding operation.
+   * Will only leave the contours inside of the specified shape visible
+   * @param {*} shape 
+   * @returns 
+   */
+  clip(shape) {
+    if (!shape.isPolygonal || !this.isPolygonal)
+    {
+      throw 'path finding is not supported for non polygonal shapes'
+    }
+
+    this.freezeTransform();
+
+    // retrieve all intersection points
+    let intersections = this.getIntersectionsPoints(shape);
+
+    // split the shape in many sub contours
+    let subShapes = this.splitShape(intersections);
+
+    // Save only contours that are outside the other shape
+    let remainingShapes = [];
+    subShapes.forEach(s => {
+      let isIn = false;
+      // if there are only 2 vertices we check the midpoint
+      if (s.vertices.length == 2) {
+        let midPoint = s.vertices[0].copy().add(s.vertices[1]).mult(0.5);
+        isIn = isInside(midPoint, shape, true);
       }
       else {
-        outShapes.push(nuShape.copy());
-        nuShape = s;
-        nuShape.isPolygonal = this.isPolygonal;
+        // else we take a random point
+        isIn = isInside(s.vertices[1], shape, true);
+      }
+
+      if (isIn) {
+        remainingShapes.push(s);
       }
     });
-    outShapes.push(nuShape.copy());
 
-    return outShapes;
+    remainingShapes[0].isPolygonal = true;
+    return mergeContours(remainingShapes);    
   }
 }
 
@@ -2990,6 +3017,33 @@ function shapeInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir 
   return C;
 }
 
+/**
+ * Given an array of contours, merge those that have connected ends
+ * @param {Array<Fresco.Shape>} contours 
+ * @returns {Array<Fresco.Shape>} Array of merged contours
+ */
+function mergeContours(contours) {
+  // Now merge shapes together
+  let isPolygonal = contours[0].isPolygonal
+  let nuShape = contours[0];
+  nuShape.isPolygonal = isPolygonal;
+  let outShapes = [];
+  contours.shift();
+  contours.forEach(s => {
+    if (s.vertices[0] == nuShape[nuShape.vertices.length - 1]) {
+      s.vertices.shift();
+      s.vertices.forEach(vtx => nuShape.push(vtx));
+    }
+    else {
+      outShapes.push(nuShape.copy());
+      nuShape = s;
+      nuShape.isPolygonal = isPolygonal;
+    }
+  });
+  outShapes.push(nuShape.copy());
+
+  return outShapes;
+}
 
 /**
  * Computes the offset between 2 sets of points to minimize
