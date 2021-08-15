@@ -2,22 +2,23 @@ const backgroundClr = '000';
 const debugColors = true;
 
 // camera settings 
-const xSkewDeg = 33; // angle that perspective line have with the horizontal axis in deg
+const xSkewDeg = 10; // angle that perspective line have with the horizontal axis in deg
 const zSkewDeg = 15; // angle that perspective line have with the depth axis in deg
 
 // box properties
 const boxWidth = 200;
 const boxDepth = 50;
 const boxHeight = 300;
+const variability = 0 // how much wider or narrower in each dimension, in percent each box can be
 
 // grid spacing
 const minXSpacing = 10;
 const maxXSpacing = 300;
 const rowSpacing = 100;
-const minDepth = -1000;
-const maxDepth = 1000;
-const minX = -1000;
-const maxX = 1000;
+const minDepth = -800;
+const maxDepth = 500;
+const minX = -500;
+const maxX = 500;
 
 // convert camera settings to radians
 let xSkew = xSkewDeg * Math.PI / 180;
@@ -57,9 +58,15 @@ function subtractFaces(subtractFrom, subFace) {
 }
 
 class Box {
-  constructor(boxH, boxW, boxD, position) {
-    // invert the x axis
-    position.x *= -1;
+  constructor(boxH, boxW, boxD, variability, position) {
+    // store overall depth
+    this.depth = position.z;
+
+    // add variability
+    boxH = lerp(boxH * (1 - variability), boxH * (1 + variability), random());
+    boxW = lerp(boxW * (1 - variability), boxW * (1 + variability), random());
+    boxD = lerp(boxD * (1 - variability), boxD * (1 + variability), random());
+    this.width = boxW;
 
     // Create corners of the box
     let v1 = rotatePoint(createPoint(-boxW / 2, boxH, 0).add(position));
@@ -77,9 +84,6 @@ class Box {
 
     // ensure faces are polygonal
     this.faces.forEach(face => face.isPolygonal = true);
-
-    // store overall depth
-    this.depth = position.z;
   }
 
   subtractFrom(box) {
@@ -108,11 +112,13 @@ function setup() {
 
   let z = maxDepth;
   let x = maxX;
+  prevW = 0;
   while (z > minDepth) {
     while (x > minX) {
-      x -= lerp(minXSpacing, maxXSpacing, random()) + boxWidth;
+      x -= lerp(minXSpacing, maxXSpacing, random()) + prevW;
       // generate new box
-      let nuBox = new Box(boxHeight, boxWidth, boxDepth, createVector(x, 0, z));
+      let nuBox = new Box(boxHeight, boxWidth, boxDepth, variability, createVector(x, 0, z));
+      prevW = nuBox.width;
       // remove box form existing shapes
       if (boxes.length > 0) {
         boxes.forEach(box => nuBox.subtractFrom(box));
@@ -128,6 +134,11 @@ function setup() {
     z -= rowSpacing + boxDepth;
     x = maxX;
   }
+
+  // x = 0
+  // z = minDepth
+  // boxes.push(new Box(boxHeight, boxWidth, boxDepth, variability, createVector(x, 0, z)))
+
 }
 
 // draw function which is automatically
