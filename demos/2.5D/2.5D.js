@@ -1,5 +1,6 @@
 const backgroundClr = '000';
 const debugColors = true;
+const debugFill = false;
 
 // camera settings 
 const xSkewDeg = 10; // angle that perspective line have with the horizontal axis in deg
@@ -23,6 +24,12 @@ const maxX = 500;
 // convert camera settings to radians
 let xSkew = xSkewDeg * Math.PI / 180;
 let zSkew = zSkewDeg * Math.PI / 180 + Math.PI / 2 + xSkew;
+
+// init box position
+let z = maxDepth;
+let x = maxX;
+let prevW = 0;
+let stopGenerate = false;
 
 // boxes buffer
 let boxes = [];
@@ -77,8 +84,18 @@ class Box {
     let v6 = v5.copy(); v6.y += boxH;
     let v7 = rotatePoint(createPoint(boxW / 2, boxH, boxD).add(position));
 
+
+    v1.z = 0
+    v2.z = 0
+    v3.z = 0
+    v4.z = 0
+    v5.z = 0
+    v6.z = 0
+    v7.z = 0
+
     // create faces of the box from from corners
-    this.faces = [new Fresco.Shape([v1, v2, v3, v4, v1])]; // front face
+    // this.faces = [new Fresco.Shape([v1, v2, v3, v4, v1])]; // front face
+    this.faces = []
     this.faces.push(new Fresco.Shape([v4, v5, v6, v1, v4])); // side face
     this.faces.push(new Fresco.Shape([v1, v6, v7, v2, v1])); // top face
 
@@ -98,6 +115,10 @@ class Box {
       if (face != null) {
         if (debugColors) {
           face.setColor([random() * 255, random() * 255, random() * 255]);
+          if (debugFill) {
+            face.noFill = true;
+            face.fillColor = [random() * 255, random() * 255, random() * 255];
+          }
         }
         face.draw()
       }
@@ -107,44 +128,60 @@ class Box {
 
 function setup() {
   createSVGCanvas(770, 770 * Math.SQRT2);
-  background(colorFromHex(backgroundClr));
   setSeed();
 
-  let z = maxDepth;
-  let x = maxX;
-  prevW = 0;
-  while (z > minDepth) {
-    while (x > minX) {
-      x -= lerp(minXSpacing, maxXSpacing, random()) + prevW;
-      // generate new box
-      let nuBox = new Box(boxHeight, boxWidth, boxDepth, variability, createVector(x, 0, z));
-      prevW = nuBox.width;
-      // remove box form existing shapes
-      if (boxes.length > 0) {
-        boxes.forEach(box => nuBox.subtractFrom(box));
-        // prune empty boxes
-        for (let i = boxes.length - 1; i >= 0; i--) {
-          if (boxes[i].faces.length == 0) {
-            boxes.splice(i, 1);
-          }
-        }
+  x = 0;
+  z = 0;
+  boxes.push(new Box(boxHeight, boxWidth, boxDepth, variability, createVector(x, 0, z)));
+  boxes[0].faces.pop();
+  z = -rowSpacing;
+  x = -100;
+  let nuBox = new Box(boxHeight, boxWidth, boxDepth, variability, createVector(x, 0, z));
+  nuBox.faces.shift();
+  if (boxes.length > 0) {
+    boxes.forEach(box => nuBox.subtractFrom(box));
+    // prune empty boxes
+    for (let i = boxes.length - 1; i >= 0; i--) {
+      if (boxes[i].faces.length == 0) {
+        boxes.splice(i, 1);
       }
-      boxes.push(nuBox);
     }
-    z -= rowSpacing + boxDepth;
-    x = maxX;
   }
-
-  // x = 0
-  // z = minDepth
-  // boxes.push(new Box(boxHeight, boxWidth, boxDepth, variability, createVector(x, 0, z)))
-
+  boxes.push(nuBox);
 }
 
 // draw function which is automatically
 // called in a loop
 function draw() {
-  boxes.forEach(box => box.draw());
+  // background(colorFromHex(backgroundClr));
+
+  // if (!stopGenerate) {
+  //   x -= lerp(minXSpacing, maxXSpacing, random()) + prevW;
+  //   // generate new box
+  //   let nuBox = new Box(boxHeight, boxWidth, boxDepth, variability, createVector(x, 0, z));
+  //   prevW = nuBox.width;
+  //   // remove box form existing shapes
+  //   if (boxes.length > 0) {
+  //     boxes.forEach(box => nuBox.subtractFrom(box));
+  //     // prune empty boxes
+  //     for (let i = boxes.length - 1; i >= 0; i--) {
+  //       if (boxes[i].faces.length == 0) {
+  //         boxes.splice(i, 1);
+  //       }
+  //     }
+  //   }
+  //   boxes.push(nuBox);
+
+  //   if (x <= minX) {
+  //     z -= rowSpacing + boxDepth;
+  //     x = maxX;
+  //     if (z <= minDepth) {
+  //       stopGenerate = true;
+  //     }    
+  //   }
+  // }
+
+  // boxes.forEach(box => box.draw());
 
   noLoop();
 }

@@ -1570,6 +1570,45 @@ Fresco.Shape = class {
     return intersections;
   }
 
+
+  /**
+   * Sort interestions returned by getIntersectionsPoints, such that they
+   * appear in contour order
+   * @param {*} intersections 
+   */
+  sortIntersections(intersections) {
+    let buffer = [];
+    let idx = 0;
+
+    while (intersections.length > 0) {
+      let subBuffer = [];
+
+      // get idx of first intersected edge
+      idx = intersections[0].this_idx;
+
+      // collect buffer corresponding to intersections on one segment
+      while (intersections.length > 0 && intersections[0].this_idx == idx) {
+        subBuffer.push(intersections.shift());
+      }
+
+      // sort sub buffer
+      subBuffer.sort((A, B) => {
+        let vecA = createVector(0, 0);
+        let vecB = createVector(0, 0);
+        vecA.x = this.vertices[A.this_idx].x - A.x;
+        vecA.y = this.vertices[A.this_idx].y - A.y;
+        vecB.x = this.vertices[A.this_idx].x - B.x;
+        vecB.y = this.vertices[A.this_idx].y - B.y;
+        return vecA.magSq() - vecB.magSq();
+      })
+
+      // add sorted sub buffer to main buffer
+      buffer = buffer.concat(subBuffer);
+    }
+
+    return buffer;
+  }
+
   /**
    * Returns an array of shapes corresponding to individual parts of the contour in between intersections.
    * Intersections should be formatted to match the return of the getIntersectionsPoints function, that is a an array of object literals
@@ -1649,8 +1688,34 @@ Fresco.Shape = class {
     // retrieve all intersection points
     let intersections = this.getIntersectionsPoints(shape);
 
+    // sort intersections to ensure they are in order along the contour
+    intersections = this.sortIntersections(intersections);
+
+    // debug draw the intersection points
+    let interIdx = 0;
+    intersections.forEach(inter => {
+      inter.point.radius = 10
+      inter.point.color = [255, 0, 0]
+      inter.point.draw()
+      strokeWeight(5)
+      stroke(255)
+      drawText(interIdx, inter.point.copy().add(createVector(10, 0)));
+      interIdx += 1
+    })
+
     // split the shape in many sub contours
     let subShapes = this.splitShape(intersections);
+
+    // // debug draw subshapes
+    // let idx = subShapes.length + 1
+    // subShapes.forEach(s => {
+    //   s.setColor([random() * 255, random() * 255, random() * 255]);
+    //   s.strokeWeight = idx;
+    //   s.draw();
+    //   print(s.vertices);
+    //   idx - 1;
+    // })
+    // print(subShapes.length);
 
     // Save only contours that are outside the other shape
     let remainingShapes = [];
@@ -1670,6 +1735,14 @@ Fresco.Shape = class {
         remainingShapes.push(s);
       }
     });
+
+    // // debug draw remainingShapes
+    // remainingShapes.forEach(s => {
+    //   s.setColor([random() * 255, random() * 255, random() * 255]);
+    //   s.draw();
+    //   print(s.vertices);
+    // })
+    // print(remainingShapes.length);
 
     if (remainingShapes.length > 0) {
       remainingShapes[0].isPolygonal = true;
@@ -3215,50 +3288,4 @@ function distort(point, func, amplitude, step) {
   }
 
   return nu_pt;
-}
-
-
-/**
- * Boolean operation which returns the union of B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * If A and B don't intersect this operation will fail and return A.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the union.
- */
-function sUnion(A, B) {
-
-}
-
-
-/**
- * Boolean operation which returns the intersection of B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the intersection.
- */
-function sIntersection(A, B) {
-
-}
-
-
-/**
- * Boolean operation which subtracts B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the subtraction.
- */
-function sSubtract(A, B) {
-
 }
