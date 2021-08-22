@@ -36,9 +36,16 @@ Fresco.Font = class {
         this.fontSpacing = 0;
     }
 
+    /**
+     * 
+     * @param {string} letter 
+     * @param {number} size 
+     * @param {p5.Vector} position 
+     * @returns {Array<Fresco.Shape>}
+     */
     drawLetter(letter, size, position) {
-        console.log(this.glyphs[letter]);
         let max_x = 0
+        let shapes = []
         this.glyphs[letter].shapes.forEach(s => {
             s.vertices.forEach(v => {
                 if (v.x > max_x) max_x = v.x;
@@ -47,8 +54,16 @@ Fresco.Font = class {
                 false, position, size / this.fontSize,
                 0, this.color, null, this.fontWeight
             );
+
+            // create a copy with its transform frozen in position for export
+            let s_copy = s.copy();
+            s_copy.position = position;
+            s_copy.scale *= size / this.fontSize;
+            s_copy.freezeTransform();
+            shapes.push(s_copy);
         })
-        console.log(max_x, this.glyphs[letter].width)
+
+        return shapes;
     }
 
     drawText(text, size, position, centered=false) {
@@ -71,16 +86,19 @@ Fresco.Font = class {
             nuPos.x -= totWidth * 0.5;
         }
 
+        let shapes = [];
         // draw each character and offset the next one accordingly
         for (let char of text) {
             if (char == ' ') {
                 nuPos.x += 10 * size / this.fontSize + this.fontSpacing * size / this.fontSize;
             }
             else {
-                this.drawLetter(char, size, nuPos);
+                shapes = shapes.concat(this.drawLetter(char, size, nuPos));
                 nuPos.x += this.glyphs[char].width * this.widthMult * size / this.fontSize + this.fontSpacing * size / this.fontSize;
             }
         }
+
+        return shapes;
     }
 }
 

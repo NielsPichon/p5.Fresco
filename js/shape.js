@@ -486,11 +486,12 @@ Fresco.Shape = class {
         drawVertex(vtx);
       }
     } else {
+      let vtx;
       if (!this.ignoreEnds) {
         // we add the first and last vertex twice to make sure all points
         // are part of the curve. Note that if the shape is closed, we 
         // use the last but one and second points instead
-        let vtx = this.applyTransform(this.vertices[0],
+        vtx = this.applyTransform(this.vertices[0],
           position, scale, rotation);
         if (this.isClosed()) {
           vtx = this.applyTransform(
