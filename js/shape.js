@@ -341,6 +341,7 @@ Fresco.Shape = class {
    * DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
    * @property {boolean} updateLengths=true Whether the edge lengths currently need recomputing.
    * @property {Array.<number>} [edgeLengths] Length of the edges of the shape
+   * @property {boolean} ignoreEnds Whether the first and last vertices should be ignored when drawing
    */
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
@@ -468,8 +469,15 @@ Fresco.Shape = class {
 
     beginShape();
     if (this.isPolygonal) {
+      let start = 0;
+      let end = this.vertices.length;
+      if (this.ignoreEnds) {
+        start++;
+        end--;
+      }
+
       let vtx;
-      for (let i = 0; i < this.vertices.length; i++) {
+      for (let i = start; i < end; i++) {
         vtx = this.applyTransform(this.vertices[i],
           position, scale, rotation);
         if (usePointColor) {
@@ -478,24 +486,27 @@ Fresco.Shape = class {
         drawVertex(vtx);
       }
     } else {
-      // we add the first and last vertex twice to make sure all points
-      // are part of the curve. Note that if the shape is closed, we 
-      // use the last but one and second points instead
-      let vtx = this.applyTransform(this.vertices[0],
-        position, scale, rotation);
-      if (this.isClosed()) {
-        vtx = this.applyTransform(
-          this.vertices[this.vertices.length - 2],
+      if (!this.ignoreEnds) {
+        // we add the first and last vertex twice to make sure all points
+        // are part of the curve. Note that if the shape is closed, we 
+        // use the last but one and second points instead
+        let vtx = this.applyTransform(this.vertices[0],
           position, scale, rotation);
-        if (usePointColor) {
-          stroke(this.vertices[this.vertices.length - 2].color);
+        if (this.isClosed()) {
+          vtx = this.applyTransform(
+            this.vertices[this.vertices.length - 2],
+            position, scale, rotation);
+          if (usePointColor) {
+            stroke(this.vertices[this.vertices.length - 2].color);
+          }
         }
-      }
-      else if (usePointColor) {
-        stroke(this.vertices[0].color);
+        else if (usePointColor) {
+          stroke(this.vertices[0].color);
+        }
+
+        drawCurveVertex(vtx);
       }
 
-      drawCurveVertex(vtx);
       for (let i = 0; i < this.vertices.length; i++) {
         vtx = this.applyTransform(this.vertices[i],
           position, scale, rotation);
@@ -504,23 +515,26 @@ Fresco.Shape = class {
         }
         drawCurveVertex(vtx);
       }
-      vtx = this.applyTransform(
-        this.vertices[this.vertices.length - 1],
-        position, scale, rotation);
 
-      if (this.isClosed()) {
+      if (!this.ignoreEnds) {
         vtx = this.applyTransform(
-          this.vertices[1], position, scale, rotation);
-        if (usePointColor) {
-          stroke(this.vertices[1].color);
+          this.vertices[this.vertices.length - 1],
+          position, scale, rotation);
+
+        if (this.isClosed()) {
+          vtx = this.applyTransform(
+            this.vertices[1], position, scale, rotation);
+          if (usePointColor) {
+            stroke(this.vertices[1].color);
+          }
         }
-      }
-      else {
-        if (usePointColor) {
-         stroke(this.vertices[this.vertices.length - 1].color);
+        else {
+          if (usePointColor) {
+          stroke(this.vertices[this.vertices.length - 1].color);
+          }
         }
+        drawCurveVertex(vtx);
       }
-      drawCurveVertex(vtx);
     }
     endShape();
 
@@ -1685,6 +1699,25 @@ Fresco.Shape = class {
 
     return outShapes;
   }
+}
+
+/**
+ * Creates a Fresco.Shape from some json data 
+ * @param {data loaded from a json file} json_dict 
+ */
+function shapeFromJSON(json_dict) {
+  vtxBuffer = []
+  for (let v in json_dict['vertices']) {
+    let x = json_dict['vertices'][v]['x'] * json_dict['canvas_width'];
+    let y = json_dict['vertices'][v]['y'] * json_dict['canvas_height'];
+    vtxBuffer.push(new Fresco.Point(x, y));
+  }
+
+  let s = new Fresco.Shape(vtxBuffer);
+  s.isPolygonal = json_dict['is_polygonal'];
+  s.ignoreEnds = json_dict['ignore_ends'];
+
+  return s;
 }
 
 
