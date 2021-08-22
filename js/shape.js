@@ -1584,6 +1584,45 @@ Fresco.Shape = class {
     return intersections;
   }
 
+
+  /**
+   * Sort interestions returned by getIntersectionsPoints, such that they
+   * appear in contour order
+   * @param {*} intersections 
+   */
+  sortIntersections(intersections) {
+    let buffer = [];
+    let idx = 0;
+
+    while (intersections.length > 0) {
+      let subBuffer = [];
+
+      // get idx of first intersected edge
+      idx = intersections[0].this_idx;
+
+      // collect buffer corresponding to intersections on one segment
+      while (intersections.length > 0 && intersections[0].this_idx == idx) {
+        subBuffer.push(intersections.shift());
+      }
+
+      // sort sub buffer
+      subBuffer.sort((A, B) => {
+        let vecA = createVector(0, 0);
+        let vecB = createVector(0, 0);
+        vecA.x = this.vertices[A.this_idx].x - A.x;
+        vecA.y = this.vertices[A.this_idx].y - A.y;
+        vecB.x = this.vertices[A.this_idx].x - B.x;
+        vecB.y = this.vertices[A.this_idx].y - B.y;
+        return vecA.magSq() - vecB.magSq();
+      })
+
+      // add sorted sub buffer to main buffer
+      buffer = buffer.concat(subBuffer);
+    }
+
+    return buffer;
+  }
+
   /**
    * Returns an array of shapes corresponding to individual parts of the contour in between intersections.
    * Intersections should be formatted to match the return of the getIntersectionsPoints function, that is a an array of object literals
@@ -1593,7 +1632,7 @@ Fresco.Shape = class {
    */
   splitShape(intersections) {
     if (intersections.length == 0) {
-      return this.copy();
+      return [this.copy()];
     }
     let subShapes = [];
     let prev_idx = 0;
@@ -1641,6 +1680,7 @@ Fresco.Shape = class {
     return subShapes;
   }
 
+
   /**
    * Subtract the specified shape from this one. As of now, this will remove the overlapped parts entirely,
    * not even leaving a contour.
@@ -1653,6 +1693,98 @@ Fresco.Shape = class {
     }
 
     this.freezeTransform();
+
+    // if the other shape is not closed, then the boolean should return the original shape
+    if (!shape.isClosed()) {
+      return [this];
+    }
+
+    // retrieve all intersection points
+    let intersections = this.getIntersectionsPoints(shape);
+
+    // sort intersections to ensure they are in order along the contour
+    intersections = this.sortIntersections(intersections);
+
+    // debug draw the intersection points
+    let interIdx = 0;
+    intersections.forEach(inter => {
+      inter.point.radius = 10
+      inter.point.color = [255, 0, 0]
+      inter.point.draw()
+      strokeWeight(5)
+      stroke(255)
+      drawText(interIdx, inter.point.copy().add(createVector(10, 0)));
+      interIdx += 1
+    })
+
+    // split the shape in many sub contours
+    let subShapes = this.splitShape(intersections);
+
+    // // debug draw subshapes
+    // let idx = subShapes.length + 1
+    // subShapes.forEach(s => {
+    //   s.setColor([random() * 255, random() * 255, random() * 255]);
+    //   s.strokeWeight = idx;
+    //   s.draw();
+    //   print(s.vertices);
+    //   idx - 1;
+    // })
+    // print(subShapes.length);
+
+    // Save only contours that are outside the other shape
+    let remainingShapes = [];
+    subShapes.forEach(s => {
+      let isIn = false;
+      // if there are only 2 vertices we check the midpoint
+      if (s.vertices.length == 2) {
+        let midPoint = s.vertices[0].copy().add(s.vertices[1]).mult(0.5);
+        isIn = isInside(midPoint, shape, true);
+      }
+      else {
+        // else we take a random point
+        isIn = isInside(s.vertices[1], shape, true);
+      }
+
+      if (!isIn) {
+        remainingShapes.push(s);
+      }
+    });
+
+    // // debug draw remainingShapes
+    // remainingShapes.forEach(s => {
+    //   s.setColor([random() * 255, random() * 255, random() * 255]);
+    //   s.draw();
+    //   print(s.vertices);
+    // })
+    // print(remainingShapes.length);
+
+    if (remainingShapes.length > 0) {
+      remainingShapes[0].isPolygonal = true;
+      return mergeContours(remainingShapes);
+    }
+    else {
+      return [];
+    }
+  }
+
+  /**
+   * Invert operation of the subtract path finding operation.
+   * Will only leave the contours inside of the specified shape visible
+   * @param {*} shape 
+   * @returns 
+   */
+  clip(shape) {
+    if (!shape.isPolygonal || !this.isPolygonal)
+    {
+      throw 'path finding is not supported for non polygonal shapes'
+    }
+
+    this.freezeTransform();
+
+    // if the other shape is not closed, then the boolean should return the original shape
+    if (!shape.isClosed()) {
+      return [this];
+    }
 
     // retrieve all intersection points
     let intersections = this.getIntersectionsPoints(shape);
@@ -1667,37 +1799,20 @@ Fresco.Shape = class {
       // if there are only 2 vertices we check the midpoint
       if (s.vertices.length == 2) {
         let midPoint = s.vertices[0].copy().add(s.vertices[1]).mult(0.5);
-        isIn = isInside(midPoint, this, true);
+        isIn = isInside(midPoint, shape, true);
       }
       else {
         // else we take a random point
-        isIn = isInside(s.vertices[1], this, true);
+        isIn = isInside(s.vertices[1], shape, true);
       }
 
-      if (!isIn) {
+      if (isIn) {
         remainingShapes.push(s);
       }
     });
 
-    // Now merge shapes together
-    let nuShape = remainingShapes[0];
-    nuShape.isPolygonal = this.isPolygonal;
-    let outShapes = [];
-    remainingShapes.shift();
-    remainingShapes.forEach(s => {
-      if (s.vertices[0] == nuShape[nuShape.vertices.length - 1]) {
-        s.vertices.shift();
-        s.vertices.forEach(vtx => nuShape.push(vtx));
-      }
-      else {
-        outShapes.push(nuShape.copy());
-        nuShape = s;
-        nuShape.isPolygonal = this.isPolygonal;
-      }
-    });
-    outShapes.push(nuShape.copy());
-
-    return outShapes;
+    remainingShapes[0].isPolygonal = true;
+    return mergeContours(remainingShapes);    
   }
 }
 
@@ -3023,6 +3138,33 @@ function shapeInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir 
   return C;
 }
 
+/**
+ * Given an array of contours, merge those that have connected ends
+ * @param {Array<Fresco.Shape>} contours 
+ * @returns {Array<Fresco.Shape>} Array of merged contours
+ */
+function mergeContours(contours) {
+  // Now merge shapes together
+  let isPolygonal = contours[0].isPolygonal
+  let nuShape = contours[0];
+  nuShape.isPolygonal = isPolygonal;
+  let outShapes = [];
+  contours.shift();
+  contours.forEach(s => {
+    if (s.vertices[0] == nuShape[nuShape.vertices.length - 1]) {
+      s.vertices.shift();
+      s.vertices.forEach(vtx => nuShape.push(vtx));
+    }
+    else {
+      outShapes.push(nuShape.copy());
+      nuShape = s;
+      nuShape.isPolygonal = isPolygonal;
+    }
+  });
+  outShapes.push(nuShape.copy());
+
+  return outShapes;
+}
 
 /**
  * Computes the offset between 2 sets of points to minimize
@@ -3179,50 +3321,4 @@ function distort(point, func, amplitude, step) {
   }
 
   return nu_pt;
-}
-
-
-/**
- * Boolean operation which returns the union of B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * If A and B don't intersect this operation will fail and return A.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the union.
- */
-function sUnion(A, B) {
-
-}
-
-
-/**
- * Boolean operation which returns the intersection of B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the intersection.
- */
-function sIntersection(A, B) {
-
-}
-
-
-/**
- * Boolean operation which subtracts B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the subtraction.
- */
-function sSubtract(A, B) {
-
 }
