@@ -949,7 +949,6 @@ Fresco.Shape = class {
   }
 
   
-  // returns the control point for an edge starting 
   /**
    * Returns the control point  defining an edge starting at a given vertex.
    * In the case where the shape is polygonal, the edge is a line and
@@ -1813,6 +1812,93 @@ Fresco.Shape = class {
     remainingShapes[0].isPolygonal = true;
     return mergeContours(remainingShapes);    
   }
+
+  /**
+   * 
+   * @param {number} angle angle of the hatching
+   * @param {number} interline spacing of the lines (must be positive)
+   * @returns {Array<Fresco.Shape>} Hatching lines
+   */
+  hatchFill(angle, interline) {
+    // line direction is periodic of period PI
+    angle = angle % Math.PI;
+
+    if (interline <= 0) {
+      throw 'Hatching interline must be strictly positive'
+    }
+  
+    // init a hatch line at the bottom left hand corner of the
+    // bounding box with specified angle, if angle below 90deg,
+    // then we take the bottom right hand corner
+    let direction = p5.Vector.fromAngle(angle);
+    let orthogonal = createVector(-direction.y, direction.x).mult(interline);
+    let bounds = this.getBoundingBox();
+    let origin = bounds[0];
+    if (angle < Math.PI / 2) {
+      origin.x = bounds[1].x;
+    }
+    else {
+      orthogonal.mult(-1);
+    }
+
+    // for each hatch line, compute the intersections with the shape, and then
+    // join the intersections 2 by 2, in order. If there is an odd number of intersections,
+    // means one at least is tangential, which will create issues. For now we'll simply
+    // add a 1% offset to the hatch line in this case, which should be invisible and much faster
+    // than detecting which intersection is tangential.
+    let lines = [];
+    let prev_intersection = false;
+    let done = false;
+    while (!done) {
+      // compute all intersections along the hatch line 
+      let intersections = [];
+      for (let i = 0; i < this.vertices.length - 1; i++) {
+        if (this.isPolygonal) {
+          let [p0, p1] = this.controlPoints(i);
+          let inter = lineSegmentIntersection(origin, direction, p0, p1, true);
+          if (inter.length > 0) {
+            intersections.push(inter);
+          }
+        }
+        else {
+          let [p0, p1, p2, p3] = this.controlPoints(i);
+          intersections = intersections.concat(lineSplineIntersection(origin, direction, p0, p1, p2, p3, true));
+        }
+      }
+      // if there is an even number of intersections, proceed. 
+      if (intersections.length % 2 == 0) {
+        // if there previously was an intersection and there no longer is,
+        // this means we are done scanning the shape
+        if (intersections.length == 0 && prev_intersection) {
+          done = true;
+        }
+        else {
+          // sort intersections by interpolent
+          intersections.sort((a, b) => {
+            return a[a.length - 1] - b[b.length - 1];
+          });
+
+          print(intersections)
+          // create lines in between intersections
+          for (let i = 0; i < intersections.length / 2; i++) {
+            lines.push(new Fresco.Line(intersections[2 * i][0], intersections[2 * i + 1][0]));
+          }
+
+          // move the hatch line one step
+          origin.add(orthogonal);
+
+          // mark this intersection test as valid
+          prev_intersection = true;
+        }
+      }
+      else {
+        // simply offset the hatch line by 1% to avoid the tangential intersections
+        origin.add(orthogonal.copy().mult(0.01));
+      }
+    }
+
+    return lines;
+  }
 }
 
 /**
@@ -2432,6 +2518,39 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
   }
 }
 
+/**
+ * Checks if a line intersects a segment. If no intersection is found an empty array is returned
+ * @param {p5.Vector} origin Point on the line
+ * @param {p5.Vector} dir Direction of the line
+ * @param {p5.Vector} p0 First end of the segment
+ * @param {p5.Vector} p1 Second end of the segment
+ * @param {boolean} returnLineInt If true, the line interpolent will also be returned
+ * @returns {p5.Vector} Intersection point.
+ * @returns {number} Line interpolent of the segment, that is `t` such that
+ * intersectionPoint = p1 + t * segmentDirection.
+ */
+ function lineSegmentIntersection(origin, dir, p0, p1, returnLineInt=false) {
+  let dir2 = p1.position().sub(p0);
+
+  let [t1, t2] = lineIntersection(origin, dir, p0, dir2);
+  // if lines intersect, check that intersection is within the
+  // segment extremities and on the positive direction of the ray
+  if(t1) {
+    if (t2 > 1 || t2 < 0) {
+      return [];
+    }
+    if (returnLineInt) {
+      return [origin.copy().add(dir.copy().mult(t1)), t2, t1];
+    }
+    else {
+      return [origin.copy().add(dir.copy().mult(t1)), t2];
+    }
+  }
+  else {
+    return [];
+  }
+}
+
 
 // computes the intersection of 2 lines of the form p = origin + direction * t. Returns false if
 // the 2 lines are parallel, else returns the value of t for which the 2 lines intersect
@@ -2446,11 +2565,12 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
  * @param {p5.Vector} p1 Spline control point
  * @param {p5.Vector} p2 Spline control point
  * @param {p5.Vector} p3 Spline control point
+ * @param {boolean} returnLineInt If set, also return the line interpolent
  * @returns {Array.Array<number>} For each intersection point the interpolent
  * for the line and the spline are returned. If there is no interesection,
  * the array will be empty.
  */
-function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
+function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
   // retrieve the line equation as x + by + c = 0
   let a1 = 1;
   let b1;
@@ -2497,6 +2617,16 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3) {
     else {
       Y = a2.y * ti * ti * ti + b2.y * ti * ti + c2.y * ti + d2.y;
       interp = (Y - pt.y) / dir.y;
+    }
+    if (returnLineInt) {
+      let t = 0;
+      if (dir.x == 0) {
+        tline = (ti.y - pt.y) / dir.y;  
+      }
+      else {
+        tline = (ti.x - pt.x) / dir.x;
+      }
+      append(t, [ti, interp, tline]);
     }
     append(t, [ti, interp]);
   }
