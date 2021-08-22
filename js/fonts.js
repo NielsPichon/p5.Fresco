@@ -15,22 +15,22 @@ Fresco.Font = class {
      * @property {number} fontSpacing=0 Spacing between 
      */
     constructor(rawData) {
-        // parse the "json" data
-        
         // for each glyph, extract the shapes
         this.glyphs = {};
         for (let glyph in rawData) {
             let shapes = []
             rawData[glyph]["shapes"].forEach(s => {
-                shapes.push(shapeFromJSON(s))
+                let shape = shapeFromJSON(s);
+                shapes.push(shape);
             });
-
             this.glyphs[glyph] = new Fresco.Glyph(shapes, rawData[glyph]["width"]);
         }
 
         // set default size
-        this.fontSize = 1;
+        this.fontSize = 12;
         this.charWidth = 10;
+        this.widthMult = 1.68; // in the original repo there is this magic number
+
         this.fontWeight = 1;
         this.fontColor = (255, 255, 255, 255);
         this.fontSpacing = 0;
@@ -38,12 +38,17 @@ Fresco.Font = class {
 
     drawLetter(letter, size, position) {
         console.log(this.glyphs[letter]);
+        let max_x = 0
         this.glyphs[letter].shapes.forEach(s => {
+            s.vertices.forEach(v => {
+                if (v.x > max_x) max_x = v.x;
+            });
             s.drawInstantiate(
                 false, position, size / this.fontSize,
                 0, this.color, null, this.fontWeight
             );
         })
+        console.log(max_x, this.glyphs[letter].width)
     }
 
     drawText(text, size, position, centered=false) {
@@ -55,10 +60,10 @@ Fresco.Font = class {
             let totWidth = 0;
             for (let char of text) {
                 if (char == ' ') {
-                    totWidth += 10 * size / this.fontSize;
+                    totWidth += 10 * this.widthMult * size / this.fontSize;
                 }
                 else {
-                    totWidth += this.glyphs[char].width * size / this.fontSize;
+                    totWidth += this.glyphs[char].width * this.widthMult * size / this.fontSize;
                 }
             }
             totWidth += (text.length - 1) * this.fontSpacing * size / this.fontSize;
@@ -73,7 +78,7 @@ Fresco.Font = class {
             }
             else {
                 this.drawLetter(char, size, nuPos);
-                nuPos.x += this.glyphs[char].width * size / this.fontSize + this.fontSpacing * size / this.fontSize;
+                nuPos.x += this.glyphs[char].width * this.widthMult * size / this.fontSize + this.fontSpacing * size / this.fontSize;
             }
         }
     }

@@ -1824,8 +1824,8 @@ function shapeFromJSON(json_dict) {
   vtxBuffer = []
   for (let v in json_dict['vertices']) {
     let x = json_dict['vertices'][v]['x'] * json_dict['canvas_width'];
-    let y = json_dict['vertices'][v]['y'] * json_dict['canvas_height'];
-    vtxBuffer.push(new Fresco.Point(x, y));
+    let y = -json_dict['vertices'][v]['y'] * json_dict['canvas_height'];
+    vtxBuffer.push(createPoint(x, y));
   }
 
   let s = new Fresco.Shape(vtxBuffer);
