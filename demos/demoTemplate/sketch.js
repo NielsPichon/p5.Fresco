@@ -4,6 +4,7 @@ function setup() {
   createSVGCanvas(1000, 1000);
   background(colorFromHex(backgroundClr));
   setSeed();
+  loadFonts();
 }
 
 // draw function which is automatically 
