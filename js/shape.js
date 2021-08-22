@@ -1054,7 +1054,6 @@ Fresco.Shape = class {
     }
   }
 
-
   //
   /**
    * Computes the total length of the shape's
@@ -1079,7 +1078,6 @@ Fresco.Shape = class {
 
     return l;
   }
-
 
   /**
    * Computes the position of a point at specified percentage of a given edge's length.
@@ -1914,7 +1912,6 @@ Fresco.Collection = class {
   }
 
 
-  // applies this geometry instance transform to its objects
   /**
    * Applies this Geometry collection's transform to its objects
    */
@@ -1970,6 +1967,29 @@ Fresco.Collection = class {
 
     // remove the object from this geometry and return it
     return this.objects.splice(objectIdx, 1);
+  }
+
+  /**
+   * Serialize the collection. Points will be converted to shapes 
+   * containing a unique point.
+   * @returns {Array<string>} An array of serialized shapes
+   */
+  toJSON() {
+    let buffer = []
+    this.objects.forEach(obj => {
+      // Serialize object
+      jsonObj = obj.toJSON();
+      
+      // If the object was a point, it should have a key named x.
+      // In this case, return as a single vertex shape
+      if ('x' in jsonObj) {
+        jsonObj = (new Shape([obj])).toJSON();
+      }
+
+      // Add serialized object to buffer
+      buffer.push(jsonObj);
+    });
+    return buffer;
   }
 }
 
@@ -2035,7 +2055,6 @@ Fresco.Circle = class extends Fresco.Shape {
     this.radius = radius;
     this.resetResolution(resolution);
   }
-
 
   /**
    * Allows to change the sphere resolution on the fly.
