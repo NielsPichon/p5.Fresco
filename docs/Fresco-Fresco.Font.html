@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Worley</title>
+    <title>JSDoc: Class: Font</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Worley</h1>
+    <h1 class="page-title">Class: Font</h1>
 
     
 
@@ -28,10 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="Fresco.html">Fresco</a>.</span>Worley<span class="signature">()</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description">A class for 2D/3D cellular noise</div>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Font<span class="signature">(rawData)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,23 +39,70 @@
         
 
     
-    <h2>Constructor</h2>
+
+    
+    <h4 class="name" id="Font"><span class="type-signature"></span>new Font<span class="signature">(rawData)</span><span class="type-signature"></span></h4>
     
 
     
-    <h4 class="name" id="Worley"><span class="type-signature"></span>new Worley<span class="signature">()</span><span class="type-signature"></span></h4>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
+        <tr>
+            
+                <td class="name"><code>rawData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
 
 
+            
+            </td>
 
+            
 
+            
 
+            <td class="description last">A dict containing the whole font, such as one loae from a json file</td>
+        </tr>
 
-
-
+    
+    </tbody>
+</table>
 
 
 
@@ -81,6 +125,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -91,13 +137,13 @@
 
         <tr>
             
-                <td class="name"><code>seeds</code></td>
+                <td class="name"><code>glyphs</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;<a href="Fresco.Point.html">Fresco.Point</a>></span>
+<span class="param-type">*</span>
 
 
             
@@ -106,8 +152,99 @@
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
-            <td class="description last">Seed points used to generate the noise</td>
+            <td class="description last">Dict containing the description of each glyph as an array of shapes</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fontWeight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">Stroke weight of the glyphs</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fontColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    (255,
+                
+                </td>
+            
+
+            <td class="description last">255, 255, 255) Color of the font as an array of 4 RGBA values in range [0-255]</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fontSpacing</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">Spacing between</td>
         </tr>
 
     
@@ -146,7 +283,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="noise.js.html">noise.js</a>, <a href="noise.js.html#line17">line 17</a>
+        <a href="fonts.js.html">fonts.js</a>, <a href="fonts.js.html#line17">line 17</a>
     </li></ul></dd>
     
 
@@ -193,510 +330,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="edgeWrapPosition"><span class="type-signature"></span>edgeWrapPosition<span class="signature">(x)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Computes the position of the point in the grid with wrapping
-around the edges (meaning exiting right makes you enter left).
-In practice, this returns the modulo of x with handling of negative values.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>x</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">1D point position towrap arouind the edges.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="noise.js.html">noise.js</a>, <a href="noise.js.html#line55">line 55</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    The wrapped point position
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="get"><span class="type-signature"></span>get<span class="signature">(x, y, z<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Given a point position, returns the value
-of the F1 worley noise at the specified location.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>x</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>z</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    null
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="noise.js.html">noise.js</a>, <a href="noise.js.html#line72">line 72</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Value of the F1 worley noise at the specified location.
-In practice this is the distance to the closest cell center remapped to [0, 1];
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="scatterSeeds"><span class="type-signature"></span>scatterSeeds<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Scatter the seeds, one per cell, in a 256 x 256 x 256 cell
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="noise.js.html">noise.js</a>, <a href="noise.js.html#line30">line 30</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     
 
     

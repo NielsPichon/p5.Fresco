@@ -147,6 +147,28 @@ function drawCircle(center, radius) {
 
 
 /**
+ * Converts an array of shapes to JSON and saves it to file.
+ * WARNING: Will freeze any  existing transform. 
+ * @param {Array&lt;Fresco.Shape>} shapes 
+ */
+function shapesToFile(shapes, filename) {
+  buffer = [];
+  for (let i = 0; i &lt; shapes.length; i++) {
+    buffer.push(shapes[i].toJSON());
+  }
+  jsonData =  {
+    shapes: buffer
+  };
+  let content = JSON.stringify(jsonData)
+
+  let a = document.createElement("a");
+  let file = new Blob([content], {type: 'text/plain'});
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+}
+
+/**
  * Helper function which draws a normal to a vertex of a shape.
  * 
  * @param {p5.Vector} normal Normal we want to draw. It should be 
@@ -242,6 +264,13 @@ Fresco.Point = class extends p5.Vector{
       this.color[3] == pt.color[3];    
   }
 
+  /**
+   * Sets the point color
+   * @param {Array.&lt;number>} color Array of RGBA values in the range [0, 255] 
+   */
+  setColor(color) {
+    this.color = color;
+  }
 
   /**
    * Returns a copy of the position of the point as a
@@ -287,6 +316,14 @@ Fresco.Point = class extends p5.Vector{
     arrayCopy(this.color, nu_pt.color);
     return nu_pt;
   }
+
+  toJSON() {
+    // export the point as a dictionary of coordinates, normalized to the [0, 1] range
+    return {
+      x: (this.x / width) + 0.5,
+      y: (this.y / height) + 0.5
+    }
+  }
 }
 
 
@@ -329,9 +366,10 @@ Fresco.Shape = class {
    * @property {number} strokeWeight=1 Stroke weight to draw the shape's contour with.
    * @property {boolean} updateBounds=true Whether the bounding box of the shape currently needs recomputing.
    * @property {Array.&lt;p5.Vector>} [BoundingBox] of the shape described as the top left and bottom right corners.
-   * DO NOT CALL DIRECTLY. Use boundingBox() instead.
+   * DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
    * @property {boolean} updateLengths=true Whether the edge lengths currently need recomputing.
    * @property {Array.&lt;number>} [edgeLengths] Length of the edges of the shape
+   * @property {boolean} ignoreEnds Whether the first and last vertices should be ignored when drawing
    */
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
@@ -351,9 +389,44 @@ Fresco.Shape = class {
     this.strokeWeight = 1;
     this.updateBounds = true; // whether the bounding box should be recomputed
     // This contains the bounding box opposite corners, provided it has been calculated
-    this.boundingBox = []; // DO NOT CALL DIRECTLY. Use boundingBox() instead.
+    this.boundingBox = []; // DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
     this.updateLengths = true; // whether the edge length should be recomputed
     this.edgeLengths = [];
+  }
+
+  /**
+   * Returns a minimal description of the shape
+   * WARNING: Freezes the transform
+   * @returns The JSON friendly dict represnting the shape
+   */
+  toJSON() {
+    this.freezeTransform()
+    let points = []
+    for (let i = 0; i &lt; this.vertices.length; i++) {
+      points.push(this.vertices[i].toJSON());
+    } 
+    return {
+      canvas_width: width,
+      canvas_height: height, 
+      vertices: points,
+      isPolygonal: this.isPolygonal
+    }
+  }
+
+  /**
+   * JSONify the shape and saves it to file
+   * WARNING: Freezes the transform
+   * @param {string} filename Filename to save the shape to
+   */
+  toFile(filename) {
+    let jsonData = this.toJSON()
+    let content = JSON.stringify(jsonData)
+
+    let a = document.createElement("a");
+    let file = new Blob([content], {type: 'text/plain'});
+    a.href = URL.createObjectURL(file);
+    a.download = filename;
+    a.click();
   }
 
   /**
@@ -367,7 +440,6 @@ Fresco.Shape = class {
   draw(usePointColor = false) {
     this.drawInstantiate(usePointColor);
   }
-
 
   /**
    * Utility to draw the shape with a specified (optional) transform
@@ -394,6 +466,7 @@ Fresco.Shape = class {
   drawInstantiate(usePointColor = false, position=null,
     scale=null, rotation=null, color=null, fillColor=null,
     lineWeight=null) {
+
     if (this.noStroke &amp;&amp; !usePointColor) {
       noStroke();
     } else {
@@ -411,23 +484,28 @@ Fresco.Shape = class {
       }
     }
     
+    let fillBuffer = this.fillColor;
     if (this.noFill) {
       noFill();
     }
     else {
       if (fillColor) {
-        fill(fillColor);
+        this.fillColor = fillColor;
       }
-      else
-      {
-        fill(this.fillColor);
-      }
+      fill(this.fillColor);
     }
 
     beginShape();
     if (this.isPolygonal) {
+      let start = 0;
+      let end = this.vertices.length;
+      if (this.ignoreEnds) {
+        start++;
+        end--;
+      }
+
       let vtx;
-      for (let i = 0; i &lt; this.vertices.length; i++) {
+      for (let i = start; i &lt; end; i++) {
         vtx = this.applyTransform(this.vertices[i],
           position, scale, rotation);
         if (usePointColor) {
@@ -436,51 +514,60 @@ Fresco.Shape = class {
         drawVertex(vtx);
       }
     } else {
-      // we add the first and last vertex twice to make sure all points
-      // are part of the curve. Note that if the shape is closed, we 
-      // use the last but one and second points instead
-      let vtx = this.applyTransform(this.vertices[0],
-        position, rotation, scale);
-      if (this.isClosed()) {
-        vtx = this.applyTransform(
-          this.vertices[this.vertices.length - 2],
-          position, rotation, scale);
-        if (usePointColor) {
-          stroke(this.vertices[this.vertices.length - 2].color);
+      let vtx;
+      if (!this.ignoreEnds) {
+        // we add the first and last vertex twice to make sure all points
+        // are part of the curve. Note that if the shape is closed, we 
+        // use the last but one and second points instead
+        vtx = this.applyTransform(this.vertices[0],
+          position, scale, rotation);
+        if (this.isClosed()) {
+          vtx = this.applyTransform(
+            this.vertices[this.vertices.length - 2],
+            position, scale, rotation);
+          if (usePointColor) {
+            stroke(this.vertices[this.vertices.length - 2].color);
+          }
         }
-      }
-      else if (usePointColor) {
-        stroke(this.vertices[0].color);
+        else if (usePointColor) {
+          stroke(this.vertices[0].color);
+        }
+
+        drawCurveVertex(vtx);
       }
 
-      drawCurveVertex(vtx);
       for (let i = 0; i &lt; this.vertices.length; i++) {
         vtx = this.applyTransform(this.vertices[i],
-          position, rotation, scale);
+          position, scale, rotation);
         if (usePointColor) {
           stroke(this.vertices[i].color);
         }
         drawCurveVertex(vtx);
       }
-      vtx = this.applyTransform(
-        this.vertices[this.vertices.length - 1],
-        position, rotation, scale);
 
-      if (this.isClosed()) {
+      if (!this.ignoreEnds) {
         vtx = this.applyTransform(
-          this.vertices[1], position, rotation, scale);
-        if (usePointColor) {
-          stroke(this.vertices[1].color);
+          this.vertices[this.vertices.length - 1],
+          position, scale, rotation);
+
+        if (this.isClosed()) {
+          vtx = this.applyTransform(
+            this.vertices[1], position, scale, rotation);
+          if (usePointColor) {
+            stroke(this.vertices[1].color);
+          }
         }
-      }
-      else {
-        if (usePointColor) {
-         stroke(this.vertices[this.vertices.length - 1].color);
+        else {
+          if (usePointColor) {
+          stroke(this.vertices[this.vertices.length - 1].color);
+          }
         }
+        drawCurveVertex(vtx);
       }
-      drawCurveVertex(vtx);
     }
     endShape();
+
+    this.fillColor = fillBuffer;
   }
 
 
@@ -583,11 +670,17 @@ Fresco.Shape = class {
   drawShadow(type = shadowType.hatching, angle = Math.PI / 4, tolerance = Math.PI / 2,
     density = 100, length = 10, inside = false, stipplingDensity = 20,
     weight = 1, weightRandomness = 0, constantLength = true, vanishingBands = 10,
-    hatchingAngle = null) {
+    hatchingAngle = null, color=null) {
 
-    stroke(this.color);
+    if (!color) {
+      color = this.color;
+    }
+
+    stroke(color);
 
     if (type == shadowType.full) {
+      let shapeNoFill = this.noFill;
+      this.noFill = false;
       let dir = 1;
       if (inside) {
         dir = -1;
@@ -595,9 +688,13 @@ Fresco.Shape = class {
       this.drawInstantiate(false, this.position.copy().add(
         p5.Vector.fromAngle(angle).mult(length * dir)),
         this.scale, this.rotation,
-        this.color, this.color, this.strokeWeight);
+        color, color, this.strokeWeight);
+      
+      this.noFill = shapeNoFill;
     }
     else if (type == shadowType.vanishing) {
+      let shapeNoFill = this.noFill;
+      this.noFill = false;
       let dir = 1;
       if (inside) {
         dir = -1;
@@ -606,7 +703,7 @@ Fresco.Shape = class {
       this.noStroke = true;
       for (let i = vanishingBands; i > 0; i--){
         let clr = new Array(4);
-        arrayCopy(this.color, clr);
+        arrayCopy(color, clr);
         let offset = length * i / vanishingBands;
         clr[3] *= 1 - i / (vanishingBands + 1);
         this.drawInstantiate(false, this.position.copy().add(
@@ -615,6 +712,7 @@ Fresco.Shape = class {
           clr, clr, this.strokeWeight);
       }
       this.noStroke = strk;
+      this.noFill = shapeNoFill;
     }
     else {
       // retrieve the specified number of points to shade from
@@ -713,6 +811,30 @@ Fresco.Shape = class {
     }
   }
 
+  /**
+   * Sets the shape's color
+   * @param {Array.&lt;number>} [contourColor] Color of the contour as an array of RGBA values in the range [0, 255].
+   * If not specified this shape will have no contour.
+   * @param {Array.&lt;number>} [fillColor] Color of the fill as an array of RGBA values in the range [0, 255].
+   * If not specified the shape will have no fill. 
+   */
+  setColor(contourColor=null, fillColor=null) {
+    if (contourColor) {
+      this.color = contourColor;
+      this.noStroke = false
+    }
+    else {
+      this.noStroke = true;
+    }
+    if (fillColor) {
+      this.fillColor = fillColor;
+      this.noFill = false
+    }
+    else {
+      this.noFill = true;
+    }
+  }
+
 
   /**
    * Sets the scale of the shape. If only x is specified,
@@ -787,11 +909,11 @@ Fresco.Shape = class {
     }
 
     let nu_vtx = vtx.copy();
-    nu_vtx.x = cos(rotation) * vtx.x + sin(rotation) * vtx.y;
-    nu_vtx.y = -sin(rotation) * vtx.x + cos(rotation) * vtx.y;
+    nu_vtx.x = Math.cos(rotation) * vtx.x + Math.sin(rotation) * vtx.y;
+    nu_vtx.y = -Math.sin(rotation) * vtx.x + Math.cos(rotation) * vtx.y;
     nu_vtx.mult(scale);
     nu_vtx.add(position);
-    
+
     return nu_vtx;
   }
 
@@ -809,7 +931,7 @@ Fresco.Shape = class {
     }
     this.rotation = 0;
     this.position = createVector(0, 0);
-    this.scale = createVector(0, 0);
+    this.scale = createVector(1, 1);
     this.updateLengths = true;
     this.updateBounds = true;
   }
@@ -1135,9 +1257,6 @@ Fresco.Shape = class {
   }
 
 
-  // 
-  // 
-  // 
   /**
    * Retrieve the normal at a given point along the contour.
    * 
@@ -1153,50 +1272,109 @@ Fresco.Shape = class {
    * 
    * The normal itself is taken as the orthogonal to the tangent at the found point, and is oriented
    * depending on whether the shape is described in a clockwise fashion, to always face outwards.
-   * @param {p5.Vector} pt 
+   * @param {p5.Vector} pt Point in SHAPE's coordinate
    * @param {number} [epsilon] Distance tolerance in the distance of the point to the edge to
-   * consider it is actually on the edge
+   * consider it is actually on the edge. If not specified, a value of 0.1 is taken for non polygonal shapes,
+   * and 1e-3 for polygonal ones. In most cases this should result in acceptable tolerance values.
    * @param {number} [resolution] Maximum number of subdivisions for a spline edge. Because we add 2
    * points by sub-edge each iteration, it is  recommended to uses a power of 2.
    * @returns {p5.Vector} Normal to the shape's contour at the specified poitn
    */
-  normalAtPoint(pt, epsilon = 1e-8, resolution = 128) {
+  normalAtPoint(pt, epsilon = null, resolution = 128) {
+    if (!epsilon) {
+      if (this.isPolygonal) {
+        epsilon = 1e-3;
+      }
+      else {
+        epsilon = 1e-1;
+      }
+    }
+
+    let [projection, closest_edge_idx, percentage, closest_dist] = this.projectOnShape(pt, resolution);
+
+    if (closest_dist > epsilon) {
+      console.log("[in normalAtPoint] Some error may have " +
+      "occured as the specified point was not found to belong to the shape");
+    }
+
     if (this.isPolygonal) {
-      let c;
-      let vec;
-      let l;
-      let edge;
-      // first retrieve which edge the point belongs to 
+      let edge = this.vertices[closest_edge_idx + 1].position().sub(this.vertices[closest_edge_idx]);
+      edge = edge.normalize();
+      // the normal is the orthogonal vector to the edge, which orientation depends
+      // on whether the shape is described clockwise or anticlockwise
+      if (this.isClockwise()) {
+        return createVector(-edge.y, edge.x);
+      }
+      else {
+        return createVector(edge.y, -edge.x);
+      }
+    }
+    else {
+      // retrieve the edge spline equation coefficients
+      [a, b, c, d] = catmullRom(...this.controlPoints(closest_edge_idx));
+
+      let tangent = a.mult(3 * percentage * percentage).add(
+        b.mult(2 * percentage)).add(c).normalize();
+      // return the orthogonal to the tangent, with the orientation chosen based
+      // on whether the shape is discribed in a clockwise fashion
+      if (this.isClockwise()) {
+        return createVector(-tangent.y, tangent.x);
+      }
+      else {
+        return createVector(tangent.y, -tangent.x);
+      }
+    }
+  }
+
+  
+  /**
+   * Projects a point the shape. This is not a "true" projection. A more accurate description would
+   * be that this method finds the closest point on the shape. This is because we project on each edge
+   * and keep the closest egde. The subtelty is that if the projection is not actually on the edge
+   * (but further along the edge direction), we'll cap to the esge limits.
+   * @param {Fresco.Point} pt Point to project 
+   * @param {number} resolution Resolution for the distance estimation
+   * @returns {Array&lt;p5.Vector, number, number, number>} Projection, Index of the closest edge,
+   * Percentage along the edge where the point is, Distance from the projection to the point
+   */
+  projectOnShape(pt, resolution=128) {
+    let closest_edge_idx = 0;
+    let closest_dist = Number.MAX_VALUE;
+    let projection;
+    let percentage;
+    // project on each edge, and keep the closest projection
+    if (this.isPolygonal) {
       for (let i = 0; i &lt; this.vertices.length - 1; i++) {
-        // compute the cross product of the vector from the first vertex
-        // to the point with the edges vector.
-        vec = pt.copy().sub(this.vertices[i]);
-        edge = this.vertices[i + 1].position().sub(this.vertices[i]);
-        c = p5.Vector.cross(vec, edge);
-        // if c is the zero vector, this means the 2 vectors are 
-        // colinear and thus the point may belong to the edge
-        // Note: we compare the magnitude to some espilon to avoid 
-        // false negatives, e.g. the point near misses
-        // because of numerical issues.
-        if (c.magSq() &lt; epsilon) {
-          l = vec.dot(edge);
-          // if 0 &lt; AC.AB &lt; AB.AB wher A and B are the edges ends and C the point to test,
-          // this means the point belongs to the vector
-          if (l >= 0 &amp;&amp; l &lt;= edge.magSq()) {
-            edge = edge.normalize();
-            // the normal is the orthogonal vector to the edge, which orientation depends
-            // on whether the shape is described clockwise or anticlockwise
-            if (this.isClockwise()) {
-              return createVector(-edge.y, edge.x);
-            }
-            else {
-              return createVector(edge.y, -edge.x);
-            }
+        // project on line
+        let  edge = this.vertices[i + 1].position().sub(this.vertices[i]);
+        let dirToPoint = pt.copy().sub(this.vertices[i]);
+        let proj_dist = edge.dot(dirToPoint);
+        let projPercentage = proj_dist / edge.magSq();
+        let proj_pt;
+        // restrict projection to segment
+        if (projPercentage &lt;= 1) {
+          if (projPercentage >= 0) {
+            proj_pt = edge.copy().mult(projPercentage).add(this.vertices[i]);
+          }
+          else {
+            projPercentage = 0;
+            proj_pt = this.vertices[i].position();
           }
         }
+        else {
+          projPercentage = 1;
+          proj_pt = this.vertices[i + 1].position();
+        }
+        let orthogonal = dirToPoint.sub(proj_pt);
+        let distSq = orthogonal.magSq();
+
+        if (distSq &lt; closest_dist) {
+          closest_edge_idx = i;
+          closest_dist = distSq;
+          projection = proj_pt;
+          percentage = projPercentage;
+        }
       }
-      console.log("[in getNormalAtPoint] Some error may have " +
-        "occured as the specified point was not found to belong to the shape");
     }
     else {
       let a, b, c, d;
@@ -1207,9 +1385,8 @@ Fresco.Shape = class {
       let t1;
       let p1, p2;
       const incr = 1 / (resolution - 1);
-      let vertex;
       for (let i = 0; i &lt; this.vertices.length - 1; i++) {
-        // retrieve the edge sdrawLine equation coefficients
+        // retrieve the edge spline equation coefficients
         [a, b, c, d] = catmullRom(...this.controlPoints(i));
 
         t0 = 0;
@@ -1227,42 +1404,26 @@ Fresco.Shape = class {
           // move the bounds such that we restrict the splineine to the closest half
           if(distSquared(pt, p1) &lt;= distSquared(pt, p2)) {
             t1 = (t1 + t0) * 0.5;
-            // if the closest half is already at less than epsilon, return
-            if (distSquared(pt, p1) &lt;= epsilon) {
-              let tangent = a.mult(3 * t00 * t00).add(
-                b.mult(2 * t00)).add(c).normalize();
-              // return the orthogonal to the tangent, with the orientation chosen based
-              // on whether the shape is discribed in a clockwise fashion
-              if (this.isClockwise()) {
-                return createVector(-tangent.y, tangent.x);
-              }
-              else {
-                return createVector(tangent.y, -tangent.x);
-              }
-            }            
           }
           else {
             t0 = (t1 + t0) * 0.5;
-            // if the closest half is already at less than epsilon, return
-            if (distSquared(pt, p2) &lt;= epsilon) {
-              let tangent = a.mult(3 * t01 * t01).add(
-                b.mult(2 * t01)).add(c).normalize();
-              // return the orthogonal to the tangent, with the orientation chosen based
-              // on whether the shape is discribed in a clockwise fashion
-              if (this.isClockwise()) {
-                return createVector(-tangent.y, tangent.x);
-              }
-              else {
-                return createVector(tangent.y, -tangent.x);
-              }
-            }     
           }
         }
+
+        dist = distSquared(pt, p1);
+        if (dist &lt; closest_dist) {
+          closest_dist = dist;
+          projection = p1;
+          percentage = t0;
+          closest_edge_idx = i;
+        }
       }
-      console.log("[in getNormalAtPoint] Some error may have " +
-        "occured as the specified point was not found to belong to the shape");
     }
+
+    closest_dist = Math.sqrt(closest_dist);
+    return [projection, closest_edge_idx, percentage, closest_dist];
   }
+
 
   // returns normals to points in local coordinates.
   // If the shape is open, the first and last points will use the only
@@ -1422,17 +1583,296 @@ Fresco.Shape = class {
 
     return nu_shape;
   }
+
+  /**
+   * Provided another shape, returns a list of all the intersection points with the other shape
+   * @param {Freco.Shape} shape 
+   * @returns {Array&lt;*>}An array of {this_idx, other_idx, point} object literals where the index is that of the intersecting edge 
+   * (this shape first then the other shape)
+   */
+  getIntersectionsPoints(shape) {
+    if (!shape.isPolygonal || !this.isPolygonal)
+    {
+      throw 'path finding is not supported for non polygonal shapes'
+    }
+
+    // retrieve all intersection points
+    let intersections = [];
+    for (let i = 0; i &lt; this.vertices.length - 1; i++) {
+      for (let j = 0; j &lt; shape.vertices.length - 1; j++) {
+        let inter = segmentIntersection(
+          this.applyTransform(this.vertices[i]), this.applyTransform(this.vertices[i + 1]),
+          shape.applyTransform(shape.vertices[j]), shape.applyTransform(shape.vertices[j + 1])
+        );
+        if (inter != false) {
+          intersections.push({this_idx: i, other_idx: j, point: inter.copy()});
+        }
+      }
+    }
+
+    return intersections;
+  }
+
+
+  /**
+   * Sort interestions returned by getIntersectionsPoints, such that they
+   * appear in contour order
+   * @param {*} intersections 
+   */
+  sortIntersections(intersections) {
+    let buffer = [];
+    let idx = 0;
+
+    while (intersections.length > 0) {
+      let subBuffer = [];
+
+      // get idx of first intersected edge
+      idx = intersections[0].this_idx;
+
+      // collect buffer corresponding to intersections on one segment
+      while (intersections.length > 0 &amp;&amp; intersections[0].this_idx == idx) {
+        subBuffer.push(intersections.shift());
+      }
+
+      // sort sub buffer
+      subBuffer.sort((A, B) => {
+        let vecA = createVector(0, 0);
+        let vecB = createVector(0, 0);
+        vecA.x = this.vertices[A.this_idx].x - A.x;
+        vecA.y = this.vertices[A.this_idx].y - A.y;
+        vecB.x = this.vertices[A.this_idx].x - B.x;
+        vecB.y = this.vertices[A.this_idx].y - B.y;
+        return vecA.magSq() - vecB.magSq();
+      })
+
+      // add sorted sub buffer to main buffer
+      buffer = buffer.concat(subBuffer);
+    }
+
+    return buffer;
+  }
+
+  /**
+   * Returns an array of shapes corresponding to individual parts of the contour in between intersections.
+   * Intersections should be formatted to match the return of the getIntersectionsPoints function, that is a an array of object literals
+   * {this_idx, other_idx, point}.
+   * @param {*} intersections 
+   * @returns {Array&lt;Shape>} Split contour
+   */
+  splitShape(intersections) {
+    if (intersections.length == 0) {
+      return [this.copy()];
+    }
+    let subShapes = [];
+    let prev_idx = 0;
+    let prev_inter = null;
+
+    intersections.forEach(inter => {
+      let vtxBuff = [];
+      if (inter.this_idx >= prev_idx) {
+        // get all points within 2 intersections
+        vtxBuff = this.vertices.slice(prev_idx, inter.this_idx + 1);
+        // add intersection at the end
+        vtxBuff.push(inter.point);
+        // if not the first intersection, add the previous intersection at the start
+        if (prev_idx != 0) {
+          vtxBuff.unshift(prev_inter.copy());
+        }
+      }
+      else {
+        // if this intersections idx is smaller than the prev_idx this means the intersection
+        // is on the same edge as the previous intersection
+        vtxBuff = [prev_inter.copy(), inter.point];
+      }
+      // create a new shape from the vtx buffer and add it to the sub shapes array
+      subShapes.push(new Fresco.Shape(vtxBuff));
+      // update intermediaries
+      prev_inter = inter.point.copy();
+      prev_idx = inter.this_idx + 1;
+    });
+    
+    // Add the remaining points as either a separate shape if the shape is open,
+    // or as part as the first sub-shape if it is closed 
+    if (this.isClosed()) {
+      let vtxBuff = this.vertices.slice(prev_idx, this.vertices.length - 1);
+      subShapes[0].vertices.forEach(vtx => vtxBuff.push(vtx));
+      subShapes[0].vertices = vtxBuff;
+      subShapes[0].vertices.unshift(prev_inter.copy());
+    }
+    else {
+      let vtxBuff = [];
+      vtxBuff = this.vertices.slice(prev_idx, this.vertices.length);
+      vtxBuff.unshift(prev_inter.copy());
+      subShapes.push(new Fresco.Shape(vtxBuff));
+    }
+
+    return subShapes;
+  }
+
+
+  /**
+   * Subtract the specified shape from this one. As of now, this will remove the overlapped parts entirely,
+   * not even leaving a contour.
+   * @param {Fresco.Shape} shape Shape to subtract to this one 
+   */
+  subtract(shape) {
+    if (!shape.isPolygonal || !this.isPolygonal)
+    {
+      throw 'path finding is not supported for non polygonal shapes'
+    }
+
+    this.freezeTransform();
+
+    // if the other shape is not closed, then the boolean should return the original shape
+    if (!shape.isClosed()) {
+      return [this];
+    }
+
+    // retrieve all intersection points
+    let intersections = this.getIntersectionsPoints(shape);
+
+    // sort intersections to ensure they are in order along the contour
+    intersections = this.sortIntersections(intersections);
+
+    // debug draw the intersection points
+    let interIdx = 0;
+    intersections.forEach(inter => {
+      inter.point.radius = 10
+      inter.point.color = [255, 0, 0]
+      inter.point.draw()
+      strokeWeight(5)
+      stroke(255)
+      drawText(interIdx, inter.point.copy().add(createVector(10, 0)));
+      interIdx += 1
+    })
+
+    // split the shape in many sub contours
+    let subShapes = this.splitShape(intersections);
+
+    // // debug draw subshapes
+    // let idx = subShapes.length + 1
+    // subShapes.forEach(s => {
+    //   s.setColor([random() * 255, random() * 255, random() * 255]);
+    //   s.strokeWeight = idx;
+    //   s.draw();
+    //   print(s.vertices);
+    //   idx - 1;
+    // })
+    // print(subShapes.length);
+
+    // Save only contours that are outside the other shape
+    let remainingShapes = [];
+    subShapes.forEach(s => {
+      let isIn = false;
+      // if there are only 2 vertices we check the midpoint
+      if (s.vertices.length == 2) {
+        let midPoint = s.vertices[0].copy().add(s.vertices[1]).mult(0.5);
+        isIn = isInside(midPoint, shape, true);
+      }
+      else {
+        // else we take a random point
+        isIn = isInside(s.vertices[1], shape, true);
+      }
+
+      if (!isIn) {
+        remainingShapes.push(s);
+      }
+    });
+
+    // // debug draw remainingShapes
+    // remainingShapes.forEach(s => {
+    //   s.setColor([random() * 255, random() * 255, random() * 255]);
+    //   s.draw();
+    //   print(s.vertices);
+    // })
+    // print(remainingShapes.length);
+
+    if (remainingShapes.length > 0) {
+      remainingShapes[0].isPolygonal = true;
+      return mergeContours(remainingShapes);
+    }
+    else {
+      return [];
+    }
+  }
+
+  /**
+   * Invert operation of the subtract path finding operation.
+   * Will only leave the contours inside of the specified shape visible
+   * @param {Fresco.Shape} shape 
+   * @returns {Array&lt;Fresco.Shape>} Resulting contours from the original clipped shape
+   */
+  clip(shape) {
+    if (!shape.isPolygonal || !this.isPolygonal)
+    {
+      throw 'path finding is not supported for non polygonal shapes'
+    }
+
+    this.freezeTransform();
+
+    // if the other shape is not closed, then the boolean should return the original shape
+    if (!shape.isClosed()) {
+      return [this];
+    }
+
+    // retrieve all intersection points
+    let intersections = this.getIntersectionsPoints(shape);
+
+    // split the shape in many sub contours
+    let subShapes = this.splitShape(intersections);
+
+    // Save only contours that are outside the other shape
+    let remainingShapes = [];
+    subShapes.forEach(s => {
+      let isIn = false;
+      // if there are only 2 vertices we check the midpoint
+      if (s.vertices.length == 2) {
+        let midPoint = s.vertices[0].copy().add(s.vertices[1]).mult(0.5);
+        isIn = isInside(midPoint, shape, true);
+      }
+      else {
+        // else we take a random point
+        isIn = isInside(s.vertices[1], shape, true);
+      }
+
+      if (isIn) {
+        remainingShapes.push(s);
+      }
+    });
+
+    remainingShapes[0].isPolygonal = true;
+    return mergeContours(remainingShapes);    
+  }
+}
+
+/**
+ * Creates a Fresco.Shape from some json data 
+ * @param {*} json_dict data loaded from a json file
+ */
+function shapeFromJSON(json_dict) {
+  vtxBuffer = []
+  for (let v in json_dict['vertices']) {
+    let x = json_dict['vertices'][v]['x'] * json_dict['canvas_width'];
+    let y = -json_dict['vertices'][v]['y'] * json_dict['canvas_height'];
+    vtxBuffer.push(createPoint(x, y));
+  }
+
+  let s = new Fresco.Shape(vtxBuffer);
+  s.isPolygonal = json_dict['is_polygonal'];
+  s.ignoreEnds = json_dict['ignore_ends'];
+
+  return s;
 }
 
 
 /**
  * Class describing a collection of geometric objects
- * in the Scatter namespace. This collection has a transform of its own which 
+ * in the Fresco namespace. This collection has a transform of its own which 
  * can be used to modify multiple objects at once in a rigid body fashion
  * (meaning they will keep  their scale , position and  rotation relative to one another). 
  * @class 
  */
-Fresco.Geometry = class {
+Fresco.Collection = class {
   /**
    * @constructor
    * @property {p5.Vector} scale=1,1 - Scale of the geometry collection
@@ -1453,7 +1893,6 @@ Fresco.Geometry = class {
     this.objectsScale = []; //stores the initial scale of the objects
     this.objectsPosition = []; //stores the initial position of the objects
   }
-
 
   /**
    * Draws all objects. Every object must have a `draw` method of its own.
@@ -2259,7 +2698,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
  * the shape being skewed towards the first vertex.
  * @param {boolean} [approx] If true, non-polygonal shape edge interpolation
  * will be be approximated
- * @returns {Fresco.Shape} The resampled shape.
+ * @returns {Fresco.Shape} Samples along the shape's contour
  */
 function sample(shape, numPoints, offset=true, approx=false) {  
   let vtx = [];
@@ -2400,7 +2839,7 @@ function subdivide(shape, numDivision, approx=false) {
  * high number of attempts may be needed before a single point actually
  * lands in the shape. To avoid ending in a nearly infinite loop, we set a
  * maximum safety number of tries before aborting.
- * @returns {Array.&lt;Fresco.Point>} The scattered points.
+ * @returns {Array.&lt;Fresco.Point>} The scattered points in WORLD coordinates.
  */
 function scatter(shape, numPoints = 100,
   contour = true, approx = true, safety = 10000) {
@@ -2728,6 +3167,33 @@ function shapeInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir 
   return C;
 }
 
+/**
+ * Given an array of contours, merge those that have connected ends
+ * @param {Array&lt;Fresco.Shape>} contours 
+ * @returns {Array&lt;Fresco.Shape>} Array of merged contours
+ */
+function mergeContours(contours) {
+  // Now merge shapes together
+  let isPolygonal = contours[0].isPolygonal
+  let nuShape = contours[0];
+  nuShape.isPolygonal = isPolygonal;
+  let outShapes = [];
+  contours.shift();
+  contours.forEach(s => {
+    if (s.vertices[0] == nuShape[nuShape.vertices.length - 1]) {
+      s.vertices.shift();
+      s.vertices.forEach(vtx => nuShape.push(vtx));
+    }
+    else {
+      outShapes.push(nuShape.copy());
+      nuShape = s;
+      nuShape.isPolygonal = isPolygonal;
+    }
+  });
+  outShapes.push(nuShape.copy());
+
+  return outShapes;
+}
 
 /**
  * Computes the offset between 2 sets of points to minimize
@@ -2885,52 +3351,6 @@ function distort(point, func, amplitude, step) {
 
   return nu_pt;
 }
-
-
-/**
- * Boolean operation which returns the union of B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * If A and B don't intersect this operation will fail and return A.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the union.
- */
-function sUnion(A, B) {
-
-}
-
-
-/**
- * Boolean operation which returns the intersection of B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the intersection.
- */
-function sIntersection(A, B) {
-
-}
-
-
-/**
- * Boolean operation which subtracts B from A.
- * If either A or B is not closed, the last point will be
- * considered as connected to the first.
- * The resulting shape is closed no matter what.
- * NOT YET IMPLEMENTED
- * @param {Fresco.Shape} A 
- * @param {Fresco.Shape} B 
- * @returns {Fresco.Shape} Shape resulting fron the subtraction.
- */
-function sSubtract(A, B) {
-
-}
 </code></pre>
         </article>
     </section>
@@ -2941,13 +3361,13 @@ function sSubtract(A, B) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Worley.html">Worley</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#fractalNoise">fractalNoise</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#getParticle">getParticle</a></li><li><a href="global.html#getParticles">getParticles</a></li><li><a href="global.html#getParticlesNum">getParticlesNum</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li><li><a href="global.html#worleyInstance">worleyInstance</a></li><li><a href="global.html#worleyNoise">worleyNoise</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Collection.html">Collection</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Worley.html">Worley</a></li><li><a href="Fresco-Fresco.Font.html">Font</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#fractalNoise">fractalNoise</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#getParticle">getParticle</a></li><li><a href="global.html#getParticles">getParticles</a></li><li><a href="global.html#getParticlesNum">getParticlesNum</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#isSVGCanvas">isSVGCanvas</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#lerpVector">lerpVector</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#mergeContours">mergeContours</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampArrayInterpolation">rampArrayInterpolation</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeFromJSON">shapeFromJSON</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#shapesToFile">shapesToFile</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li><li><a href="global.html#worleyInstance">worleyInstance</a></li><li><a href="global.html#worleyNoise">worleyNoise</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 31 2021 12:27:30 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Aug 22 2021 16:09:14 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

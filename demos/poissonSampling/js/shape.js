@@ -1457,7 +1457,7 @@ Fresco.Shape = class {
  * (meaning they will keep  their scale , position and  rotation relative to one another). 
  * @class 
  */
-Fresco.Geometry = class {
+Fresco.Collection = class {
   /**
    * @constructor
    * @property {p5.Vector} scale=1,1 - Scale of the geometry collection

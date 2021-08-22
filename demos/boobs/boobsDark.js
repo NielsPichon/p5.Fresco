@@ -55,7 +55,7 @@ function draw() {
 }
 
 function makeBoob(X, Y) {
-  let nu_geo = new Fresco.Geometry();
+  let nu_geo = new Fresco.Fresco();
 
   // generate breast parameters
   const cupRadius = random(minCupRadius, maxCupRadius);

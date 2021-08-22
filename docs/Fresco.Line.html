@@ -164,7 +164,8 @@
                 </td>
             
 
-            <td class="description last">number of points subdividing the line (min 2, the extremities).</td>
+            <td class="description last">number of points subdividing the 
+line (min 2, the extremities).</td>
         </tr>
 
     
@@ -205,7 +206,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1554">line 1554</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1993">line 1993</a>
     </li></ul></dd>
     
 
@@ -280,7 +281,12 @@
 
 
 <div class="description">
-    Returns a copy of  the specified vertex, which position hasbeen modified following this shape's transform (position, scale and rotation that is).This allows to retrieve the position in world coordinates of a point form the positionin the  shape referential.This method can also be used to transform a point as if it was a partof a shape with a specified transform. This is useful for instantiating the shape for instance
+    Returns a copy of  the specified vertex, which position has
+been modified following this shape's transform (position, scale and rotation that is).
+This allows to retrieve the position in world coordinates of a point form the position
+in the  shape referential.
+This method can also be used to transform a point as if it was a part
+of a shape with a specified transform. This is useful for instantiating the shape for instance
 </div>
 
 
@@ -387,7 +393,8 @@
                 </td>
             
 
-            <td class="description last">Offset to apply to the point.If specified, the shape transform will be ignored.</td>
+            <td class="description last">Offset to apply to the point.
+If specified, the shape transform will be ignored.</td>
         </tr>
 
     
@@ -426,7 +433,8 @@
                 </td>
             
 
-            <td class="description last">Scale to apply to the point.If not specified and `position` is, it will default to unit scale;</td>
+            <td class="description last">Scale to apply to the point.
+If not specified and `position` is, it will default to unit scale;</td>
         </tr>
 
     
@@ -465,7 +473,8 @@
                 </td>
             
 
-            <td class="description last">Rotation to apply to the point.If not specified and `position` is, it will default to 0.</td>
+            <td class="description last">Rotation to apply to the point.
+If not specified and `position` is, it will default to 0.</td>
         </tr>
 
     
@@ -511,7 +520,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line746">line 746</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line868">line 868</a>
     </li></ul></dd>
     
 
@@ -540,7 +549,11 @@
 
         
 <div class="param-desc">
-    The transformed point. Note that because of the way the computation is done,classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implementthe `copy` method, and usual vector arithmetics (this is the case of `Fresco.Point` and`Fresco.Particle` for instance). In this case the return type will be  the sameas the input type.
+    The transformed point. Note that because of the way the computation is done,
+classes which extend `p5.Vector` may be passed as argument as  well, as long  as  they implement
+the `copy` method, and usual vector arithmetics (this is the case of `Fresco.Point` and
+`Fresco.Particle` for instance). In this case the return type will be  the same
+as the input type.
 </div>
 
 
@@ -569,6 +582,171 @@
     
 
     
+    <h4 class="name" id="clip"><span class="type-signature"></span>clip<span class="signature">(shape)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="Fresco.Shape.html">Fresco.Shape</a>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Invert operation of the subtract path finding operation.
+Will only leave the contours inside of the specified shape visible
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fresco.Shape.html">Fresco.Shape</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#clip">Fresco.Shape#clip</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1777">line 1777</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Resulting contours from the original clipped shape
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="Fresco.Shape.html">Fresco.Shape</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="contourLength"><span class="type-signature"></span>contourLength<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
@@ -577,7 +755,11 @@
 
 
 <div class="description">
-    Computes the total length of the shape'scontour in world scale. The computation will onlybe performed when an update is required.Because of this last statement,  we may have missed so cases where recomputation is required.Should you run in such case,  please report it so  that we can fix  it accordingly.
+    Computes the total length of the shape's
+contour in world scale. The computation will only
+be performed when an update is required.
+Because of this last statement,  we may have missed so cases where recomputation is required.
+Should you run in such case,  please report it so  that we can fix  it accordingly.
 </div>
 
 
@@ -626,7 +808,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line945">line 945</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1067">line 1067</a>
     </li></ul></dd>
     
 
@@ -692,7 +874,14 @@
 
 
 <div class="description">
-    Returns the control point  defining an edge starting at a given vertex.In the case where the shape is polygonal, the edge is a line andthis returns the 2 end vertices of the line.If  the shape isn't polygonal, this returns the point before the edge start vertex,the vertex  itself, and  the next to one. Should the first or last vertex extend out of thevertex array, they will be  dealt with accordingly. If the shape is open, the very first andvery last vertices of the shape are repeated. Otherwise the next vertex in  the shape(that is reading the vertices array as a circular buffer) is returned.
+    Returns the control point  defining an edge starting at a given vertex.
+In the case where the shape is polygonal, the edge is a line and
+this returns the 2 end vertices of the line.
+If  the shape isn't polygonal, this returns the point before the edge start vertex,
+the vertex  itself, and  the next to one. Should the first or last vertex extend out of the
+vertex array, they will be  dealt with accordingly. If the shape is open, the very first and
+very last vertices of the shape are repeated. Otherwise the next vertex in  the shape
+(that is reading the vertices array as a circular buffer) is returned.
 </div>
 
 
@@ -790,7 +979,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line843">line 843</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line965">line 965</a>
     </li></ul></dd>
     
 
@@ -856,7 +1045,9 @@
 
 
 <div class="description">
-    Returns a "deep-copy" of the shape. This is done manually to avoidcyclic dependencied issue with the vertices when using JSONSerialization-Desrialization.
+    Returns a "deep-copy" of the shape. This is done manually to avoid
+cyclic dependencied issue with the vertices when using JSON
+Serialization-Desrialization.
 </div>
 
 
@@ -905,7 +1096,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1378">line 1378</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1539">line 1539</a>
     </li></ul></dd>
     
 
@@ -934,7 +1125,10 @@
 
         
 <div class="param-desc">
-    Deep-copy of this shape, meaning the resulting shape can  me modified in any waywanted without fear of interfering with this one. Even the  vertices aredeep-copied and can be altered at will.
+    Deep-copy of this shape, meaning the resulting shape 
+can  me modified in any way
+wanted without fear of interfering with this one. Even the  vertices are
+deep-copied and can be altered at will.
 </div>
 
 
@@ -1043,7 +1237,11 @@
                 </td>
             
 
-            <td class="description last">Whether to use  the shape color or theindividual vertices color.At the current time, p5.js does not support drawing shapes withmultiple vertices color so this willmost likely result in drawing the shape  with the last vertex's color.</td>
+            <td class="description last">Whether to use  the shape color or the
+individual vertices color.
+At the current time, p5.js does not support drawing shapes with
+multiple vertices color so this will
+most likely result in drawing the shape  with the last vertex's color.</td>
         </tr>
 
     
@@ -1089,7 +1287,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line339">line 339</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line412">line 412</a>
     </li></ul></dd>
     
 
@@ -1205,7 +1403,8 @@
                 </td>
             
 
-            <td class="description last">Whether to use  the shape color or theindividual vertices color.</td>
+            <td class="description last">Whether to use  the shape color or the
+individual vertices color.</td>
         </tr>
 
     
@@ -1244,7 +1443,8 @@
                 </td>
             
 
-            <td class="description last">Position offset. If not specified,the method will use the shape's own transform.</td>
+            <td class="description last">Position offset. If not specified,
+the method will use the shape's own transform.</td>
         </tr>
 
     
@@ -1283,7 +1483,8 @@
                 </td>
             
 
-            <td class="description last">Scale. If `position` is specified,this will default to unit scale.</td>
+            <td class="description last">Scale. If `position` is specified,
+this will default to unit scale.</td>
         </tr>
 
     
@@ -1322,7 +1523,8 @@
                 </td>
             
 
-            <td class="description last">Rotation. If `position` is specified,this will default to 0.</td>
+            <td class="description last">Rotation. If `position` is specified,
+this will default to 0.</td>
         </tr>
 
     
@@ -1359,7 +1561,9 @@
                 </td>
             
 
-            <td class="description last">RGBA color the stroke of the instance,as an array of 4 values in the range [0,255].Ignored if `usePointColor`. If not specified, will default to the shape's color.</td>
+            <td class="description last">RGBA color the stroke of the instance,
+as an array of 4 values in the range [0,255].
+Ignored if `usePointColor`. If not specified, will default to the shape's color.</td>
         </tr>
 
     
@@ -1396,7 +1600,9 @@
                 </td>
             
 
-            <td class="description last">RGBA fill color of the stroke of the instance,as an array of 4 values in the range [0,255].If not specified, will default to the shape's fillColor.</td>
+            <td class="description last">RGBA fill color of the stroke of the instance,
+as an array of 4 values in the range [0,255].
+If not specified, will default to the shape's fillColor.</td>
         </tr>
 
     
@@ -1433,7 +1639,11 @@
                 </td>
             
 
-            <td class="description last">Weight of the stroke.If not specified, will default to the shape's strokeWeight.At the current time, p5.js does not support drawing shapes withmultiple vertices color so this willmost likely result in drawing the sahpe  with the last vertex's color.</td>
+            <td class="description last">Weight of the stroke.
+If not specified, will default to the shape's strokeWeight.
+At the current time, p5.js does not support drawing shapes with
+multiple vertices color so this will
+most likely result in drawing the sahpe  with the last vertex's color.</td>
         </tr>
 
     
@@ -1479,7 +1689,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line366">line 366</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line438">line 438</a>
     </li></ul></dd>
     
 
@@ -1523,7 +1733,9 @@
 
 
 <div class="description">
-    Draws multiple contours on top of one another,Each one of   them being displaced by some noise,to  give some organic feel to the  drawing.
+    Draws multiple contours on top of one another,
+Each one of   them being displaced by some noise,
+to  give some organic feel to the  drawing.
 </div>
 
 
@@ -1712,7 +1924,8 @@
                 </td>
             
 
-            <td class="description last">Whether to force the displaced line to come backto the starting point, should the original  shape be closed.</td>
+            <td class="description last">Whether to force the displaced line to come back
+to the starting point, should the original  shape be closed.</td>
         </tr>
 
     
@@ -1758,7 +1971,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line514">line 514</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line601">line 601</a>
     </li></ul></dd>
     
 
@@ -1851,7 +2064,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line462">line 462</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line549">line 549</a>
     </li></ul></dd>
     
 
@@ -1895,7 +2108,12 @@
 
 
 <div class="description">
-    Draws scattered points along contour. The  goal is to give  some organiceffect and as such point  will not necessarily land  on the contour.How far they are allowedto land is controled by the  diffusivity.Each point  will have a different `strokeWeight` which will be randomlychosen within the user specified interval.
+    Draws scattered points along contour. The  goal is to give  some organic
+effect and as such point  will not necessarily land  on the contour.
+How far they are allowed
+to land is controled by the  diffusivity.
+Each point  will have a different `strokeWeight` which will be randomly
+chosen within the user specified interval.
 </div>
 
 
@@ -2130,7 +2348,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line484">line 484</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line571">line 571</a>
     </li></ul></dd>
     
 
@@ -2281,7 +2499,8 @@
                 </td>
             
 
-            <td class="description last">Angle of the shadow. The shadow will only be castwhere the normals are oriented in the shadows direction</td>
+            <td class="description last">Angle of the shadow. The shadow will only be cast
+where the normals are oriented in the shadows direction</td>
         </tr>
 
     
@@ -2318,7 +2537,8 @@
                 </td>
             
 
-            <td class="description last">Angle tolerance to consider a normal to be inthe right direction for the shape to cast a shadow at the point</td>
+            <td class="description last">Angle tolerance to consider a normal to be in
+the right direction for the shape to cast a shadow at the point</td>
         </tr>
 
     
@@ -2357,7 +2577,8 @@
                 </td>
             
 
-            <td class="description last">How many points to evaluate the normal of along the contourand draw hatches or stipples from</td>
+            <td class="description last">How many points to evaluate the normal of along the contour
+and draw hatches or stipples from</td>
         </tr>
 
     
@@ -2591,7 +2812,8 @@
                 </td>
             
 
-            <td class="description last">Whether the `length` should be modulated bythe angle relative to the normal</td>
+            <td class="description last">Whether the `length` should be modulated by
+the angle relative to the normal</td>
         </tr>
 
     
@@ -2715,7 +2937,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line555">line 555</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line642">line 642</a>
     </li></ul></dd>
     
 
@@ -2873,7 +3095,10 @@
                 </td>
             
 
-            <td class="description last">In the case where the shape is not polygonal, we will usea discrete integrationto find the point position, because there is no exact expression  to compute it.This is the number of small segments to divide the edge into for the integration.</td>
+            <td class="description last">In the case where the shape is not polygonal, we will use
+a discrete integration
+to find the point position, because there is no exact expression  to compute it.
+This is the number of small segments to divide the edge into for the integration.</td>
         </tr>
 
     
@@ -2902,7 +3127,11 @@
                 </td>
             
 
-            <td class="description last">If true, the position is  approximated  by the spline equationevaluated at the specified percentage of the edge. In the general case, this will besomewhat different from the point at the specified percentage of the length of the contour.This is however much faster to compute, and is recommended for application where the actualposition does not really matter, such as random point scattering for instance.</td>
+            <td class="description last">If true, the position is  approximated  by the spline equation
+evaluated at the specified percentage of the edge. In the general case, this will be
+somewhat different from the point at the specified percentage of the length of the contour.
+This is however much faster to compute, and is recommended for application where the actual
+position does not really matter, such as random point scattering for instance.</td>
         </tr>
 
     
@@ -2931,7 +3160,8 @@
                 </td>
             
 
-            <td class="description last">Whether the point position should be returned in the world orshape referential</td>
+            <td class="description last">Whether the point position should be returned in the world or
+shape referential</td>
         </tr>
 
     
@@ -2977,7 +3207,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line979">line 979</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1101">line 1101</a>
     </li></ul></dd>
     
 
@@ -3043,7 +3273,10 @@
 
 
 <div class="description">
-    Returns the length of an edge. If the index passed is the last one,it will return the distance of the hypothetic edge to the first vertex,no matter if the shape is closed or not.Note that the length is in world units (meaning all transforms have been applied)
+    Returns the length of an edge. If the index passed is the last one,
+it will return the distance of the hypothetic edge to the first vertex,
+no matter if the shape is closed or not.
+Note that the length is in world units (meaning all transforms have been applied)
 </div>
 
 
@@ -3130,7 +3363,9 @@
                 </td>
             
 
-            <td class="description last">In the case of a non polygonal shape, there is no explicitexpression for computing the length of a 2D spline. We thus use a discrete integration,splitting the contour in the specified amount of small lines.</td>
+            <td class="description last">In the case of a non polygonal shape, there is no explicit
+expression for computing the length of a 2D spline. We thus use a discrete integration,
+splitting the contour in the specified amount of small lines.</td>
         </tr>
 
     
@@ -3176,7 +3411,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line903">line 903</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1025">line 1025</a>
     </li></ul></dd>
     
 
@@ -3242,7 +3477,8 @@
 
 
 <div class="description">
-    Freeze the transform of the shape into its vertices. This is to say that the current transform will be applied to each vertex and then reset.
+    Freeze the transform of the shape into its vertices. This is to say that the current transform will be applied 
+to each vertex and then reset.
 </div>
 
 
@@ -3291,7 +3527,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line776">line 776</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line898">line 898</a>
     </li></ul></dd>
     
 
@@ -3335,7 +3571,11 @@
 
 
 <div class="description">
-    Returns the bounding box (defined as the bottom left and topright corner points position in world coordinates).It will recompute it only if needed.Because of this last statement,  we may have missed so cases where recomputation is required.Should you run in such case,  please report it so  that we can fix  it accordingly
+    Returns the bounding box (defined as the bottom left and top
+right corner points position in world coordinates).
+It will recompute it only if needed.
+Because of this last statement,  we may have missed so cases where recomputation is required.
+Should you run in such case,  please report it so  that we can fix  it accordingly
 </div>
 
 
@@ -3384,7 +3624,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line800">line 800</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line922">line 922</a>
     </li></ul></dd>
     
 
@@ -3442,6 +3682,171 @@
     
 
     
+    <h4 class="name" id="getIntersectionsPoints"><span class="type-signature"></span>getIntersectionsPoints<span class="signature">(shape)</span><span class="type-signature"> &rarr; {Array.&lt;*>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Provided another shape, returns a list of all the intersection points with the other shape
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Freco.Shape</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#getIntersectionsPoints">Fresco.Shape#getIntersectionsPoints</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1565">line 1565</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    An array of {this_idx, other_idx, point} object literals where the index is that of the intersecting edge 
+(this shape first then the other shape)
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;*></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="isClockwise"><span class="type-signature"></span>isClockwise<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
@@ -3450,7 +3855,11 @@
 
 
 <div class="description">
-    Computes whether the shape is described in a clockwise fashion.This is achieved by computing the winding number relative to the centerof the bounding box. Note that this method does not check whether the shapeis closed. The resulting boolean will indeed only make sense in the case theshape actually is.
+    Computes whether the shape is described in a clockwise fashion.
+This is achieved by computing the winding number relative to the center
+of the bounding box. Note that this method does not check whether the shape
+is closed. The resulting boolean will indeed only make sense in the case the
+shape actually is.
 </div>
 
 
@@ -3499,7 +3908,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1359">line 1359</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1520">line 1520</a>
     </li></ul></dd>
     
 
@@ -3614,7 +4023,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line824">line 824</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line946">line 946</a>
     </li></ul></dd>
     
 
@@ -3680,7 +4089,20 @@
 
 
 <div class="description">
-    Retrieve the normal at a given point along the contour.To do so we first need to  find, where the point is on  the edge. To do so, we do asimple line-point intersection test in the polygonal case.For the non-polygonal case, each edge will be sudvided in smaller segments,untill one of such segments end, is either close enough to the specified pointor the max resolution is reached. This is  done this way because of numerical issueswhich may make it so a point may only ALMOST be on  the spline but not completely.In turn, this means that solving the spline equation for the point intersetcion will yieldno solution. The adopted dichotomic solution  allows for a small distance espilon to existbetween the  point and the line.The normal itself is taken as the orthogonal to the tangent at the found point, and is orienteddepending on whether the shape is described in a clockwise fashion, to always face outwards.
+    Retrieve the normal at a given point along the contour.
+
+To do so we first need to  find, where the point is on  the edge. To do so, we do a
+simple line-point intersection test in the polygonal case.
+For the non-polygonal case, each edge will be sudvided in smaller segments,
+untill one of such segments end, is either close enough to the specified point
+or the max resolution is reached. This is  done this way because of numerical issues
+which may make it so a point may only ALMOST be on  the spline but not completely.
+In turn, this means that solving the spline equation for the point intersetcion will yield
+no solution. The adopted dichotomic solution  allows for a small distance espilon to exist
+between the  point and the line.
+
+The normal itself is taken as the orthogonal to the tangent at the found point, and is oriented
+depending on whether the shape is described in a clockwise fashion, to always face outwards.
 </div>
 
 
@@ -3748,7 +4170,7 @@
                 </td>
             
 
-            <td class="description last"></td>
+            <td class="description last">Point in SHAPE's coordinate</td>
         </tr>
 
     
@@ -3782,12 +4204,14 @@
             
                 <td class="default">
                 
-                    1e-8
+                    null
                 
                 </td>
             
 
-            <td class="description last">Distance tolerance in the distance of the point to the edge toconsider it is actually on the edge</td>
+            <td class="description last">Distance tolerance in the distance of the point to the edge to
+consider it is actually on the edge. If not specified, a value of 0.1 is taken for non polygonal shapes,
+and 1e-3 for polygonal ones. In most cases this should result in acceptable tolerance values.</td>
         </tr>
 
     
@@ -3826,7 +4250,8 @@
                 </td>
             
 
-            <td class="description last">Maximum number of subdivisions for a spline edge. Because we add 2points by sub-edge each iteration, it is  recommended to uses a power of 2.</td>
+            <td class="description last">Maximum number of subdivisions for a spline edge. Because we add 2
+points by sub-edge each iteration, it is  recommended to uses a power of 2.</td>
         </tr>
 
     
@@ -3872,7 +4297,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1135">line 1135</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1255">line 1255</a>
     </li></ul></dd>
     
 
@@ -3938,7 +4363,11 @@
 
 
 <div class="description">
-    Computes the normals to each vertex in local coordinates.If the shape is open, the first and last points will use the onlyconnected edge to compute the normal, otherwise the computation willconsider both connected edges (in the non polygonal case this does not make any difference though, as the shape is supposed to have a continuous curvature).
+    Computes the normals to each vertex in local coordinates.
+If the shape is open, the first and last points will use the only
+connected edge to compute the normal, otherwise the computation will
+consider both connected edges (in the non polygonal case this does not make 
+any difference though, as the shape is supposed to have a continuous curvature).
 </div>
 
 
@@ -3987,7 +4416,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1250">line 1250</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1411">line 1411</a>
     </li></ul></dd>
     
 
@@ -4053,7 +4482,8 @@
 
 
 <div class="description">
-    Utility which prints the number of each vertex of the shape next to it. This is designed mostly for debug purposes.
+    Utility which prints the number of each vertex of the shape 
+next to it. This is designed mostly for debug purposes.
 </div>
 
 
@@ -4102,7 +4532,413 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line709">line 709</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line831">line 831</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="projectOnShape"><span class="type-signature"></span>projectOnShape<span class="signature">(pt, resolution)</span><span class="type-signature"> &rarr; {Array.&lt;p5.Vector, number, number, number>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Projects a point the shape. This is not a "true" projection. A more accurate description would
+be that this method finds the closest point on the shape. This is because we project on each edge
+and keep the closest egde. The subtelty is that if the projection is not actually on the edge
+(but further along the edge direction), we'll cap to the esge limits.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fresco.Point.html">Fresco.Point</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Point to project</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>resolution</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    128
+                
+                </td>
+            
+
+            <td class="description last">Resolution for the distance estimation</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#projectOnShape">Fresco.Shape#projectOnShape</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1312">line 1312</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Projection, Index of the closest edge,
+Percentage along the edge where the point is, Distance from the projection to the point
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;p5.Vector, number, number, number></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setColor"><span class="type-signature"></span>setColor<span class="signature">(contourColor<span class="signature-attributes">opt</span>, fillColor<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the shape's color
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>contourColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Color of the contour as an array of RGBA values in the range [0, 255].
+If not specified this shape will have no contour.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fillColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">Color of the fill as an array of RGBA values in the range [0, 255].
+If not specified the shape will have no fill.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#setColor">Fresco.Shape#setColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line793">line 793</a>
     </li></ul></dd>
     
 
@@ -4195,7 +5031,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1094">line 1094</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1216">line 1216</a>
     </li></ul></dd>
     
 
@@ -4239,7 +5075,8 @@
 
 
 <div class="description">
-    Sets the scale of the shape. If only x is specified,a uniform scale will be used
+    Sets the scale of the shape. If only x is specified,
+a uniform scale will be used
 </div>
 
 
@@ -4307,7 +5144,8 @@
                 </td>
             
 
-            <td class="description last">Scale along the x axis. Will be used  as theuniform scale if y is not specified</td>
+            <td class="description last">Scale along the x axis. Will be used  as the
+uniform scale if y is not specified</td>
         </tr>
 
     
@@ -4392,7 +5230,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line696">line 696</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line818">line 818</a>
     </li></ul></dd>
     
 
@@ -4428,6 +5266,705 @@
     
 
     
+    <h4 class="name" id="sortIntersections"><span class="type-signature"></span>sortIntersections<span class="signature">(intersections)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sort interestions returned by getIntersectionsPoints, such that they
+appear in contour order
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>intersections</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#sortIntersections">Fresco.Shape#sortIntersections</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1594">line 1594</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="splitShape"><span class="type-signature"></span>splitShape<span class="signature">(intersections)</span><span class="type-signature"> &rarr; {Array.&lt;Shape>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns an array of shapes corresponding to individual parts of the contour in between intersections.
+Intersections should be formatted to match the return of the getIntersectionsPoints function, that is a an array of object literals
+{this_idx, other_idx, point}.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>intersections</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#splitShape">Fresco.Shape#splitShape</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1634">line 1634</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Split contour
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Shape></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="subtract"><span class="type-signature"></span>subtract<span class="signature">(shape)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Subtract the specified shape from this one. As of now, this will remove the overlapped parts entirely,
+not even leaving a contour.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Fresco.Shape.html">Fresco.Shape</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Shape to subtract to this one</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#subtract">Fresco.Shape#subtract</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1690">line 1690</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="toFile"><span class="type-signature"></span>toFile<span class="signature">(filename)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    JSONify the shape and saves it to file
+WARNING: Freezes the transform
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Filename to save the shape to</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#toFile">Fresco.Shape#toFile</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line393">line 393</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="toJSON"><span class="type-signature"></span>toJSON<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns a minimal description of the shape
+WARNING: Freezes the transform
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Fresco.Shape.html#toJSON">Fresco.Shape#toJSON</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line374">line 374</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The JSON friendly dict represnting the shape
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="toLocalCoordinates"><span class="type-signature"></span>toLocalCoordinates<span class="signature">(pt)</span><span class="type-signature"> &rarr; {p5.Vector}</span></h4>
     
 
@@ -4436,7 +5973,8 @@
 
 
 <div class="description">
-    Converts a point coordinates (in vector form)to the shape local coordinate system
+    Converts a point coordinates (in vector form)
+to the shape local coordinate system
 </div>
 
 
@@ -4534,7 +6072,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1072">line 1072</a>
+        <a href="shape.js.html">shape.js</a>, <a href="shape.js.html#line1194">line 1194</a>
     </li></ul></dd>
     
 
@@ -4563,7 +6101,10 @@
 
         
 <div class="param-desc">
-    Point coordinates the local coordinate system.The function also supports classes that extend `p5.Vector` as long as theyimplement vector arithmetic functions and the `copy` method. The return willbe of the same type
+    Point coordinates the local coordinate system.
+The function also supports classes that extend `p5.Vector` as long as they
+implement vector arithmetic functions and the `copy` method. The return will
+be of the same type
 </div>
 
 
@@ -4602,13 +6143,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Geometry.html">Geometry</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Worley.html">Worley</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#fractalNoise">fractalNoise</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#getParticle">getParticle</a></li><li><a href="global.html#getParticles">getParticles</a></li><li><a href="global.html#getParticlesNum">getParticlesNum</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#sIntersection">sIntersection</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#sSubtract">sSubtract</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#sUnion">sUnion</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li><li><a href="global.html#worleyInstance">worleyInstance</a></li><li><a href="global.html#worleyNoise">worleyNoise</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Fresco.html">Fresco</a></li></ul><h3>Classes</h3><ul><li><a href="Fresco.Arc.html">Arc</a></li><li><a href="Fresco.Attractor.html">Attractor</a></li><li><a href="Fresco.Burst.html">Burst</a></li><li><a href="Fresco.Circle.html">Circle</a></li><li><a href="Fresco.Collection.html">Collection</a></li><li><a href="Fresco.Drag.html">Drag</a></li><li><a href="Fresco.Emitter.html">Emitter</a></li><li><a href="Fresco.Force.html">Force</a></li><li><a href="Fresco.Gravity.html">Gravity</a></li><li><a href="Fresco.Line.html">Line</a></li><li><a href="Fresco.Particle.html">Particle</a></li><li><a href="Fresco.Point.html">Point</a></li><li><a href="Fresco.PointEmitter.html">PointEmitter</a></li><li><a href="Fresco.Polygon.html">Polygon</a></li><li><a href="Fresco.Rect.html">Rect</a></li><li><a href="Fresco.Shape.html">Shape</a></li><li><a href="Fresco.ShapeEmitter.html">ShapeEmitter</a></li><li><a href="Fresco.Square.html">Square</a></li><li><a href="Fresco.Worley.html">Worley</a></li><li><a href="Fresco-Fresco.Font.html">Font</a></li></ul><h3>Global</h3><ul><li><a href="global.html#backgroundGradient">backgroundGradient</a></li><li><a href="global.html#border">border</a></li><li><a href="global.html#catmullRom">catmullRom</a></li><li><a href="global.html#colliders">colliders</a></li><li><a href="global.html#colorFromHex">colorFromHex</a></li><li><a href="global.html#colorInterp">colorInterp</a></li><li><a href="global.html#compareAngles">compareAngles</a></li><li><a href="global.html#copyToPoints">copyToPoints</a></li><li><a href="global.html#createParticle">createParticle</a></li><li><a href="global.html#createPoint">createPoint</a></li><li><a href="global.html#cubicRoots">cubicRoots</a></li><li><a href="global.html#curlNoise2D">curlNoise2D</a></li><li><a href="global.html#curlNoise3D">curlNoise3D</a></li><li><a href="global.html#deepcopy">deepcopy</a></li><li><a href="global.html#distort">distort</a></li><li><a href="global.html#distortedNoise">distortedNoise</a></li><li><a href="global.html#distSquared">distSquared</a></li><li><a href="global.html#drawBezier">drawBezier</a></li><li><a href="global.html#drawCircle">drawCircle</a></li><li><a href="global.html#drawCurveVertex">drawCurveVertex</a></li><li><a href="global.html#drawLine">drawLine</a></li><li><a href="global.html#drawNormal">drawNormal</a></li><li><a href="global.html#drawPoint">drawPoint</a></li><li><a href="global.html#drawText">drawText</a></li><li><a href="global.html#drawVertex">drawVertex</a></li><li><a href="global.html#emitters">emitters</a></li><li><a href="global.html#forces">forces</a></li><li><a href="global.html#fractalNoise">fractalNoise</a></li><li><a href="global.html#g">g</a></li><li><a href="global.html#getParticle">getParticle</a></li><li><a href="global.html#getParticles">getParticles</a></li><li><a href="global.html#getParticlesNum">getParticlesNum</a></li><li><a href="global.html#gradDistort">gradDistort</a></li><li><a href="global.html#gradient">gradient</a></li><li><a href="global.html#gradientVec">gradientVec</a></li><li><a href="global.html#interpolationType">interpolationType</a></li><li><a href="global.html#invertSmoothstep">invertSmoothstep</a></li><li><a href="global.html#isInside">isInside</a></li><li><a href="global.html#isoLine">isoLine</a></li><li><a href="global.html#isSVGCanvas">isSVGCanvas</a></li><li><a href="global.html#keyPressed">keyPressed</a></li><li><a href="global.html#lerpVector">lerpVector</a></li><li><a href="global.html#leveledNoise">leveledNoise</a></li><li><a href="global.html#lineIntersection">lineIntersection</a></li><li><a href="global.html#lineSplineIntersection">lineSplineIntersection</a></li><li><a href="global.html#matchPoints">matchPoints</a></li><li><a href="global.html#mergeContours">mergeContours</a></li><li><a href="global.html#moduloNoise">moduloNoise</a></li><li><a href="global.html#noiseVector">noiseVector</a></li><li><a href="global.html#normalizedPerlin">normalizedPerlin</a></li><li><a href="global.html#normalizedRidgedNoise">normalizedRidgedNoise</a></li><li><a href="global.html#parabolicRoots">parabolicRoots</a></li><li><a href="global.html#particles">particles</a></li><li><a href="global.html#perlin">perlin</a></li><li><a href="global.html#rampArrayInterpolation">rampArrayInterpolation</a></li><li><a href="global.html#rampInterpolation">rampInterpolation</a></li><li><a href="global.html#rampInterpolation2D">rampInterpolation2D</a></li><li><a href="global.html#raySegmentIntersection">raySegmentIntersection</a></li><li><a href="global.html#raySplineIntersection">raySplineIntersection</a></li><li><a href="global.html#recordAnimation">recordAnimation</a></li><li><a href="global.html#recorder">recorder</a></li><li><a href="global.html#relax">relax</a></li><li><a href="global.html#resample">resample</a></li><li><a href="global.html#ridgedNoise">ridgedNoise</a></li><li><a href="global.html#sample">sample</a></li><li><a href="global.html#scatter">scatter</a></li><li><a href="global.html#sCurve">sCurve</a></li><li><a href="global.html#seed">seed</a></li><li><a href="global.html#segmentIntersection">segmentIntersection</a></li><li><a href="global.html#setSeed">setSeed</a></li><li><a href="global.html#shadowType">shadowType</a></li><li><a href="global.html#shapeFromJSON">shapeFromJSON</a></li><li><a href="global.html#shapeInterpolate">shapeInterpolate</a></li><li><a href="global.html#shapesToFile">shapesToFile</a></li><li><a href="global.html#showSeed">showSeed</a></li><li><a href="global.html#simulationStep">simulationStep</a></li><li><a href="global.html#smoothstep">smoothstep</a></li><li><a href="global.html#solveCollision">solveCollision</a></li><li><a href="global.html#steeperStep">steeperStep</a></li><li><a href="global.html#stopRecording">stopRecording</a></li><li><a href="global.html#subdivide">subdivide</a></li><li><a href="global.html#T">T</a></li><li><a href="global.html#windingNumber">windingNumber</a></li><li><a href="global.html#worleyInstance">worleyInstance</a></li><li><a href="global.html#worleyNoise">worleyNoise</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 31 2021 12:27:30 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Aug 22 2021 16:09:14 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

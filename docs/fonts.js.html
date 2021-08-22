@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Force</title>
+    <title>JSDoc: Source: fonts.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,342 +17,127 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Force</h1>
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="Fresco.html">Fresco</a>.</span>Force<span class="signature">()</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description">Generic class for a force, enforcing the API</div>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-    <h2>Constructor</h2>
-    
-
-    
-    <h4 class="name" id="Force"><span class="type-signature"></span>new Force<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>isDead</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">If true, the force will not be
-considered in the dynamic simulation anymore and will be destroyed
-at the end of the next simulation step. Forces should not be manually
-deleted and this boolean should be used instead.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line536">line 536</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="applyForce"><span class="type-signature"></span>applyForce<span class="signature">(particle)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Returns the force applied to a given particle
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>particle</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Fresco.Particle.html">Fresco.Particle</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Particle to apply the force to</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="particles.js.html">particles.js</a>, <a href="particles.js.html#line553">line 553</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">Source: fonts.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>Fresco.Glyph = class {
+    constructor(shapes, width) {
+        this.shapes = shapes;
+        this.width = width;
+    }
+}
+
+Fresco.Font = class {
+    /**
+     * @constructor
+     * @param {*} rawData A dict containing the whole font, such as one loae from a json file
+     * @property {*} glyphs Dict containing the description of each glyph as an array of shapes
+     * @property {number} fontWeight=1 Stroke weight of the glyphs
+     * @property {Array&lt;number>} fontColor=(255, 255, 255, 255) Color of the font as an array of 4 RGBA values in range [0-255]
+     * @property {number} fontSpacing=0 Spacing between 
+     */
+    constructor(rawData) {
+        // for each glyph, extract the shapes
+        this.glyphs = {};
+        for (let glyph in rawData) {
+            let shapes = []
+            rawData[glyph]["shapes"].forEach(s => {
+                let shape = shapeFromJSON(s);
+                shapes.push(shape);
+            });
+            this.glyphs[glyph] = new Fresco.Glyph(shapes, rawData[glyph]["width"]);
+        }
+
+        // set default size
+        this.fontSize = 12;
+        this.charWidth = 10;
+        this.widthMult = 1.68; // in the original repo there is this magic number
+
+        this.fontWeight = 1;
+        this.fontColor = (255, 255, 255, 255);
+        this.fontSpacing = 0;
+    }
+
+    /**
+     * 
+     * @param {string} letter 
+     * @param {number} size 
+     * @param {p5.Vector} position 
+     * @returns {Array&lt;Fresco.Shape>}
+     */
+    drawLetter(letter, size, position) {
+        let max_x = 0
+        let shapes = []
+        this.glyphs[letter].shapes.forEach(s => {
+            s.vertices.forEach(v => {
+                if (v.x > max_x) max_x = v.x;
+            });
+            s.drawInstantiate(
+                false, position, size / this.fontSize,
+                0, this.color, null, this.fontWeight
+            );
+
+            // create a copy with its transform frozen in position for export
+            let s_copy = s.copy();
+            s_copy.position = position;
+            s_copy.scale *= size / this.fontSize;
+            s_copy.freezeTransform();
+            shapes.push(s_copy);
+        })
+
+        return shapes;
+    }
+
+    drawText(text, size, position, centered=false) {
+        // init start position.
+        let nuPos = position.copy();
+        if (centered) {
+            // compute total text width, as the sum of the width of each character (multiplied by the size)
+            // plus the spacing in between each letter
+            let totWidth = 0;
+            for (let char of text) {
+                if (char == ' ') {
+                    totWidth += 10 * this.widthMult * size / this.fontSize;
+                }
+                else {
+                    totWidth += this.glyphs[char].width * this.widthMult * size / this.fontSize;
+                }
+            }
+            totWidth += (text.length - 1) * this.fontSpacing * size / this.fontSize;
+
+            nuPos.x -= totWidth * 0.5;
+        }
+
+        let shapes = [];
+        // draw each character and offset the next one accordingly
+        for (let char of text) {
+            if (char == ' ') {
+                nuPos.x += 10 * size / this.fontSize + this.fontSpacing * size / this.fontSize;
+            }
+            else {
+                shapes = shapes.concat(this.drawLetter(char, size, nuPos));
+                nuPos.x += this.glyphs[char].width * this.widthMult * size / this.fontSize + this.fontSpacing * size / this.fontSize;
+            }
+        }
+
+        return shapes;
+    }
+}
+
+Fresco.Futural = null;
+
+function loadFonts() {
+    Fresco.Futural = new Fresco.Font(futural);
+}
+</code></pre>
+        </article>
+    </section>
 
 
 

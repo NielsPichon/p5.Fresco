@@ -1306,7 +1306,7 @@ Fresco.Shape = class {
    * (but further along the edge direction), we'll cap to the esge limits.
    * @param {Fresco.Point} pt Point to project 
    * @param {number} resolution Resolution for the distance estimation
-   * @returns {Array <p5.Vector, number, number, number>} Projection, Index of the closest edge,
+   * @returns {Array<p5.Vector, number, number, number>} Projection, Index of the closest edge,
    * Percentage along the edge where the point is, Distance from the projection to the point
    */
   projectOnShape(pt, resolution=128) {
@@ -1559,7 +1559,7 @@ Fresco.Shape = class {
   /**
    * Provided another shape, returns a list of all the intersection points with the other shape
    * @param {Freco.Shape} shape 
-   * @returns An array of {this_idx, other_idx, point} object literals where the index is that of the intersecting edge 
+   * @returns {Array<*>}An array of {this_idx, other_idx, point} object literals where the index is that of the intersecting edge 
    * (this shape first then the other shape)
    */
   getIntersectionsPoints(shape) {
@@ -1629,7 +1629,7 @@ Fresco.Shape = class {
    * Intersections should be formatted to match the return of the getIntersectionsPoints function, that is a an array of object literals
    * {this_idx, other_idx, point}.
    * @param {*} intersections 
-   * @returns 
+   * @returns {Array<Shape>} Split contour
    */
   splitShape(intersections) {
     if (intersections.length == 0) {
@@ -1771,8 +1771,8 @@ Fresco.Shape = class {
   /**
    * Invert operation of the subtract path finding operation.
    * Will only leave the contours inside of the specified shape visible
-   * @param {*} shape 
-   * @returns 
+   * @param {Fresco.Shape} shape 
+   * @returns {Array<Fresco.Shape>} Resulting contours from the original clipped shape
    */
   clip(shape) {
     if (!shape.isPolygonal || !this.isPolygonal)
@@ -1819,7 +1819,7 @@ Fresco.Shape = class {
 
 /**
  * Creates a Fresco.Shape from some json data 
- * @param {data loaded from a json file} json_dict 
+ * @param {*} json_dict data loaded from a json file
  */
 function shapeFromJSON(json_dict) {
   vtxBuffer = []
@@ -1839,12 +1839,12 @@ function shapeFromJSON(json_dict) {
 
 /**
  * Class describing a collection of geometric objects
- * in the Scatter namespace. This collection has a transform of its own which 
+ * in the Fresco namespace. This collection has a transform of its own which 
  * can be used to modify multiple objects at once in a rigid body fashion
  * (meaning they will keep  their scale , position and  rotation relative to one another). 
  * @class 
  */
-Fresco.Geometry = class {
+Fresco.Collection = class {
   /**
    * @constructor
    * @property {p5.Vector} scale=1,1 - Scale of the geometry collection
