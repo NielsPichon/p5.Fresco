@@ -10,10 +10,9 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-
   let s = new Fresco.Square(200);
   s.rotation = Math.PI / 12;
-  let fillLines = s.hatchFill(0, 5);
+  let fillLines = s.hatchFill(Math.PI / 2, 5);
 
   s.draw();
   fillLines.forEach(line => line.draw());

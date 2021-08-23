@@ -1837,6 +1837,10 @@ Fresco.Shape = class {
     if (angle < Math.PI / 2) {
       origin.x = bounds[1].x;
     }
+    else if (angle == Math.PI / 2) {
+      direction = createVector(0, 1);
+      orthogonal = createVector(interline, 0);
+    }
     else {
       orthogonal.mult(-1);
     }
