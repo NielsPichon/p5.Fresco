@@ -1845,6 +1845,9 @@ Fresco.Shape = class {
       orthogonal.mult(-1);
     }
 
+    // make sure we don't start at the corner which could create issues
+    origin.sub(orthogonal.copy().mult(0.5));
+
     // for each hatch line, compute the intersections with the shape, and then
     // join the intersections 2 by 2, in order. If there is an odd number of intersections,
     // means one at least is tangential, which will create issues. For now we'll simply
@@ -1896,7 +1899,9 @@ Fresco.Shape = class {
           origin.add(orthogonal);
 
           // mark this intersection test as valid
-          prev_intersection = true;
+          if (intersections.length > 0) {
+            prev_intersection = true;
+          }
         }
       }
       else {
