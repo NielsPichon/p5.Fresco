@@ -1813,12 +1813,13 @@ Fresco.Shape = class {
    * 
    * @param {number} angle angle of the hatching
    * @param {number} interline spacing of the lines (must be positive)
+   * @param {boolean} approx=true consider the shape is polygonal no matter what
    * @returns {Array<Fresco.Shape>} Hatching lines
    */
-  hatchFill(angle, interline) {
-    if (!this.isPolygonal) {
-      throw 'hatch fill not yet supported for non polygonal shapes'
-    }
+  hatchFill(angle, interline, approx=true) {
+    // if (!this.isPolygonal) {
+    //   throw 'hatch fill not yet supported for non polygonal shapes'
+    // }
 
     // line direction is periodic of period PI
     angle = angle % Math.PI;
@@ -1856,6 +1857,12 @@ Fresco.Shape = class {
     let lines = [];
     let prev_intersection = false;
     let done = false;
+
+    let isPolygonal = this.isPolygonal;
+    if (approx) {
+      this.isPolygonal = true;
+    }
+
     while (!done) {
       // compute all intersections along the hatch line 
       let intersections = [];
@@ -1910,6 +1917,8 @@ Fresco.Shape = class {
         origin.add(orthogonal.copy().mult(0.01));
       }
     }
+
+    this.isPolygonal = isPolygonal;
 
     return lines;
   }
@@ -2624,23 +2633,16 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
   let Y;
   for (let i = 0; i < intersections.length; i++) {
     ti = intersections[i];
+    X = a2.x * ti * ti * ti + b2.x * ti * ti + c2.x * ti + d2.x;
+    Y = a2.y * ti * ti * ti + b2.y * ti * ti + c2.y * ti + d2.y;
     if (dir.x != 0) {
-      X = a2.x * ti * ti * ti + b2.x * ti * ti + c2.x * ti + d2.x;
       interp = (X - pt.x) / dir.x;
     }
     else {
-      Y = a2.y * ti * ti * ti + b2.y * ti * ti + c2.y * ti + d2.y;
       interp = (Y - pt.y) / dir.y;
     }
     if (returnLineInt) {
-      let tline = 0;
-      if (dir.x == 0) {
-        tline = (ti.y - pt.y) / dir.y;  
-      }
-      else {
-        tline = (ti.x - pt.x) / dir.x;
-      }
-      append(t, [ti, interp, tline]);
+      append(t, [createPoint(X, Y), ti, interp]);
     }
     else {
       append(t, [ti, interp]);
