@@ -924,18 +924,14 @@ Fresco.Shape = class {
       let xs = [];
       let ys = [];
       for (let i = 0; i < this.vertices.length; i++) {
-        append(xs, this.vertices[i].x);
-        append(ys, this.vertices[i].y);
+        let vtx = this.applyTransform(this.vertices[i]);
+        append(xs, vtx.x);
+        append(ys, vtx.y);
       }
       this.boundingBox = [createVector(min(xs), min(ys)), createVector(max(xs), max(ys))]
     }
-
-    let pt1 = 
-      this.boundingBox[0].copy().mult(
-        this.scale).add(this.position);
-    let pt2 = this.boundingBox[1].copy().mult(
-      this.scale).add(this.position);
-    return [pt1, pt2];
+  
+    return this.boundingBox;
   }
 
 
@@ -1820,6 +1816,10 @@ Fresco.Shape = class {
    * @returns {Array<Fresco.Shape>} Hatching lines
    */
   hatchFill(angle, interline) {
+    if (!this.isPolygonal) {
+      throw 'hatch fill not yet supported for non polygonal shapes'
+    }
+
     // line direction is periodic of period PI
     angle = angle % Math.PI;
 
@@ -1855,14 +1855,19 @@ Fresco.Shape = class {
       for (let i = 0; i < this.vertices.length - 1; i++) {
         if (this.isPolygonal) {
           let [p0, p1] = this.controlPoints(i);
-          let inter = lineSegmentIntersection(origin, direction, p0, p1, true);
+          let inter = lineSegmentIntersection(
+            origin, direction, this.applyTransform(p0), this.applyTransform(p1), true);
           if (inter.length > 0) {
             intersections.push(inter);
           }
         }
         else {
           let [p0, p1, p2, p3] = this.controlPoints(i);
-          intersections = intersections.concat(lineSplineIntersection(origin, direction, p0, p1, p2, p3, true));
+          intersections = intersections.concat(
+            lineSplineIntersection(
+              origin, direction, this.applyTransform(p0), this.applyTransform(p1),
+              this.applyTransform(p2), this.applyTransform(p3), true)
+          );
         }
       }
       // if there is an even number of intersections, proceed. 
@@ -1878,7 +1883,6 @@ Fresco.Shape = class {
             return a[a.length - 1] - b[b.length - 1];
           });
 
-          print(intersections)
           // create lines in between intersections
           for (let i = 0; i < intersections.length / 2; i++) {
             lines.push(new Fresco.Line(intersections[2 * i][0], intersections[2 * i + 1][0]));
@@ -1892,6 +1896,7 @@ Fresco.Shape = class {
         }
       }
       else {
+        print('meh')
         // simply offset the hatch line by 1% to avoid the tangential intersections
         origin.add(orthogonal.copy().mult(0.01));
       }
@@ -2619,7 +2624,7 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
       interp = (Y - pt.y) / dir.y;
     }
     if (returnLineInt) {
-      let t = 0;
+      let tline = 0;
       if (dir.x == 0) {
         tline = (ti.y - pt.y) / dir.y;  
       }
@@ -2628,7 +2633,9 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
       }
       append(t, [ti, interp, tline]);
     }
-    append(t, [ti, interp]);
+    else {
+      append(t, [ti, interp]);
+    }
   }
   
   return t;

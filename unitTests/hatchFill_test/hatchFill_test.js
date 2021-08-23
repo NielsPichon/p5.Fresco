@@ -12,10 +12,11 @@ function setup() {
 function draw() {
 
   let s = new Fresco.Square(200);
-  let fillLines = s.hatchFill(Math.PI, 5);
+  s.rotation = Math.PI / 12;
+  let fillLines = s.hatchFill(0, 5);
 
   s.draw();
   fillLines.forEach(line => line.draw());
-
+  
   noLoop()
 }
