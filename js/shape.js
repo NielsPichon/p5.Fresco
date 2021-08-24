@@ -1927,12 +1927,18 @@ Fresco.Shape = class {
 /**
  * Creates a Fresco.Shape from some json data 
  * @param {*} json_dict data loaded from a json file
+ * @param {boolean} apply_scale=true If true, the points will be 
+ * rescaled by the canvas size specified in the file  
  */
-function shapeFromJSON(json_dict) {
+function shapeFromJSON(json_dict, apply_scale=true) {
   vtxBuffer = []
   for (let v in json_dict['vertices']) {
-    let x = json_dict['vertices'][v]['x'] * json_dict['canvas_width'];
-    let y = -json_dict['vertices'][v]['y'] * json_dict['canvas_height'];
+    let x = json_dict['vertices'][v]['x'];
+    let y = -json_dict['vertices'][v]['y'];
+    if (apply_scale) {
+      x *= json_dict['canvas_width'];
+      y *= json_dict['canvas_height'];
+    }
     vtxBuffer.push(createPoint(x, y));
   }
 
