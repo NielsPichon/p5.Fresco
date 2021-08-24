@@ -24,8 +24,13 @@ function draw() {
   // s[1].draw();
 
   text = Fresco.Futural.drawText('This way up!', 12, createVector(0, -300), true)
+  s.concat(text);
+
+  jsonExportCallback = () => {
+    return s;
+  }
 
   noLoop();
 
-  shapesToFile(s.concat(text), 'test.json');
+  // shapesToFile(s.concat(text), 'test.json');
 }

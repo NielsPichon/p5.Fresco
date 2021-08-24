@@ -1943,8 +1943,8 @@ function shapeFromJSON(json_dict, apply_scale=true) {
   }
 
   let s = new Fresco.Shape(vtxBuffer);
-  s.isPolygonal = json_dict['is_polygonal'];
-  s.ignoreEnds = json_dict['ignore_ends'];
+  s.isPolygonal = json_dict['isPolygonal'];
+  s.ignoreEnds = json_dict['ignoreEnds'];
 
   return s;
 }

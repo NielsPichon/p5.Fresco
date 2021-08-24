@@ -99,8 +99,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -128,8 +128,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -197,8 +197,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -270,8 +270,8 @@ futural = {
               "y": 18
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -295,8 +295,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -311,8 +311,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -392,8 +392,8 @@ futural = {
               "y": 18
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -497,8 +497,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -518,8 +518,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -534,8 +534,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -663,8 +663,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -768,8 +768,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -789,8 +789,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -817,8 +817,8 @@ futural = {
               "y": 20
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -838,8 +838,8 @@ futural = {
               "y": 8
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -854,8 +854,8 @@ futural = {
               "y": 8
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -875,8 +875,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -891,8 +891,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -907,8 +907,8 @@ futural = {
               "y": 10
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -923,8 +923,8 @@ futural = {
               "y": 16
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -944,8 +944,8 @@ futural = {
               "y": 26
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -960,8 +960,8 @@ futural = {
               "y": 26
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1048,8 +1048,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1069,8 +1069,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1141,8 +1141,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1193,8 +1193,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1342,8 +1342,8 @@ futural = {
               "y": 20
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1383,8 +1383,8 @@ futural = {
               "y": 7
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1436,8 +1436,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1489,8 +1489,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1510,8 +1510,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1526,8 +1526,8 @@ futural = {
               "y": 16
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1542,8 +1542,8 @@ futural = {
               "y": 16
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1563,8 +1563,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1579,8 +1579,8 @@ futural = {
               "y": 13
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1620,8 +1620,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1641,8 +1641,8 @@ futural = {
               "y": 13
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1674,8 +1674,8 @@ futural = {
               "y": 17
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1695,8 +1695,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1728,8 +1728,8 @@ futural = {
               "y": 10
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1756,8 +1756,8 @@ futural = {
               "y": 17
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1789,8 +1789,8 @@ futural = {
               "y": 10
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1825,8 +1825,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1850,8 +1850,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1871,8 +1871,8 @@ futural = {
               "y": 10
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -1887,8 +1887,8 @@ futural = {
               "y": 16
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1912,8 +1912,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -1981,8 +1981,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2009,8 +2009,8 @@ futural = {
               "y": 20
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2074,8 +2074,8 @@ futural = {
               "y": 14
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2106,8 +2106,8 @@ futural = {
               "y": 17
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2230,8 +2230,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2254,8 +2254,8 @@ futural = {
               "y": 17
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2275,8 +2275,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2291,8 +2291,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2307,8 +2307,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2328,8 +2328,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2372,8 +2372,8 @@ futural = {
               "y": 11
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2420,8 +2420,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2505,8 +2505,8 @@ futural = {
               "y": 17
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2526,8 +2526,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2582,8 +2582,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2603,8 +2603,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2619,8 +2619,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2635,8 +2635,8 @@ futural = {
               "y": 11
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2651,8 +2651,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2672,8 +2672,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2688,8 +2688,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2704,8 +2704,8 @@ futural = {
               "y": 11
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2793,8 +2793,8 @@ futural = {
               "y": 14
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2809,8 +2809,8 @@ futural = {
               "y": 14
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2830,8 +2830,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2846,8 +2846,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2862,8 +2862,8 @@ futural = {
               "y": 11
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2883,8 +2883,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2936,8 +2936,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -2957,8 +2957,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2973,8 +2973,8 @@ futural = {
               "y": 15
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -2989,8 +2989,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3010,8 +3010,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3026,8 +3026,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3047,8 +3047,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3063,8 +3063,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3079,8 +3079,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3095,8 +3095,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3116,8 +3116,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3132,8 +3132,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3148,8 +3148,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3245,8 +3245,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3266,8 +3266,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3314,8 +3314,8 @@ futural = {
               "y": 12
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3411,8 +3411,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3427,8 +3427,8 @@ futural = {
               "y": 24
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3448,8 +3448,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3496,8 +3496,8 @@ futural = {
               "y": 11
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3512,8 +3512,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3605,8 +3605,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3626,8 +3626,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3642,8 +3642,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3695,8 +3695,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3716,8 +3716,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3732,8 +3732,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3753,8 +3753,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3769,8 +3769,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3785,8 +3785,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3801,8 +3801,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3822,8 +3822,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3838,8 +3838,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3863,8 +3863,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3879,8 +3879,8 @@ futural = {
               "y": 11
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3900,8 +3900,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3916,8 +3916,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3932,8 +3932,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -3953,8 +3953,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3969,8 +3969,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -3985,8 +3985,8 @@ futural = {
               "y": -3
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4001,8 +4001,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4022,8 +4022,8 @@ futural = {
               "y": 25
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4043,8 +4043,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4059,24 +4059,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
-          "canvas_width": 1,
-          "canvas_height": 1
-        },
-        {
-          "vertices": [
-            {
-              "x": 3,
-              "y": -3
-            },
-            {
-              "x": 10,
-              "y": -3
-            }
-          ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4084,6 +4068,22 @@ futural = {
           "vertices": [
             {
               "x": 3,
+              "y": -3
+            },
+            {
+              "x": 10,
+              "y": -3
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        },
+        {
+          "vertices": [
+            {
+              "x": 3,
               "y": 29
             },
             {
@@ -4091,8 +4091,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4112,8 +4112,8 @@ futural = {
               "y": 13
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4128,8 +4128,8 @@ futural = {
               "y": 13
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4149,8 +4149,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4190,8 +4190,8 @@ futural = {
               "y": 10
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4211,8 +4211,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4275,8 +4275,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4296,8 +4296,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4360,8 +4360,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4429,8 +4429,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4450,8 +4450,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4514,8 +4514,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4595,8 +4595,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4628,8 +4628,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4644,8 +4644,8 @@ futural = {
               "y": 8
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4685,8 +4685,8 @@ futural = {
               "y": 28
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4749,8 +4749,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4770,8 +4770,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4806,8 +4806,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4839,8 +4839,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4855,8 +4855,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4888,8 +4888,8 @@ futural = {
               "y": 1
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4916,8 +4916,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4937,8 +4937,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4953,8 +4953,8 @@ futural = {
               "y": 18
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -4969,8 +4969,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -4990,8 +4990,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5011,8 +5011,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5047,8 +5047,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5083,8 +5083,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5104,8 +5104,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5140,8 +5140,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5221,8 +5221,8 @@ futural = {
               "y": 8
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5242,8 +5242,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5306,8 +5306,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5327,8 +5327,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5391,8 +5391,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5412,8 +5412,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5440,8 +5440,8 @@ futural = {
               "y": 8
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5521,8 +5521,8 @@ futural = {
               "y": 19
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5554,8 +5554,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5570,8 +5570,8 @@ futural = {
               "y": 8
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5611,8 +5611,8 @@ futural = {
               "y": 18
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5627,8 +5627,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5648,8 +5648,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5664,8 +5664,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5685,8 +5685,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5701,8 +5701,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5717,8 +5717,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5733,8 +5733,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5754,8 +5754,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5770,8 +5770,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5791,8 +5791,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5823,8 +5823,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5844,8 +5844,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5860,8 +5860,8 @@ futural = {
               "y": 8
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -5876,8 +5876,8 @@ futural = {
               "y": 22
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -5929,8 +5929,8 @@ futural = {
               "y": 12
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -6005,8 +6005,8 @@ futural = {
               "y": 28
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -6053,8 +6053,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -6074,8 +6074,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -6127,8 +6127,8 @@ futural = {
               "y": 12
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -6203,8 +6203,8 @@ futural = {
               "y": 28
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -6251,8 +6251,8 @@ futural = {
               "y": 29
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }
@@ -6308,8 +6308,8 @@ futural = {
               "y": 12
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         },
@@ -6360,8 +6360,8 @@ futural = {
               "y": 10
             }
           ],
-          "is_polygonal": true,
-          "ignore_ends": false,
+          "isPolygonal": true,
+          "ignoreEnds": false,
           "canvas_width": 1,
           "canvas_height": 1
         }

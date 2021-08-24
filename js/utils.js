@@ -20,12 +20,35 @@ let seed;
  */
 let isSVGCanvas = false;
 
-function createSVGCanvas(w, h)
+/**
+ * Create an canvas with the svg renderer and stores that
+ * the mode is SVG for exports
+ * @param {number} w width of the canvas  
+ * @param {number} h height of the canvas
+ */function createSVGCanvas(w, h)
 {
   isSVGCanvas = true;
   createCanvas(w, h, SVG);
 }
 
+/**
+ * Callback function called when pressing the json export key. 
+ * It should return an array of Fresco.Shapes.
+ * By default returns an empty array.
+ */
+let jsonExportCallback = () => {return []};
+
+function exportToAxidraw() {
+  let shapes = jsonExportCallback();
+  if (shapes.length > 0) {
+    shapesToFile(shapes, 'tmp.json');
+  }
+  else {
+    throw 'The export shape array is empty. Have you set the jsonExportCallback ?';
+  }
+  // launch axidraw page
+  window.open("http://0.0.0.0:8000/axidraw.html");
+}
 
 /**
  * Overide of the p5 keyPressed function which handles various  key presses.
@@ -69,6 +92,10 @@ function keyPressed() {
     // n like noise to display the  
     if (key == 'n') {
       showSeed();
+    }
+
+    if (key == 'a') {
+      exportToAxidraw();
     }
 }
 
