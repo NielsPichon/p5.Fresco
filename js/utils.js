@@ -40,14 +40,16 @@ let jsonExportCallback = () => {return []};
 
 function exportToAxidraw() {
   let shapes = jsonExportCallback();
+  let jsonData = [];
   if (shapes.length > 0) {
-    shapesToFile(shapes, 'tmp.json');
+    jsonData = shapesToJSON(shapes);
   }
   else {
     throw 'The export shape array is empty. Have you set the jsonExportCallback ?';
   }
   // launch axidraw page
-  window.open("http://0.0.0.0:8000/axidraw.html");
+  let axidrawManager = window.open("http://0.0.0.0:8000/axidraw.html", 'axidraw manager');
+  axidrawManager.shapes = jsonData;
 }
 
 /**

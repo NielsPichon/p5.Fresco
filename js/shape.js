@@ -119,19 +119,28 @@ function drawCircle(center, radius) {
 
 
 /**
+ * Converts an array of shapes to JSON.
+ * WARNING: Will freeze any  existing transform. 
+ * @param {Array<Fresco.Shape>} shapes 
+ */
+function shapesToJSON(shapes) {
+  buffer = [];
+  shapes.forEach(
+    s => buffer.push(s.toJSON())
+  );
+  jsonData =  {
+    shapes: buffer
+  };
+  return JSON.stringify(jsonData)  
+}
+
+/**
  * Converts an array of shapes to JSON and saves it to file.
  * WARNING: Will freeze any  existing transform. 
  * @param {Array<Fresco.Shape>} shapes 
  */
 function shapesToFile(shapes, filename) {
-  buffer = [];
-  for (let i = 0; i < shapes.length; i++) {
-    buffer.push(shapes[i].toJSON());
-  }
-  jsonData =  {
-    shapes: buffer
-  };
-  let content = JSON.stringify(jsonData)
+  let content = shapesToJSON(shapes);
 
   let a = document.createElement("a");
   let file = new Blob([content], {type: 'text/plain'});
