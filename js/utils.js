@@ -48,7 +48,7 @@ function exportToAxidraw() {
     throw 'The export shape array is empty. Have you set the jsonExportCallback ?';
   }
   // launch axidraw page
-  let axidrawManager = window.open("http://0.0.0.0:8000/axidraw.html", 'axidraw manager');
+  let axidrawManager = window.open("http://localhost:8000/axidraw.html", 'axidraw manager');
   axidrawManager.shapes = jsonData;
 }
 
