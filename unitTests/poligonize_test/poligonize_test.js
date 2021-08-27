@@ -19,4 +19,5 @@ function draw() {
   s.setColor([255, 0, 0]);
   s.poligonize(slider.value());
   s.draw();
+  text(slider.value(), slider.x * 2 + slider.width, 35);
 }
