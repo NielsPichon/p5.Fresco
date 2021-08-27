@@ -1931,6 +1931,35 @@ Fresco.Shape = class {
 
     return lines;
   }
+
+  /**
+   * Turn the shape into a polygonal one. If the shape is already polygonal, nothing wil happen.
+   * If the shape isn't, each spline will be split in a set number of segments.
+   * @param {number} resolution=10 Number of splits that will be made for each segment 
+   */
+  poligonize(resolution=10) {
+    if (this.isPolygonal){
+      return
+    }
+    let buffer = [];
+    let inv_res = 1 / resolution;
+    let splits = [];
+    for (let i = 0; i < resolution; i++) {
+      splits.push(inv_res * i);
+    }
+    for (let i = 0; i < this.vertices.length - 1; i++) {
+      let [p0, p1, p2, p3] = this.controlPoints(i);
+      let [a, b, c, d] = catmullRom(p0, p1, p2, p3);
+      
+      splits.forEach(t => {
+        buffer.push(((a.copy().mult(t).add(b)).mult(t).add(c)).mult(t).add(d))
+      });
+    }
+    buffer.push(this.vertices[this.vertices.length - 1]);
+
+    this.vertices = buffer;
+    this.isPolygonal = true;
+  }
 }
 
 /**
