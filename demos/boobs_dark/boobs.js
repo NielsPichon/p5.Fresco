@@ -23,10 +23,12 @@ let X;
 let Y;
 let xSpacing;
 let ySpacing;
+let text = [];
 
 function setup() {
   createCanvas(1240, 1754);
   background(colorFromHex(backgroundClr));
+  loadFonts();
 
   // create grid sapcing for spawning boobs at grid intervals
   xSpacing = (width - 2 * margin) / gridResolution;
@@ -43,6 +45,8 @@ function setup() {
     geo.forEach(g => {
       shapes = shapes.concat(g.toShapes());
     });
+
+    shapes = shapes.concat(text);
     return shapes;
   }  
 }
@@ -57,6 +61,8 @@ function draw() {
     X = -width / 2 + margin + xSpacing / 2;
     Y -= ySpacing;
     if (Y < -height / 2 + margin) {
+      text = text.concat(Fresco.Futural.drawText('Ode a la feminite', 12, createVector(0, -(height / 2) + 100) , true))
+      text = text.concat(Fresco.Futural.drawText('Fresco', 12, createVector(0, -(height / 2) + 50) , true))
       noLoop();
     }
   }
