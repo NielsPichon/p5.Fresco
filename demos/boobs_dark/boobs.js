@@ -8,7 +8,7 @@ const minTitOffset = -2;
 const maxTitOffset = 0.5; 
 const cupColors = ['cad2c5'];
 const titColor =  ['ef476f', 'f6bd60'];
-const gridResolution = 6;
+const gridResolution = 5;
 const globalScale = 0.6;
 const backgroundClr = '003049';
 const cupContours = true;
@@ -37,6 +37,14 @@ function setup() {
   if (margin > 0) {
     border(margin, colorFromHex(marginColor));
   }
+
+  jsonExportCallback = () => {
+    let shapes = [];
+    geo.forEach(g => {
+      shapes = shapes.concat(g.toShapes());
+    });
+    return shapes;
+  }  
 }
 
 function draw() {
@@ -55,7 +63,7 @@ function draw() {
 }
 
 function makeBoob(X, Y) {
-  let nu_geo = new Fresco.Fresco();
+  let nu_geo = new Fresco.Collection();
 
   // generate breast parameters
   const cupRadius = random(minCupRadius, maxCupRadius);
@@ -99,7 +107,7 @@ function makeBoob(X, Y) {
 
   // store tit and cup
   nu_geo.attach(cup);
-  nu_geo.attach(tit);
+  // nu_geo.attach(tit);
 
   // duplicate breast to the right
   let cup2 = cup.copy();
@@ -109,7 +117,7 @@ function makeBoob(X, Y) {
 
   // store second tit and cup
   nu_geo.attach(cup2);
-  nu_geo.attach(tit2);
+  // nu_geo.attach(tit2);
 
   // offset the new boobs to their rightful place on the grid
   nu_geo.setPosition(createVector(X, Y));

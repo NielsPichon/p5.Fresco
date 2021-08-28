@@ -2102,7 +2102,7 @@ Fresco.Collection = class {
     let buffer = []
     this.objects.forEach(obj => {
       // Serialize object
-      jsonObj = obj.toJSON();
+      let jsonObj = obj.toJSON();
       
       // If the object was a point, it should have a key named x.
       // In this case, return as a single vertex shape
@@ -2112,6 +2112,25 @@ Fresco.Collection = class {
 
       // Add serialized object to buffer
       buffer.push(jsonObj);
+    });
+    return buffer;
+  }
+
+
+  toShapes() {
+    let buffer = []
+    this.objects.forEach(obj => {
+      // Serialize object
+      let jsonObj = obj.toJSON();
+      
+      // If the object was a point, it should have a key named x.
+      // In this case, return as a single vertex shape
+      if ('x' in jsonObj) {
+        buffer.push(new Shape([obj]));
+      }
+      else {
+        buffer.push(obj);
+      }
     });
     return buffer;
   }
