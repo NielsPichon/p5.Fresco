@@ -11,6 +11,7 @@ function setup() {
   s.push(new Fresco.Circle(300, 3));
   s[0].isPolygonal = true;
   s[0].rotation = - Math.PI / 2;
+  s[0].layer = 1
 
 }
 

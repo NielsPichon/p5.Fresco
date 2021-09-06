@@ -184,6 +184,8 @@ Fresco.Point = class extends p5.Vector{
    * @property {number} radius=1 - Radius of the point. Used as strokeWeight when drawing, as well as for relaxation.
    * @property {p5.Vector} scale=1,1 - Point scale, useful when instancing a shape with this point's transform.
    * @property {Fresco.Shape} [owner] - Shape to which this point belongs to.
+   * @property {number} layer=0 - Used for drawing with an axidraw. Specifies which layer this point shoul be drawn on.
+   * This property is only used when the point is not part of a shape.
    */
   constructor(position) {
     super(position.x, position.y, position.z);
@@ -192,6 +194,7 @@ Fresco.Point = class extends p5.Vector{
     this.radius = 1;
     this.scale = createVector(1, 1);
     this.owner;
+    this.layer = 0
   }
 
   /**
@@ -351,6 +354,7 @@ Fresco.Shape = class {
    * @property {boolean} updateLengths=true Whether the edge lengths currently need recomputing.
    * @property {Array.<number>} [edgeLengths] Length of the edges of the shape
    * @property {boolean} ignoreEnds Whether the first and last vertices should be ignored when drawing
+   * @property {number} layer=0 - Used for drawing with an axidraw. Specify which layer to draw this shape on
    */
   constructor(vertices = []) {
     this.vertices = vertices; // Array of Points
@@ -373,6 +377,7 @@ Fresco.Shape = class {
     this.boundingBox = []; // DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
     this.updateLengths = true; // whether the edge length should be recomputed
     this.edgeLengths = [];
+    this.layer = 0;
   }
 
   /**
@@ -390,7 +395,8 @@ Fresco.Shape = class {
       canvas_width: width,
       canvas_height: height, 
       vertices: points,
-      isPolygonal: this.isPolygonal
+      isPolygonal: this.isPolygonal,
+      layer: this.layer,
     }
   }
 
@@ -1554,6 +1560,7 @@ Fresco.Shape = class {
     nu_shape.noStroke = this.noStroke;
     nu_shape.noFill = this.noFill;
     nu_shape.strokeWeight = this.strokeWeight;
+    nu_shape.layer = this.layer;
 
     return nu_shape;
   }
@@ -1984,6 +1991,10 @@ function shapeFromJSON(json_dict, apply_scale=true) {
   s.isPolygonal = json_dict['isPolygonal'];
   s.ignoreEnds = json_dict['ignoreEnds'];
 
+  if ('layer' in json_dict) {
+    s.layer = json_dict['layer'];
+  }
+
   return s;
 }
 
@@ -2156,6 +2167,7 @@ Fresco.Collection = class {
       // In this case, return as a single vertex shape
       if ('x' in jsonObj) {
         buffer.push(new Shape([obj]));
+        buffer[buffer.length - 1].layer = obj.layer
       }
       else {
         buffer.push(obj);
