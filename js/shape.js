@@ -297,6 +297,7 @@ Fresco.Point = class extends p5.Vector{
     nu_pt.radius = this.radius;
     nu_pt.scale = this.scale.copy();
     nu_pt.owner = this.owner;
+    nu_pt.layer = this.layer;
     arrayCopy(this.color, nu_pt.color);
     return nu_pt;
   }
@@ -305,7 +306,7 @@ Fresco.Point = class extends p5.Vector{
     // export the point as a dictionary of coordinates, normalized to the [0, 1] range
     return {
       x: (this.x / width) + 0.5,
-      y: (this.y / height) + 0.5
+      y: (this.y / height) + 0.5,
     }
   }
 }
