@@ -16,6 +16,7 @@ const titContours = false;
 const lineWeight = 3;
 const margin = 100;
 const marginColor = '003049';
+const noTit = false;
 
 
 let geo = [];
@@ -61,8 +62,8 @@ function draw() {
     X = -width / 2 + margin + xSpacing / 2;
     Y -= ySpacing;
     if (Y < -height / 2 + margin) {
-      text = text.concat(Fresco.Futural.drawText('Ode a la feminite', 12, createVector(0, -(height / 2) + 100) , true))
-      text = text.concat(Fresco.Futural.drawText('Fresco', 12, createVector(0, -(height / 2) + 50) , true))
+      text = text.concat(Fresco.Futural.drawText('Ode à la féminité · Fresco', 12, createVector(0, -(height / 2) + 100) , true))
+      // text = text.concat(Fresco.Futural.drawText('Fresco', 12, createVector(0, -(height / 2) + 50) , true))
       noLoop();
     }
   }
@@ -88,6 +89,7 @@ function makeBoob(X, Y) {
     cup.noFill = false;
   }
   cup.scale.y = heightToWidthRatio;
+  cup.layer = 0
 
   let cupHeight = cupRadius * heightToWidthRatio;
 
@@ -95,17 +97,21 @@ function makeBoob(X, Y) {
   let tit = new Fresco.Circle(titRadius, 12);
   tit.position.add(createVector(0, -cupHeight - random(minTitOffset * titRadius, maxTitOffset * titRadius)));
 
+  let rdmIdx = Math.floor(random(titColor.length));
+  let clr = titColor[rdmIdx];
   if (titContours) {
     tit.color = colorFromHex(titColor[Math.floor(random(titColor.length))]);
     tit.noFill = false;
-    tit.fillColor = colorFromHex(titColor[Math.floor(random(titColor.length))]);
+    tit.fillColor = colorFromHex(clr);
     tit.strokeWeight = lineWeight;
   }
   else {
-    tit.fillColor = colorFromHex(titColor[Math.floor(random(titColor.length))]);
+    tit.fillColor = colorFromHex(clr);
     tit.noStroke = true;
     tit.noFill = false;
   }
+
+  tit.layer = rdmIdx+ 1;
 
   // offset breast to the left
   cup.position.sub(cupRadius); 
@@ -113,7 +119,9 @@ function makeBoob(X, Y) {
 
   // store tit and cup
   nu_geo.attach(cup);
-  // nu_geo.attach(tit);
+  if (!noTit) {
+    nu_geo.attach(tit);
+  }
 
   // duplicate breast to the right
   let cup2 = cup.copy();
@@ -123,7 +131,9 @@ function makeBoob(X, Y) {
 
   // store second tit and cup
   nu_geo.attach(cup2);
-  // nu_geo.attach(tit2);
+  if (!noTit) {
+    nu_geo.attach(tit2);
+  }
 
   // offset the new boobs to their rightful place on the grid
   nu_geo.setPosition(createVector(X, Y));
