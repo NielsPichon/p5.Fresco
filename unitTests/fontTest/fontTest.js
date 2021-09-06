@@ -11,6 +11,7 @@ function setup() {
 // called in a loop
 function draw() {
   Fresco.Futural.fontWeight = 3;
-  Fresco.Futural.drawText('Hello World!', 36, createVector(0, 0), true);
+  Fresco.Futural.fontSpacing = 2;
+  Fresco.Futural.drawText('Héèêllô · Wàrld!', 36, createVector(0, 0), true);
   noLoop();
 }

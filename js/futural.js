@@ -4283,6 +4283,107 @@ futural = {
       ],
       "width": 10
     },
+    "à": {
+      "shapes": [
+        {
+          "vertices": [
+            {
+              "x": 15,
+              "y": 8
+            },
+            {
+              "x": 15,
+              "y": 22
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        },
+        {
+          "vertices": [
+            {
+              "x": 15,
+              "y": 11
+            },
+            {
+              "x": 13,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 8
+            },
+            {
+              "x": 8,
+              "y": 8
+            },
+            {
+              "x": 6,
+              "y": 9
+            },
+            {
+              "x": 4,
+              "y": 11
+            },
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 3,
+              "y": 16
+            },
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 6,
+              "y": 21
+            },
+            {
+              "x": 8,
+              "y": 22
+            },
+            {
+              "x": 11,
+              "y": 22
+            },
+            {
+              "x": 13,
+              "y": 21
+            },
+            {
+              "x": 15,
+              "y": 19
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        },
+        {
+          "vertices": [
+            {
+              "x": 6,
+              "y": 0
+            },
+            {
+              "x": 13,
+              "y": 4
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        }
+      ],
+      "width": 10
+    },
     "b": {
       "shapes": [
         {
@@ -4593,6 +4694,301 @@ futural = {
             {
               "x": 15,
               "y": 19
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        }
+      ],
+      "width": 9
+    },
+    "é": {
+      "shapes": [
+        {
+          "vertices": [
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
+              "x": 14,
+              "y": 10
+            },
+            {
+              "x": 13,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 8
+            },
+            {
+              "x": 8,
+              "y": 8
+            },
+            {
+              "x": 6,
+              "y": 9
+            },
+            {
+              "x": 4,
+              "y": 11
+            },
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 3,
+              "y": 16
+            },
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 6,
+              "y": 21
+            },
+            {
+              "x": 8,
+              "y": 22
+            },
+            {
+              "x": 11,
+              "y": 22
+            },
+            {
+              "x": 13,
+              "y": 21
+            },
+            {
+              "x": 15,
+              "y": 19
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        },
+        {
+          "vertices": [
+            {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 13,
+              "y": 0
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        }
+      ],
+      "width": 9
+    },
+    "è": {
+      "shapes": [
+        {
+          "vertices": [
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
+              "x": 14,
+              "y": 10
+            },
+            {
+              "x": 13,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 8
+            },
+            {
+              "x": 8,
+              "y": 8
+            },
+            {
+              "x": 6,
+              "y": 9
+            },
+            {
+              "x": 4,
+              "y": 11
+            },
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 3,
+              "y": 16
+            },
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 6,
+              "y": 21
+            },
+            {
+              "x": 8,
+              "y": 22
+            },
+            {
+              "x": 11,
+              "y": 22
+            },
+            {
+              "x": 13,
+              "y": 21
+            },
+            {
+              "x": 15,
+              "y": 19
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        },
+        {
+          "vertices": [
+            {
+              "x": 6,
+              "y": 0
+            },
+            {
+              "x": 13,
+              "y": 4
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        }
+      ],
+      "width": 9
+    },
+    "ê": {
+      "shapes": [
+        {
+          "vertices": [
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
+              "x": 14,
+              "y": 10
+            },
+            {
+              "x": 13,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 8
+            },
+            {
+              "x": 8,
+              "y": 8
+            },
+            {
+              "x": 6,
+              "y": 9
+            },
+            {
+              "x": 4,
+              "y": 11
+            },
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 3,
+              "y": 16
+            },
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 6,
+              "y": 21
+            },
+            {
+              "x": 8,
+              "y": 22
+            },
+            {
+              "x": 11,
+              "y": 22
+            },
+            {
+              "x": 13,
+              "y": 21
+            },
+            {
+              "x": 15,
+              "y": 19
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        },
+        {
+          "vertices": [
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 9.5,
+              "y": 0
+            },
+            {
+              "x": 14,
+              "y": 4
             }
           ],
           "isPolygonal": true,
@@ -5219,6 +5615,107 @@ futural = {
             {
               "x": 8,
               "y": 8
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        }
+      ],
+      "width": 10
+    },
+    "ô": {
+      "shapes": [
+        {
+          "vertices": [
+            {
+              "x": 8,
+              "y": 8
+            },
+            {
+              "x": 6,
+              "y": 9
+            },
+            {
+              "x": 4,
+              "y": 11
+            },
+            {
+              "x": 3,
+              "y": 14
+            },
+            {
+              "x": 3,
+              "y": 16
+            },
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 6,
+              "y": 21
+            },
+            {
+              "x": 8,
+              "y": 22
+            },
+            {
+              "x": 11,
+              "y": 22
+            },
+            {
+              "x": 13,
+              "y": 21
+            },
+            {
+              "x": 15,
+              "y": 19
+            },
+            {
+              "x": 16,
+              "y": 16
+            },
+            {
+              "x": 16,
+              "y": 14
+            },
+            {
+              "x": 15,
+              "y": 11
+            },
+            {
+              "x": 13,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 8
+            },
+            {
+              "x": 8,
+              "y": 8
+            }
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        },
+        {
+          "vertices": [
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 9.5,
+              "y": 0
+            },
+            {
+              "x": 14,
+              "y": 4
             }
           ],
           "isPolygonal": true,
@@ -6367,5 +6864,40 @@ futural = {
         }
       ],
       "width": 12
+    },
+    '·': {
+      "shapes": [
+        {
+          "vertices": [
+            {
+              "x": 8,
+              "y": 13
+            },
+
+            {
+              "x": 9,
+              "y": 14,
+            },
+            {
+              "x": 8,
+              "y": 15,
+            },
+            {
+              "x": 7,
+              "y": 14,
+            },
+            {
+              "x": 8,
+              "y": 13
+            },
+          ],
+          "isPolygonal": true,
+          "ignoreEnds": false,
+          "canvas_width": 1,
+          "canvas_height": 1
+        }
+      ],
+      "width": 8
     }
+
   };
