@@ -1,31 +1,25 @@
 const backgroundClr = '00010f';
 const lineClr = 'ef476f';
 const lineAlpha = 128;
-const lineVerticesNum = 5;
-const lineNum = 150;
+const lineVerticesNum = 10;
+const lineNum = 300;
 const maxFactor = 1;
 const noiseFreq = 0.001;
-const noiseAmplitude = 20;
+const noiseAmplitude = 10;
 const displayCircle = false;
+const playBackSpeed = 2 * Math.PI / 360;
 const noiseModSpeed = 10;
-
-const div_h = 4;
-const div_v = 6;
 
 const render = false;
 
-let factor = Math.PI / 2;
+let factor = - Math.PI / 2;
 let playbackSign = 1;
 let r;
 let c;
-const incr = 1440 / (div_h + 1);
-let offset;
-const scaling = 1 / (div_h + 2);
-let numSteps = div_h * div_v;
-const playBackSpeed = Math.PI / numSteps;
+
 
 function setup() {
-  createCanvas(1440, 1440 * sqrt(2));
+  createCanvas(1440, 1440);
 
   r = width / 2 - 100;
 
@@ -35,11 +29,6 @@ function setup() {
   if (render) {
       recordAnimation();
   }
-
-  offset = createVector(- incr * (div_h - 1) / 2, incr * (div_v - 1) / 2);
-
-  background(colorFromHex(backgroundClr));
-  print('Tot segments', div_h * div_v * lineNum * (lineVerticesNum - 1));
 }
 
 function getLineExtremities(index, lineNum) {
@@ -52,7 +41,9 @@ function getLineExtremities(index, lineNum) {
 } 
 
 function draw() {
-  // background(colorFromHex(backgroundClr));
+  background(colorFromHex(backgroundClr));
+
+  factor += playBackSpeed;
 
   if (displayCircle){
     c.draw();
@@ -85,35 +76,13 @@ function draw() {
       // If out, bring back on circle
       l.vertices[j] = l.vertices[j].normalize().mult(r);
     }
-    
-    // move and scale according to grid
-    l.vertices[j].mult(createVector(scaling, scaling));
-    l.vertices[j].add(offset);
   }
-  l.vertices[l.vertices.length - 1].mult(createVector(scaling, scaling));
-  l.vertices[l.vertices.length - 1].add(offset);
-  l.vertices[0].mult(createVector(scaling, scaling));
-  l.vertices[0].add(offset);
-
 
   // draw
   l.draw();
  }
 
- offset.x += incr;
- if (offset.x >= 1440 / 2) {
-   offset.x = - incr * (div_h - 1) / 2;
-   offset.y -= incr;
- }
-
  if (render && frameCount > 2 * PI / playBackSpeed) {
     stopRecording();
  }
-
- if (frameCount >= numSteps) {
-   noLoop();
- }
-
- factor += playBackSpeed;
-
 }
