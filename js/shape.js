@@ -845,7 +845,7 @@ Fresco.Shape = class {
    * next to it. This is designed mostly for debug purposes.
    */
   numberVertices() {
-    let nrm = this.normals();
+    let nrm = this.computeNormals();
     for (let i = 0; i < this.vertices.length - 1; i++) {
       drawText(i, this.applyTransform(
         this.vertices[i].position().add(
@@ -1417,7 +1417,7 @@ Fresco.Shape = class {
    * any difference though, as the shape is supposed to have a continuous curvature).
    * @returns {Array.<p5.Vector>} Normals at each vertex of the shape
    */
-  normals() {
+  computeNormals() {
     let nrm = [];
     let l = this.vertices.length;
     let tangent;
