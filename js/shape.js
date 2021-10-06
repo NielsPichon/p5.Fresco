@@ -349,7 +349,6 @@ Fresco.Shape = class {
    * @property {boolean} noStroke=false Whether to draw the contour of the shape
    * @property {boolean} noFill=true Whether to fill in the shape
    * @property {number} strokeWeight=1 Stroke weight to draw the shape's contour with.
-   * @property {boolean} updateBounds=true Whether the bounding box of the shape currently needs recomputing.
    * @property {Array.<p5.Vector>} [BoundingBox] of the shape described as the top left and bottom right corners.
    * DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
    * @property {boolean} updateLengths=true Whether the edge lengths currently need recomputing.
@@ -373,7 +372,6 @@ Fresco.Shape = class {
     this.noStroke = false;
     this.noFill = true;
     this.strokeWeight = 1;
-    this.updateBounds = true; // whether the bounding box should be recomputed
     // This contains the bounding box opposite corners, provided it has been calculated
     this.boundingBox = []; // DO NOT CALL DIRECTLY. Use getBoundingBox() instead.
     this.updateLengths = true; // whether the edge length should be recomputed
@@ -921,7 +919,6 @@ Fresco.Shape = class {
     this.position = createVector(0, 0);
     this.scale = createVector(1, 1);
     this.updateLengths = true;
-    this.updateBounds = true;
   }
 
 
@@ -936,16 +933,14 @@ Fresco.Shape = class {
    * @returns {Array.<p5.Vector>} Position of  the top left  and  bottom right  corners
    */
   getBoundingBox() {
-    if (this.updateBounds) {
-      let xs = [];
-      let ys = [];
-      for (let i = 0; i < this.vertices.length; i++) {
-        let vtx = this.applyTransform(this.vertices[i]);
-        append(xs, vtx.x);
-        append(ys, vtx.y);
-      }
-      this.boundingBox = [createVector(min(xs), min(ys)), createVector(max(xs), max(ys))]
+    let xs = [];
+    let ys = [];
+    for (let i = 0; i < this.vertices.length; i++) {
+      let vtx = this.applyTransform(this.vertices[i]);
+      append(xs, vtx.x);
+      append(ys, vtx.y);
     }
+    this.boundingBox = [createVector(min(xs), min(ys)), createVector(max(xs), max(ys))]
   
     return this.boundingBox;
   }
@@ -1529,7 +1524,11 @@ Fresco.Shape = class {
   isClockwise() {
     this.getBoundingBox();
     let center = this.boundingBox[0].copy().add(this.boundingBox[1]).mult(0.5);
-    let winding_nb = windingNumber(center, this.vertices)
+    let buffer = [];
+    this.vertices.forEach(v => {
+      buffer.push(this.applyTransform(v));
+    })
+    let winding_nb = windingNumber(center, buffer)
     // wounding_nb is positive when the shae is counter clockwise
     return winding_nb < 0;
   }
@@ -2258,7 +2257,6 @@ Fresco.Circle = class extends Fresco.Shape {
     append(this.vertices, createPoint(this.radius, 0));
     this.vertices[this.vertices.length - 1].owner = this;
     this.updateLengths = true;
-    this.updateBounds = true;
   }
 }
 
@@ -2783,7 +2781,7 @@ function isInside(vtx, shape, approx = true) {
   let p3;
   let intersections;
   let k;
-  let xVec = createVector(0, 1);
+  let xVec = p5.Vector.fromAngle(Math.PI / 1.237122147);
   for (let i = 0; i < l - 1; i++) {
     // for a polygonal mesh a ray hits a contour line if the 2 points
     // are on opposite sides of the point in x.
@@ -2894,7 +2892,6 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     nu_shape.vertices[i].owner = nu_shape;
   }
   nu_shape.updateLengths = true;
-  nu_shape.updateBounds = true;
   nu_shape.isPolygonal = isPolygonal;
 
   return nu_shape;
@@ -3287,7 +3284,6 @@ function copyToPoints(shape, points) {
     nu_shape.stroke = points[i].color;
     nu_shape.fillColor = points[i].color;
     nu_shape.scale.mult(points[i].scale);
-    nu_shape.updateBounds = true;
     nu_shape.updateLengths = true;
     append(shapes, nu_shape.copy());
   }
