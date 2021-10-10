@@ -59,6 +59,19 @@ Fresco.Quadtree = class {
             vtx.y >= this.start.y && vtx.y < this.start.y + this.size.y
     }
 
+    containsShape(shape){
+        let isContained = false;
+        for (let i = 0; i < shape.vertices.length; i++) {
+            let vtx = shape.vertices[i];
+            if (this.contains(shape.applyTransform(vtx))) {
+                isContained = true;
+                break;
+            }
+        }
+
+        return isContained;
+    }
+
     /**
      * Registers an object in the appropriate branch
      * @param {p5.Vector} pos position of the object 
@@ -85,11 +98,11 @@ Fresco.Quadtree = class {
                 if (!isContained) {
                     let nuStart = this.start.copy();
                     let idx = 0;
-                    if (vtx.x > nuStart.x) {
+                    if (pos.x >= nuStart.x + this.size.x / 2) {
                         nuStart.x += this.size.x / 2;
                         idx ++;
                     }
-                    if (vtx.y > nuStart.y) {
+                    if (pos.y >= nuStart.y + this.size.y / 2) {
                         nuStart.y += this.size.y / 2;
                         idx += 2;
                     }
@@ -111,15 +124,14 @@ Fresco.Quadtree = class {
     /**
      * Registers a shape. Contrary to point-like objects, shapes can span multiple branche at once.
      * @param {Fresco.Shape} shape
-     * @param {Boolean} approx=true Uses approximate overlap detection
      */
-    registerShape(shape, approx=true) {
+    registerShape(shape) {
         // if the branch's center is inside the shape, register
-        if (isInside(this.center, shape, approx) || this.contains(shape.position)) {
+        if (this.containsShape(shape)) {
             if (this.depth == 1) {
                 this.leaves.push(shape);
             }
-            else 
+            else
             {
                 // register in relevant branch
                 for (let i = 0; i < this.branches.length; i++) {
@@ -130,22 +142,14 @@ Fresco.Quadtree = class {
                 if (this.branches.length < 4) {
                     this.getMissingBranches().forEach(b => {
                         let nuStart = this.start.copy();
-                        nuStart.x += this.size.x * (b % 2);
-                        nuStart.y += this.size.y * Math.floor(b / 2);
-
+                        nuStart.x += this.size.x * (b % 2) / 2;
+                        nuStart.y += this.size.y * Math.floor(b / 2) / 2;
                         let nuSize = createVector(this.size.x / 2, this.size.y / 2);
-
-                        if (
-                            isInside(createVector(nuStart.x + nuSize.x, nuStart.y + nuSize.y), shape, approx) || 
-                            (
-                                shape.position.x >= nuStart.x && shape.position.x < nuStart.x + nuSize.x && 
-                                shape.position.y >= nuStart.y && shape.position.y < nuStart.y + nuSize.y
-                            )
-                        ) {
-                            this.branches.push(
-                                new Fresco.Quadtree(this.depth - 1, nuStart, createVector(this.size.x / 2, this.size.y / 2), b)
-                            );
-                            this.branches[this.branches.length - 1].registerShape(shape, approx);
+                        
+                        let branch = new Fresco.Quadtree(this.depth - 1, nuStart, nuSize, b);
+                        if (branch.containsShape(shape)) {
+                            branch.registerShape(shape);
+                            this.branches.push(branch);
                         }
                     })
                 }
@@ -189,7 +193,7 @@ Fresco.Quadtree = class {
                 // otherwise, unregister from branches
                 for (let i = 0; i < this.branches.length; i++) {
                     if (this.branches[i].unregister(pos, object)) {
-                        isContained = true;
+                        let isContained = true;
                         // if the object was unregistered from a branch and the
                         // branch is now empty, prune it
                         if (this.branches[i].isEmpty()) {
@@ -244,14 +248,17 @@ Fresco.Quadtree = class {
     }
 
     draw() {
-        if (this.depth == 1) {
-            drawLine(this.start, createVector(this.start.x, this.start.y + this.size.y));
-            drawLine(this.start, createVector(this.start.x + this.size.x, this.start.y));
-            drawLine(createVector(this.start.x + this.size.x, this.start.y), createVector(this.start.x + this.size.x, this.start.y + this.size.y));
-            drawLine(createVector(this.start.x, this.start.y + this.size.y), createVector(this.start.x + this.size.x, this.start.y + this.size.y));
-        }
-        else {
-            this.branches.forEach(b => b.draw());
-        }
+        strokeWeight(1);
+        drawLine(this.start, createVector(this.start.x, this.start.y + this.size.y));
+        drawLine(this.start, createVector(this.start.x + this.size.x, this.start.y));
+        drawLine(createVector(this.start.x + this.size.x, this.start.y), createVector(this.start.x + this.size.x, this.start.y + this.size.y));
+        drawLine(createVector(this.start.x, this.start.y + this.size.y), createVector(this.start.x + this.size.x, this.start.y + this.size.y));
+        this.branches.forEach(b => b.draw());
+    }
+
+
+    print() {
+        console.log('Tree depth:', this.depth, ', start:', this.start, ', size:', this.size);
+        this.branches.forEach(s => s.print());
     }
 }
