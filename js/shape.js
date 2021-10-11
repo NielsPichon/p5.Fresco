@@ -1994,6 +1994,9 @@ function shapeFromJSON(json_dict, apply_scale=true) {
   if ('layer' in json_dict) {
     s.layer = json_dict['layer'];
   }
+  else {
+    s.layer = 0;
+  }
 
   return s;
 }

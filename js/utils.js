@@ -226,6 +226,9 @@ function stopRecording() {
  * 4 numbers in the [0, 255] range.
  */
 function colorFromHex(hex, A = 255) {
+  if (hex.charAt(0) == '#') {
+    hex = hex.slice(1);
+  }
   let R, G, B;
   if (hex.length == 6) {
     R = parseInt('0x' + hex[0] + hex[1]);
