@@ -1401,9 +1401,6 @@ Fresco.Shape = class {
   }
 
 
-  // returns normals to points in local coordinates.
-  // If the shape is open, the first and last points will use the only
-  // connected edge to compute the normal
   /**
    * Computes the normals to each vertex in local coordinates.
    * If the shape is open, the first and last points will use the only
@@ -1475,7 +1472,7 @@ Fresco.Shape = class {
       p0 = this.vertices[l - 2];
       p1 = this.vertices[l - 1];
 
-      if (this.isPolygon) {
+      if (this.isPolygonal) {
         // direction from previous point to next
         tangent = p1.copy().sub(p0);
       }
@@ -2220,6 +2217,7 @@ Fresco.Line = class extends Fresco.Shape {
         pt1.z * (1 - t) + pt2.z * t));
       t += incr;
     }
+    this.isPolygonal = true;
   }
 }
 
@@ -2569,10 +2567,10 @@ function segmentIntersection(p0, p1, p2, p3) {
   let dir2 = p3.copy().sub(p2);
   
   let [t1, t2] = lineIntersection(p0, dir1, p2, dir2);
-  
+
   // if lines intersect, check that intersection is within the
   // segment extremities
-  if(t1) {
+  if(t1 != false) {
     if (t1 > 1 || t1 < 0) {
       return false;
     }
@@ -2604,7 +2602,7 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
   let [t1, t2] = lineIntersection(rayOrigin, rayDir, p0, dir2);
   // if lines intersect, check that intersection is within the
   // segment extremities and on the positive direction of the ray
-  if(t1) {
+  if(t1 !== false) {
     if (t1 < 0) {
       return [false, false];
     }
@@ -2622,8 +2620,8 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
  * Checks if a line intersects a segment. If no intersection is found an empty array is returned
  * @param {p5.Vector} origin Point on the line
  * @param {p5.Vector} dir Direction of the line
- * @param {p5.Vector} p0 First end of the segment
- * @param {p5.Vector} p1 Second end of the segment
+ * @param {Fresco.Point} p0 First end of the segment
+ * @param {Fresco.Point} p1 Second end of the segment
  * @param {boolean} returnLineInt If true, the line interpolent will also be returned
  * @returns {p5.Vector} Intersection point.
  * @returns {number} Line interpolent of the segment, that is `t` such that
@@ -2635,7 +2633,7 @@ function raySegmentIntersection(rayOrigin, rayDir, p0, p1) {
   let [t1, t2] = lineIntersection(origin, dir, p0, dir2);
   // if lines intersect, check that intersection is within the
   // segment extremities and on the positive direction of the ray
-  if(t1) {
+  if(t1 !== false) {
     if (t2 > 1 || t2 < 0) {
       return [];
     }
