@@ -1,10 +1,17 @@
 const backgroundClr = '000';
+const resX = 4;
+const resY = 4;
+const lineNum = 2;
 
 let tiler;
 
 class Tile extends Fresco.Collection {
   constructor(lineNumber = 2) {
     super();
+    if (Math.floor(lineNumber) != lineNumber) {
+      console.log('Don\'t be a moron!');
+      return;
+    }
     this.lineCombination = [];
     this.square = new Fresco.Square(100);
     this.attach(this.square);
@@ -169,7 +176,7 @@ function setup() {
 
   Fresco.Futural.fontSpacing = 4;
 
-  tiler = new Tiler(Tile, 4, 4, 0, 0, [2]);
+  tiler = new Tiler(Tile, resX, resY, 0, 0, [lineNum]);
 }
 
 // draw function which is automatically 
