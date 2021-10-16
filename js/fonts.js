@@ -40,25 +40,29 @@ Fresco.Font = class {
      * 
      * @param {string} letter 
      * @param {number} size 
-     * @param {p5.Vector} position 
+     * @param {p5.Vector} position
+     * @param {Boolean} actuallyDraw
      * @returns {Array<Fresco.Shape>}
      */
-    drawLetter(letter, size, position) {
+    drawLetter(letter, size, position, actuallyDraw=true) {
         let max_x = 0
         let shapes = []
         this.glyphs[letter].shapes.forEach(s => {
             s.vertices.forEach(v => {
                 if (v.x > max_x) max_x = v.x;
             });
-            s.drawInstantiate(
-                false, position, size / this.fontSize,
-                0, this.color, null, this.fontWeight
-            );
+
+            if (actuallyDraw) {
+                s.drawInstantiate(
+                    false, position, size / this.fontSize,
+                    0, this.color, null, this.fontWeight
+                );
+            }
 
             // create a copy with its transform frozen in position for export
             let s_copy = s.copy();
             s_copy.position = position;
-            s_copy.scale *= size / this.fontSize;
+            s_copy.scale.mult(size / this.fontSize);
             s_copy.freezeTransform();
             shapes.push(s_copy);
         })
@@ -66,7 +70,7 @@ Fresco.Font = class {
         return shapes;
     }
 
-    drawText(text, size, position, centered=false) {
+    drawText(text, size, position, centered=false, actuallyDraw=true) {
         // init start position.
         let nuPos = position.copy();
         if (centered) {
@@ -93,7 +97,7 @@ Fresco.Font = class {
                 nuPos.x += 10 * size / this.fontSize + this.fontSpacing * size / this.fontSize;
             }
             else {
-                shapes = shapes.concat(this.drawLetter(char, size, nuPos));
+                shapes = shapes.concat(this.drawLetter(char, size, nuPos, actuallyDraw));
                 nuPos.x += this.glyphs[char].width * this.widthMult * size / this.fontSize + this.fontSpacing * size / this.fontSize;
             }
         }
