@@ -1,13 +1,13 @@
 const backgroundClr = '000';
-const resX = 4;
-const resY = 4;
-const lineNum = 2;
+const resX = 5;
+const resY = 6;
 const gapThickness = 5;
+const showText = false;
 
 let tiler;
 
 class Tile extends Fresco.Collection {
-  constructor(lineNumber = 2, gap = 0) {
+  constructor(lineNumber = 2, gap = 0, showText = true, showLinesAnyway = false) {
     super();
     if (Math.floor(lineNumber) != lineNumber) {
       console.log('Don\'t be a moron!');
@@ -28,16 +28,18 @@ class Tile extends Fresco.Collection {
       if (nuLine == null) {
         break;
       }
-      if (gap == 0) {
+      if (gap == 0 || showLinesAnyway) {
         this.attach(nuLine);
       }
       this.lines.push(nuLine);
     }
 
-    let textShapes = Fresco.Futural.drawText(this.name, 4, createVector(0, -75), true, false);
-    textShapes.forEach(s => {
-      this.attach(s);
-    })
+    if (showText) {
+      let textShapes = Fresco.Futural.drawText(this.name, 4, createVector(0, -75), true, false);
+      textShapes.forEach(s => {
+        this.attach(s);
+      })
+    }
 
     if (gap > 0) {
       this.cutShape(gap);
@@ -169,18 +171,16 @@ class Tile extends Fresco.Collection {
     return [line1, line2];
   }
 
-  lineCut(line, shape) {
-    let centerCut = this.isCenterLine(line)
-
-    let dir =  line.vertices[1].copy().sub(line.vertices[0]);
+  lineCut(line, shape, centerCut = false) {
+    let dir = line.vertices[0].copy().sub(line.vertices[1]);
     let intersections = [];
     for (let i = 0; i < shape.vertices.length - 1; i++) {
-      let inter = lineSegmentIntersection(line.vertices[0], dir, shape.vertices[i], shape.vertices[i + 1], true);
+      let inter = lineSegmentIntersection(line.vertices[1], dir, shape.vertices[i], shape.vertices[i + 1], true);
       // if there is an interesection which isn't the fist vertex of the edge (this avoids duplicate detections at vertices)
       if (inter.length > 0 && inter[1] > 0) {
         // If it is a center cut, the interesection is only valid if it is along the direction from the center to the edge.
         // Because the line always ends with the center, this means the interpolent must be negative
-        if (!centerCut || inter[2] < 0) {
+        if (!centerCut || inter[2] >= 0) {
           intersections.push([inter[0], i]);
         }
       }
@@ -219,10 +219,21 @@ class Tile extends Fresco.Collection {
     return line.vertices[1].x == 0 && line.vertices[1].y == 0;
   }
 
+  almostEqual(a, b) {
+    return Math.abs(a - b) < 0.0001;
+  }
 
   handleCenterCuts(lineBuf, buffer, gap) {
     let line1 = lineBuf.pop();
     let line2 = lineBuf.pop();
+
+    // if the last 2 lines are joining at center from 2 opposite angles, we merge them into a single line
+    if (this.almostEqual(line1.vertices[0].x, -line2.vertices[0].x) && this.almostEqual(line1.vertices[0].y, -line2.vertices[0].y)) {
+      let nuLine = new Fresco.Line(line1.vertices[0], line2.vertices[0]);
+      lineBuf.unshift(nuLine);
+
+      return [lineBuf, buffer];
+    }
 
     // register indices of vertex from wich each line starts
     let inter1 = -1;
@@ -263,8 +274,12 @@ class Tile extends Fresco.Collection {
     let oldOri1 = half1Vtx[idx1].copy()
     // offset 1st side vertex around center
     let idx12 = (idx1 - 1 + half1Vtx.length) % half1Vtx.length;
-    let dir1 = half1Vtx[idx1].copy().sub(half1Vtx[idx12]).normalize().mult(-gap);
-    half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1);
+    let dir1 = half1Vtx[idx1].copy().sub(half1Vtx[idx12]).normalize();
+    // Project offset on side direction
+    let orth1 = oldOri1.copy().normalize();
+    orth1 = createVector(-orth1.y, orth1.x);
+    let offset1 = orth1.dot(dir1);
+    half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1.mult(gap / offset1));
 
     // register new side vertex pos
     let newOri1 = half1Vtx[idx1].copy();
@@ -283,8 +298,11 @@ class Tile extends Fresco.Collection {
     // register initial position of 2nd side vtx
     let oldOri2 = half1Vtx[idx1].copy();
     // offset 2nd side vertex
-    dir1 = half1Vtx[idx12].copy().sub(half1Vtx[idx1]).normalize().mult(gap);
-    half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1);
+    dir1 = half1Vtx[idx12].copy().sub(half1Vtx[idx1]).normalize();
+    let orth1b = oldOri2.copy().normalize();
+    orth1b = createVector(-orth1b.y, orth1b.x);
+    let offset1b = orth1b.dot(dir1);
+    half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1.mult(-gap / offset1b));
 
     if (shiftPrev) {
       half1Vtx[(idx1 + 1) % half1Vtx.length] = half1Vtx[idx1].copy();
@@ -314,8 +332,11 @@ class Tile extends Fresco.Collection {
 
     // offset vertices around center
     let idx22 = (idx2 - 1) % half2Vtx.length;
-    let dir2 = half2Vtx[idx2].copy().sub(half2Vtx[idx22]).normalize().mult(-gap);
-    half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2);
+    let dir2 = half2Vtx[idx2].copy().sub(half2Vtx[idx22]).normalize();
+    let orth2 = oldOri21.copy().normalize();
+    orth2 = createVector(-orth2.y, orth2.x);
+    let offset2 = orth2.dot(dir2);
+    half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2.mult(gap / offset2));
 
     let newOri21 = half2Vtx[idx2].copy();
     
@@ -324,8 +345,11 @@ class Tile extends Fresco.Collection {
     // register initial position of 2nd side vtx
     let oldOri22 = half2Vtx[idx2].copy();
     // offset 2nd side vertex
-    dir2 = half2Vtx[idx22].copy().sub(half2Vtx[idx2]).normalize().mult(gap);
-    half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2);
+    dir2 = half2Vtx[idx22].copy().sub(half2Vtx[idx2]).normalize();
+    let orth2b = oldOri22.copy().normalize();
+    orth2b = createVector(-orth2b.y, orth2b.x);
+    let offset2b = orth2b.dot(dir2);
+    half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2.mult(-gap / offset2b));
     
     let newOri22 = half2Vtx[idx2].copy();
 
@@ -341,7 +365,7 @@ class Tile extends Fresco.Collection {
 
     this.square.vertices.push(this.square.vertices[0]);
 
-    return lineBuf, buffer
+    return [lineBuf, buffer];
   }
 
   cutShape(gap) {
@@ -368,22 +392,26 @@ class Tile extends Fresco.Collection {
 
     // if all centered, we must deal with the first 2 lines manually
     if (allCentered) {
-      lineBuf, buffer = this.handleCenterCuts(lineBuf, buffer, gap)
+      [lineBuf, buffer] = this.handleCenterCuts(lineBuf, buffer, gap);
     }
 
+    // Cut shapes by line1
     lineBuf.forEach(l => {
       let [line1, line2] = this.offsetLine(l, gap); 
+      let centerCut = this.isCenterLine(l);
       let newBuffer = [];
       buffer.forEach(s => {
-        newBuffer.push(...this.lineCut(line1, s));
+        newBuffer.push(...this.lineCut(line1, s, centerCut));
       });
 
+      // Cut shapes by line2
       let newNewBuffer = [];
       newBuffer.forEach(s => {
         s.isPolygonal = true;
-        newNewBuffer.push(...this.lineCut(line2, s));
+        newNewBuffer.push(...this.lineCut(line2, s, centerCut));
       });
 
+      // Filter leftover shapes from the cuts 
       buffer = [];
       newNewBuffer.forEach(s => {
         let throwAway = false;
@@ -409,6 +437,16 @@ class Tile extends Fresco.Collection {
       s.isPolygonal = true;
       this.attach(s);
     });
+
+    for (let i = 0; i < buffer.length; i++) {
+      buffer[i].layer = i;
+    }
+  }
+}
+
+class OneTwoTile extends Tile {
+  constructor(gap, showText, showLinesAnyway) {
+    super(randomInt(1, 3), gap, showText, showLinesAnyway);
   }
 }
 
@@ -433,19 +471,31 @@ class Tiler {
   draw() {
     this.tiles.forEach(t => t.draw());
   }
+
+  toShapes() {
+    let shapes = [];
+    this.tiles.forEach(t => {
+      shapes.push(...t.toShapes());
+    })
+    return shapes;
+  }
 }
 
 function setup() {
-  createSVGCanvas(1000, 1000);
+  createA4RatioCanvas(1000);
   background(colorFromHex(backgroundClr));
-  setSeed(834);
+  setSeed();
   loadFonts();
 
   Fresco.Futural.fontSpacing = 4;
 
-  tiler = new Tiler(Tile, resX, resY, 0, 0, [lineNum, gapThickness]);
-  // tiler = new Tile(lineNum, gapThickness);
+  tiler = new Tiler(OneTwoTile, resX, resY, 0, 0, [gapThickness, showText, false]);
+
+  jsonExportCallback = () => {
+    return tiler.toShapes();
+  }
 }
+
 
 // draw function which is automatically 
 // called in a loop

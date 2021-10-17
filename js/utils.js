@@ -479,3 +479,8 @@ function randomSelect(objects) {
   let idx = randomInt(objects.length);
   return objects[idx];
 }
+
+
+function createA4RatioCanvas(size) {
+  createCanvas(size, size * Math.sqrt(2));
+}
