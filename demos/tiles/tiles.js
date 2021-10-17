@@ -73,20 +73,18 @@ class Tile extends Fresco.Collection {
       }
 
       // Generate second point
-      let vtxType = randomInt(2);
+      let vtxType = randomInt(3);
       let forceCenter = false;
       if (isLast && !this.throughCenter) {
         if (!this.stopAtCenter) {
           vtxType = randomInt(2);
         }
         else if (isEdgeMiddle) {
-          // vtxType = randomSelect([0, 2]);
-          vtxType = 0;
+          vtxType = randomSelect([0, 2]);
           forceCenter = true;
         }
         else {
-          // vtxType = randomInt(1, 3);
-          vtxType = 1;
+          vtxType = randomInt(1, 3);
           forceCenter = true;
         }
       }
@@ -219,7 +217,132 @@ class Tile extends Fresco.Collection {
   isCenterLine(line) {
     // because the line always ends with the center we only need to test the second vertex
     return line.vertices[1].x == 0 && line.vertices[1].y == 0;
-  } 
+  }
+
+
+  handleCenterCuts(lineBuf, buffer, gap) {
+    let line1 = lineBuf.pop();
+    let line2 = lineBuf.pop();
+
+    // register indices of vertex from wich each line starts
+    let inter1 = -1;
+    let inter2 = -1;
+    for (let i = 0; i < this.square.vertices.length; i++) {
+      if (this.square.vertices[i].x == line1.vertices[0].x && this.square.vertices[i].y == line1.vertices[0].y) {
+        inter1 = i;
+      }
+      if (this.square.vertices[i].x == line2.vertices[0].x && this.square.vertices[i].y == line2.vertices[0].y) {
+        inter2 = i;
+      }
+      if (inter1 > 0 && inter2 > 0) {
+        break;
+      }
+    }
+
+    // sort intersection vertices by order
+    let point1;
+    let point2;
+    if (inter1 < inter2) {
+      point1 = line1.vertices[0];
+      point2 = line2.vertices[0];
+    }
+    else {
+      point1 = line2.vertices[0];
+      point2 = line1.vertices[0];
+    }
+
+    // cut first half
+    let half1Vtx = this.square.vertices.slice(0, Math.min(inter1, inter2) + 1);
+    let idx1 = half1Vtx.length - 1; // index of vertex immediatly before the center
+    let zeroIdx = half1Vtx.length;
+    half1Vtx.push(createPoint(0, 0));
+    half1Vtx.push(...this.square.vertices.slice(Math.max(inter1, inter2)));
+
+    idx1 = (idx1 + half1Vtx.length) % half1Vtx.length;
+    // register initial position of 1st side vtx
+    let oldOri1 = half1Vtx[idx1].copy()
+    // offset 1st side vertex around center
+    let idx12 = (idx1 - 1 + half1Vtx.length) % half1Vtx.length;
+    let dir1 = half1Vtx[idx1].copy().sub(half1Vtx[idx12]).normalize().mult(-gap);
+    half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1);
+
+    // register new side vertex pos
+    let newOri1 = half1Vtx[idx1].copy();
+
+    idx1 = (idx1 + 2) % half1Vtx.length; // index of vertex immediatly after the zero
+    idx12 = (idx1 + 1) % half1Vtx.length;
+
+    // because of how shapes are stored in Fresco, we hit the duplicate point at the end of
+    // the square. To avoid this issue, we remove the duplicate point
+    let shiftPrev = false;
+    if (half1Vtx[idx1].x == half1Vtx[idx12].x && half1Vtx[idx1].y == half1Vtx[idx12].y) {
+      idx12 = (idx12 + 1) % half1Vtx.length;
+      shiftPrev = true;
+    }
+
+    // register initial position of 2nd side vtx
+    let oldOri2 = half1Vtx[idx1].copy();
+    // offset 2nd side vertex
+    dir1 = half1Vtx[idx12].copy().sub(half1Vtx[idx1]).normalize().mult(gap);
+    half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1);
+
+    if (shiftPrev) {
+      half1Vtx[(idx1 + 1) % half1Vtx.length] = half1Vtx[idx1].copy();
+    }
+
+    // register new side vertex pos
+    let newOri2 = half1Vtx[idx1].copy();
+
+    // compute intersection of line starting at new side vtx, parallel to old sides.
+    // Note that because the center point is at 0,0, the direction to a point from the center
+    // is equal to the coordinate of the point
+    let [t1, t2] = lineIntersection(newOri1, oldOri1, newOri2, oldOri2);
+
+    // use interesection as new center
+    half1Vtx[zeroIdx] = newOri1.add(oldOri1.mult(t1)).copy();
+    
+    // register the shape
+    let half1 = new Fresco.Shape(half1Vtx);
+
+    //////////////////////////
+    // Repeat with second half
+    let half2Vtx = this.square.vertices.slice(Math.min(inter1, inter2), Math.max(inter1, inter2) + 1);
+    let idx2 = half2Vtx.length - 1;
+    half2Vtx.push(createPoint(0, 0));
+    
+    let oldOri21 = half2Vtx[idx2].copy(); // position of the 1st side vertex before offset  
+
+    // offset vertices around center
+    let idx22 = (idx2 - 1) % half2Vtx.length;
+    let dir2 = half2Vtx[idx2].copy().sub(half2Vtx[idx22]).normalize().mult(-gap);
+    half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2);
+
+    let newOri21 = half2Vtx[idx2].copy();
+    
+    idx2 = 0;
+    idx22 = 1;
+    // register initial position of 2nd side vtx
+    let oldOri22 = half2Vtx[idx2].copy();
+    // offset 2nd side vertex
+    dir2 = half2Vtx[idx22].copy().sub(half2Vtx[idx2]).normalize().mult(gap);
+    half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2);
+    
+    let newOri22 = half2Vtx[idx2].copy();
+
+    // compute intersection
+    [t1, t2] = lineIntersection(newOri21, oldOri21, newOri22, oldOri22);
+    // use interesection as new center
+    half2Vtx[half2Vtx.length - 1] = newOri21.copy().add(oldOri21.copy().mult(t1)).copy();
+
+    half2Vtx.push(half2Vtx[0]);
+    
+    let half2 = new Fresco.Shape(half2Vtx);
+    buffer = [half1, half2];
+
+    this.square.vertices.push(this.square.vertices[0]);
+
+    return lineBuf, buffer
+  }
 
   cutShape(gap) {
     this.square = subdivide(this.square, 1);
@@ -229,93 +352,25 @@ class Tile extends Fresco.Collection {
     // This way, granted we don't only have "center" lines, the intersection
     // with one such line can be delt with almost like a normal cut 
     let lineBuf = [];
+    let centerLines = []
     let allCentered = true;
     this.lines.forEach(l => {
       if (this.isCenterLine(l)) {
-        lineBuf.push(l);
+        centerLines.push(l);
       }
       else {
-        lineBuf.unshift(l);
+        lineBuf.push(l);
         allCentered = false;
       }
     })
 
+    lineBuf.push(...centerLines);
+
     // if all centered, we must deal with the first 2 lines manually
     if (allCentered) {
-      let line1 = lineBuf.pop();
-      let line2 = lineBuf.pop();
-
-      let inter1 = -1;
-      let inter2 = -1;
-      for (let i = 0; i < this.square.vertices.length; i++) {
-        if (this.square.vertices[i].x == line1.vertices[0].x && this.square.vertices[i].y == line1.vertices[0].y) {
-          inter1 = i;
-        }
-        if (this.square.vertices[i].x == line2.vertices[0].x && this.square.vertices[i].y == line2.vertices[0].y) {
-          inter2 = i;
-        }
-        if (inter1 > 0 && inter2 > 0) {
-          break;
-        }
-      }
-
-      let point1;
-      let point2;
-      if (inter1 < inter2) {
-        point1 = line1.vertices[0];
-        point2 = line2.vertices[0];
-      }
-      else {
-        point1 = line2.vertices[0];
-        point2 = line1.vertices[0];
-      }
-
-      // let theta = point1.angleBetween()(point2);
-
-      let half1Vtx = this.square.vertices.slice(0, Math.min(inter1, inter2) + 1);
-      let idx1 = half1Vtx.length - 1;
-      let zeroIdx = half1Vtx.length;
-      half1Vtx.push(createPoint(0, 0));
-      half1Vtx.push(...this.square.vertices.slice(Math.max(inter1, inter2)));
-
-      // offset vertices around center
-      idx1 = (idx1 + half1Vtx.length) % half1Vtx.length;
-      let idx12 = (idx1 - 1 + half1Vtx.length) % half1Vtx.length;
-      let dir1 = half1Vtx[idx1].copy().sub(half1Vtx[idx12]).normalize().mult(-gap);
-      half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1);
-
-      idx1 = (idx1 + 2) % half1Vtx.length;
-      idx12 = (idx1 + 1) % half1Vtx.length;
-      dir1 = half1Vtx[idx12].copy().sub(half1Vtx[idx1]).normalize().mult(gap);
-      half1Vtx[idx1] = half1Vtx[idx1].copy().add(dir1);
-
-      half1Vtx[zeroIdx].add();
-      
-      let half1 = new Fresco.Shape(half1Vtx);
-
-      let half2Vtx = this.square.vertices.slice(Math.min(inter1, inter2), Math.max(inter1, inter2) + 1);
-      let idx2 = half2Vtx.length - 1;
-      half2Vtx.push(createPoint(0, 0));
-      
-      // offset vertices around center
-      let idx22 = (idx2 - 1) % half2Vtx.length;
-      let dir2 = half2Vtx[idx2].copy().sub(half2Vtx[idx22]).normalize().mult(-gap);
-      half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2);
-      
-      idx2 = 0;
-      idx22 = 1;
-      dir2 = half2Vtx[idx22].copy().sub(half2Vtx[idx2]).normalize().mult(gap);
-      half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2);
-      
-      let dir3 = point1.copy().add(point2.copy()).normalize().mult(0.5 * gap);
-      half1Vtx[zeroIdx].add(dir3);
-      half2Vtx[half2Vtx.length - 1].add(dir3.mult(-1));
-
-      half2Vtx.push(half2Vtx[0]);
-      
-      let half2 = new Fresco.Shape(half2Vtx);
-      buffer = [half1, half2];
+      lineBuf, buffer = this.handleCenterCuts(lineBuf, buffer, gap)
     }
+
     lineBuf.forEach(l => {
       let [line1, line2] = this.offsetLine(l, gap); 
       let newBuffer = [];
@@ -383,7 +438,7 @@ class Tiler {
 function setup() {
   createSVGCanvas(1000, 1000);
   background(colorFromHex(backgroundClr));
-  setSeed(8062);
+  setSeed(834);
   loadFonts();
 
   Fresco.Futural.fontSpacing = 4;
