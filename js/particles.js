@@ -311,7 +311,7 @@ Fresco.Particle = class extends Fresco.Point {
      * to a Fresco.Point
      */
     asPoint() {
-        let nu_point = new Fresco.Point(this.position());
+        let nu_point = new Fresco.Point(this.position().copy());
         nu_point.color = this.color;
         nu_point.rotation = this.rotation;
         nu_point.radius = this.radius;
@@ -517,7 +517,7 @@ Fresco.Particle = class extends Fresco.Point {
             let start = this.previousPosition;
             // account for the case where we may have stored the postion in the
             // trail instead of the previousPosition buffer 
-            if (!start && this.leaveTrail) {
+            if (start == null && this.leaveTrail) {
                 start = this.trail.vertices[this.trail.vertices - 2];
             }
             if (start) {

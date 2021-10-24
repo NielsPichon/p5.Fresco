@@ -1932,7 +1932,9 @@ Fresco.Shape = class {
     }
 
     this.isPolygonal = isPolygonal;
-
+    lines.forEach(l => {
+      l.layer = this.layer;
+    })
     return lines;
   }
 

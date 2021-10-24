@@ -115,7 +115,7 @@ function showSeed() {
     seedDisplay =  document.createElement('div');
     if (!seed) {
       seedDisplay.innerText = "undifined seed";
-      console.log("Seed was not set. Consider calling `setSeeds()`")
+      console.log("Seed was not set. Consider calling `setSeed()`")
     }
     else {
       seedDisplay.innerText = "Seed: " + seed.toFixed();
@@ -475,6 +475,11 @@ function randomInt(start, end=null) {
   }
 }
 
+/**
+ * Randomly selects one item in an array
+ * @param {Array<*>} objects List of objects
+ * @returns {*} randomly selected object
+ */
 function randomSelect(objects) {
   let idx = randomInt(objects.length);
   return objects[idx];
@@ -483,4 +488,24 @@ function randomSelect(objects) {
 
 function createA4RatioCanvas(size) {
   createCanvas(size, size * Math.sqrt(2));
+}
+
+/**
+ * Computes the max vector along all 3 axes of a p5.Vector
+ * @param {p5.Vector} a 
+ * @param {p5.Vector} b 
+ * @returns {p5.Vector}
+ */
+function vectorMin(a, b) {
+  return createVector(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.min(a.z, b.z))
+}
+
+/**
+ * Computes the max vector along all 3 axes of a p5.Vector
+ * @param {p5.Vector} a 
+ * @param {p5.Vector} b 
+ * @returns {p5.Vector}
+ */
+ function vectorMax(a, b) {
+  return createVector(Math.max(a.x, b.x), Math.max(a.y, b.y), Math.max(a.z, b.z))
 }

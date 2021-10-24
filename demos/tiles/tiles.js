@@ -3,6 +3,9 @@ const resX = 5;
 const resY = 6;
 const gapThickness = 5;
 const showText = false;
+const crossHatch = true;
+const hatchAngle = Math.PI / 4;
+const interHatch = 8.4;
 
 let tiler;
 
@@ -43,6 +46,10 @@ class Tile extends Fresco.Collection {
 
     if (gap > 0) {
       this.cutShape(gap);
+      if (crossHatch) {
+        let hatches = this.objects[this.objects.length - 1].hatchFill(hatchAngle, interHatch);
+        hatches.forEach(h => this.attach(h));
+      }
     }
   }
   
@@ -484,7 +491,8 @@ class Tiler {
 function setup() {
   createA4RatioCanvas(1000);
   background(colorFromHex(backgroundClr));
-  setSeed();
+  // setSeed(3908);
+  setSeed(7172);
   loadFonts();
 
   Fresco.Futural.fontSpacing = 4;
