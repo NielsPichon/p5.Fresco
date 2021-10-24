@@ -456,8 +456,9 @@ const NoHit = Fresco.Hit(null, INF);
 
 Fresco.Shape3D = class {
     getBoundingBox() {return null};
-    computeRayIntersection(r) {return NoHit;};
+    computeRayIntersection(r) {return NoHit};
     toShapes() {return []};
+    contains() {return false};
 }
 
 /**
@@ -624,6 +625,10 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
         return this.aabb;
     }
 
+    contains(v) {
+        return false;
+    }
+
     /**
      * Compute the intersection of a ray with the triangle
      * @param {Fresco.Ray} r Intersecting ray
@@ -678,6 +683,60 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
     }
 }
 
+/**
+ * Triangle based mesh
+ */
+Fresco.TriMesh = class extends Fresco.Shape3D {
+    /**
+     * @constructor
+     * @param {Fresco.Tri3D} tris tirangles 
+     */
+    constructor(tris) {
+        this.tris = tris;
+        this.aabb = tris[0].getBoundingBox();
+        this.tris.forEach(t => this.aabb = this.aabb.extend(t.getBoundingBox()));
+    }
+
+    /**
+     * Returnes the Bounding Box of the mesh
+     * @returns {Fresco.Box} the axis aligned bounding box
+     */
+    getBoundingBox() {
+        return this.aabb;
+    }
+
+    /**
+     * Compute a ray intersection with this mesh
+     * @param {Fresco.Ray} r 
+     * @returns 
+     */
+    computeRayIntersection(r) {
+        let h = NoHit;
+        this.tris.forEach(t => {
+            let h1 = t.computeRayIntersection(r);
+            if (h1.distance < h) {
+                h = h1;
+            }
+        })
+        return h;
+    }
+
+    // TODO: Implement me some day
+    contains(v) {
+        return false;
+    }
+
+    /**
+     * Convert his shape 3D to an array of Fresco.Shapes
+     * @returns {Array<Fresco.Shape>}
+     */
+    toShapes() {
+        let shapes = [];
+        this.tris.forEach(t => shapes.push(...t.toShapes()));
+        return shapes;
+    }
+}
+
 Fresco.Cube = class extends Fresco.Box {
     getBoundingBox() {
         return new Box(this.min, this.max)
@@ -723,6 +782,133 @@ Fresco.Cube = class extends Fresco.Box {
             new Fresco.Line(createVector(M.x, m.y, M.z), createVector(M.x, M.y, M.z)),
             new Fresco.Line(createVector(M.x, M.y, m.z), createVector(M.x, M.y, M.z)),
         ];
+    }
+}
+
+const boolType = {
+    intersection: 'inter',
+    difference: 'diff'
+}
+
+Fresco.BooleanShape = class extends Fresco.Shape3D {
+    /**
+     * @constructor
+     * @param {Fresco.Shape3D} A 
+     * @param {Fresco.Shape3D} B 
+     * @param {String} type 
+     */
+    constructor(A, B, type) {
+        this.A = A;
+        this.B = B;
+        this.type = type;
+        this.aabb = this.A.getBoundingBox().extend(this.B.getBoundingBox());
+    }
+
+    getBoundingBox() {
+        return this.aabb;
+    }
+
+    contains(v) {
+        switch (this.type) {
+            case boolType.intersection:
+                return this.A.contains(v) && this.B.contains(v);
+                break;
+            case boolType.difference:
+                return this.A.contains(v) && !this.B.contains(v);
+        }
+    }
+
+    computeRayIntersection(r) {
+        let h1 = this.A.computeRayIntersection(r);
+        let h2 = this.B.computeRayIntersection(r);
+
+        let h;
+        if (h1.distance <= h2.distance) {
+            h = h1;
+        }
+        else {
+            h = h2;
+        }
+
+        let v = r.position(h.distance);
+
+        // If there is no hit, return. 
+        // If there is a hit and it is contained in the resulting boolean, return the hit.
+        if (!h.OK() || this.contains(v)) {
+            return h;
+        }
+        // otherwise, trace a new ray from the hit point (offset by a tiny amount).
+        else {
+            return s.computeRayIntersection(new Ray(r.position(h.distance + 0.001), r.dir))
+        }
+    }
+
+    toShapes() {
+        // Note that we return both shapes in their entirety but their
+        // vertices will be pruned upon ray tracing which is much simpler
+        return [...this.A.toShapes(), ...this.B.toShapes()];
+    }
+}
+
+/**
+ * Converts a basic 2D shape into an occluding 3D shape
+ */
+Fresco.ArbitraryShape = class extends Fresco.Shape3D {
+    /**
+     * @constructor
+     * @param {Fresco.Shape} shape 
+     */
+    constructor(shape) {
+        this.shape = shape;
+        this.tris = [];
+    }
+
+    /**
+     * Converts this shape to triangles
+     */
+    triangulate() {
+        if (!this.shape.isClosed()) {
+            return;
+        }
+
+        let n = this.shape.vertices.length - 2;
+        let s = 0;
+        for (let i = 0; i < this.vertices.length - 1; i++) {
+            if (i % 2 == 0) {
+                this.tris.push(new Fresco.Tri3D(
+                    this.shape.vertices[s].copy(),
+                    this.shape.vertices[s + 1].copy(),
+                    this.shape.vertices[n].copy()
+                ));
+                s ++;
+            }
+            else {
+                this.tris.push(new Fresco.Tri3D(
+                    this.shape.vertices[s].copy(),
+                    this.shape.vertices[n].copy(),
+                    this.shape.vertices[n - 1].copy()
+                ));
+                n--;
+            }
+            if (s == n - 1) {
+                break;
+            }
+        }
+    }
+
+    computeRayIntersection(r) {
+        let h = NoHit;
+        this.tris.forEach(t => {
+            let h1 = t.computeRayIntersection(r);
+            if (h1.distance < h.distance) {
+                h = h1;
+            }
+        })
+        return h;
+    }
+
+    toShapes() {
+        return [this.shape];
     }
 }
 
@@ -975,9 +1161,18 @@ Fresco.Scene3D = class {
      * Registers a shape in the scene
      * @param {Fresco.Shape3D} shape The shape to add to the scene 
      */
-    registerShape(shape) {
+    registerShape3D(shape) {
         this.shapes.push(shape);
         this.isBuilt = false;
+    }
+
+    /**
+     * Registers a Freco.Shape. These shapes are not really 
+     * 3D and as such it will not occlude anything but can be occluded.
+     * @param {Fresco.Shape} shape 
+     */
+    registerShape2D(shape) {
+        this.extraShapes.push(shape);
     }
 
     /**
@@ -1039,6 +1234,7 @@ Fresco.Scene3D = class {
         
         let paths = [];
         this.shapes.forEach(s => paths.push(...s.toShapes()));
+        paths.push(...this.extraShapes);
 
         if (subdivisionStep > 0) {
             // subdivide paths
@@ -1061,7 +1257,6 @@ Fresco.Scene3D = class {
                 p.vertices = buf;
             })
         }
-
 
         let clipBox = new Fresco.Box(createVector(-1, -1, -1), createVector(1, 1, 1));
 
