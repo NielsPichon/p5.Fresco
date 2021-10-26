@@ -716,61 +716,6 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
     }
 }
 
-/**
- * Triangle based mesh
- */
-Fresco.TriMesh = class extends Fresco.Shape3D {
-    /**
-     * @constructor
-     * @param {Fresco.Tri3D} tris tirangles 
-     */
-    constructor(tris) {
-        super();
-        this.tris = tris;
-        this.aabb = tris[0].getBoundingBox();
-        this.tris.forEach(t => this.aabb = this.aabb.extend(t.getBoundingBox()));
-    }
-
-    /**
-     * Returnes the Bounding Box of the mesh
-     * @returns {Fresco.Box} the axis aligned bounding box
-     */
-    getBoundingBox() {
-        return this.aabb;
-    }
-
-    /**
-     * Compute a ray intersection with this mesh
-     * @param {Fresco.Ray} r 
-     * @returns 
-     */
-    computeRayIntersection(r) {
-        let h = NoHit;
-        this.tris.forEach(t => {
-            let h1 = t.computeRayIntersection(r);
-            if (h1.distance < h) {
-                h = h1;
-            }
-        })
-        return h;
-    }
-
-    // TODO: Implement me some day
-    contains(v) {
-        return false;
-    }
-
-    /**
-     * Convert his shape 3D to an array of Fresco.Shapes
-     * @returns {Array<Fresco.Shape>}
-     */
-    toShapes() {
-        let shapes = [];
-        this.tris.forEach(t => shapes.push(...t.toShapes()));
-        return shapes;
-    }
-}
-
 Fresco.Cube = class extends Fresco.Box {
     getBoundingBox() {
         return new Fresco.Box(this.min, this.max)
@@ -902,7 +847,7 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
     }
 
     getBoundingBox() {
-        return this.shape.getBoundingBox();
+        return new Fresco.Box(...this.shape.getBoundingBox());
     }
 
     /**
@@ -951,6 +896,87 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
 
     toShapes() {
         return [this.shape];
+    }
+}
+
+/**
+ * Planar quadrilateral mesh
+ */
+Fresco.Quad = class extends Fresco.ArbitraryShape {
+    /**
+     * @constructor
+     * @param {p5.Vector} v1 vertex 
+     * @param {p5.Vector} v2 vertex 
+     * @param {p5.Vector} v3 vertex 
+     * @param {p5.Vector} v4 vertex 
+     */
+    constructor(v1, v2, v3, v4) {
+        let quad = new Fresco.Shape([v1, v2, v3, v4]);
+        quad.isPolygonal = true;
+        super(quad);
+    }
+}
+
+/**
+ * Polygonal mesh made of triangles and quads
+ */
+Fresco.Polymesh = class extends Fresco.Shape3D {
+    constructor(vertices, faces) {
+        this.vertices = vertices;
+        this.faces = faces;
+        this.shapes = [];
+        this.edges = [];
+        faces.forEach(f => {
+            if (f.length > 4 || f.length <= 2) {
+                console.log('Polymesh only suports tris and quads');
+            }
+            else {
+                if (f.length == 3) {
+                    this.shapes.push(new Fresco.Tri3D(...f));
+                }
+                else {
+                    this.shapes.push(new Fresco.Quad(...f));
+                }
+                // add edges. We sort the indices such that they are always in increasing order.
+                // In a regular ray tracing app this would mess up with the orientation of the face but here we don't care.
+                // The reason we do that is that then there are no cases of flipped edges instances in the array, only true duplictes (if any).
+                f.sort();
+                for (let i = 0; i < f.length - 1; i++) {
+                    this.edges.push([f[i], f[i + 1]]);
+                }
+            }
+        })
+
+        // remove duplicate edges
+        this.edges = [...new Set(this.edges)];
+
+        this.aabb = new Fresco.Box(createVector(0,0,0), createVector(0,0,0));
+        this.shapes.forEach(s => this.aabb = this.aabb.extend(s.getBoundingBox()));
+    }
+
+    contains(v) {
+        return false;
+    }
+
+    getBoundingBox() {
+        return this.aabb;
+    }
+
+    computeRayIntersection(r) {
+        let h = NoHit;
+        this.shapes.forEach(s => {
+            let h1 = s.computeRayIntersection(r);
+            if (h1.distance < h.distance) {
+                h = h1;
+            }
+        })
+        return h;
+    }
+
+    toShapes() {
+        let shapes = [];
+        this.edges.forEach(e => shapes.push(new Fresco.Line(...e)));
+        return shapes;
     }
 }
 
