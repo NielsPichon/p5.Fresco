@@ -5,10 +5,10 @@ const EPS = 1e-9;
 const INF = 1e9;
 
 const Axis = {
-    None = 'none',
-    X = 'x',
-    Y = 'y',
-    Z = 'z'
+    None: 'none',
+    X: 'x',
+    Y: 'y',
+    Z: 'z'
 }
 
 /**
@@ -23,6 +23,8 @@ Fresco.Ray = class {
     constructor(ori, dir) {
         this.ori = ori;
         this.dir = dir;
+        this.invdir = createVector(1, 1, 1).div(dir);
+        this.sign = [dir.x < 0, dir.y < 0, dir.z < 0];
     }
 
     /**
@@ -59,21 +61,13 @@ Fresco.Matrix = class {
      */
     apply(v) {
         let p = v.copy();
-        p.x = x00 * v.x + x01 * v.y + x02 * v.z + this.x03;
-        p.y = x10 * v.x + x11 * v.y + x12 * v.z + this.x13;
-        p.z = x20 * v.x + x21 * v.y + x22 * v.z + this.x23;
-        let w = x30 * v.x + x31 * v.y + x32 * v.z + this.x33;
+        p.x = this.x00 * v.x + this.x01 * v.y + this.x02 * v.z + this.x03;
+        p.y = this.x10 * v.x + this.x11 * v.y + this.x12 * v.z + this.x13;
+        p.z = this.x20 * v.x + this.x21 * v.y + this.x22 * v.z + this.x23;
+        let w = this.x30 * v.x + this.x31 * v.y + this.x32 * v.z + this.x33;
 
-        if (Math.abs(w) < EPS) {
-            p.x = INF;
-            p.y = INF;
-            p.z = INF;
-            return p;
-        }
-        else {
-            p.mult(1 / w);
-            return p;
-        }
+        p.mult(1 / w);
+        return p;
     }
 
     /**
@@ -116,9 +110,9 @@ Fresco.Matrix = class {
      */
     positionMul(v) {
         let p = v.copy();
-        p.x = x00 * v.x + x01 * v.y + x02 * v.z + this.x03;
-        p.y = x10 * v.x + x11 * v.y + x12 * v.z + this.x13;
-        p.z = x20 * v.x + x21 * v.y + x22 * v.z + this.x23;
+        p.x = this.x00 * v.x + this.x01 * v.y + this.x02 * v.z + this.x03;
+        p.y = this.x10 * v.x + this.x11 * v.y + this.x12 * v.z + this.x13;
+        p.z = this.x20 * v.x + this.x21 * v.y + this.x22 * v.z + this.x23;
         return p;
     }
     
@@ -130,9 +124,9 @@ Fresco.Matrix = class {
      */
     directionMul(v) {
         let p = v.copy();
-        p.x = x00 * v.x + x01 * v.y + x02 * v.z;
-        p.y = x10 * v.x + x11 * v.y + x12 * v.z;
-        p.z = x20 * v.x + x21 * v.y + x22 * v.z;
+        p.x = this.x00 * v.x + this.x01 * v.y + this.x02 * v.z;
+        p.y = this.x10 * v.x + this.x11 * v.y + this.x12 * v.z;
+        p.z = this.x20 * v.x + this.x21 * v.y + this.x22 * v.z;
         p.normalize();
         return p;        
     }
@@ -219,22 +213,22 @@ Fresco.Matrix = class {
     inverse() {
         let d = this.det();
         let a = this;
-        x00 = (a.x12*a.x23*a.x31 - a.x13*a.x22*a.x31 + a.x13*a.x21*a.x32 - a.x11*a.x23*a.x32 - a.x12*a.x21*a.x33 + a.x11*a.x22*a.x33) / d
-        x01 = (a.x03*a.x22*a.x31 - a.x02*a.x23*a.x31 - a.x03*a.x21*a.x32 + a.x01*a.x23*a.x32 + a.x02*a.x21*a.x33 - a.x01*a.x22*a.x33) / d
-        x02 = (a.x02*a.x13*a.x31 - a.x03*a.x12*a.x31 + a.x03*a.x11*a.x32 - a.x01*a.x13*a.x32 - a.x02*a.x11*a.x33 + a.x01*a.x12*a.x33) / d
-        x03 = (a.x03*a.x12*a.x21 - a.x02*a.x13*a.x21 - a.x03*a.x11*a.x22 + a.x01*a.x13*a.x22 + a.x02*a.x11*a.x23 - a.x01*a.x12*a.x23) / d
-        x10 = (a.x13*a.x22*a.x30 - a.x12*a.x23*a.x30 - a.x13*a.x20*a.x32 + a.x10*a.x23*a.x32 + a.x12*a.x20*a.x33 - a.x10*a.x22*a.x33) / d
-        x11 = (a.x02*a.x23*a.x30 - a.x03*a.x22*a.x30 + a.x03*a.x20*a.x32 - a.x00*a.x23*a.x32 - a.x02*a.x20*a.x33 + a.x00*a.x22*a.x33) / d
-        x12 = (a.x03*a.x12*a.x30 - a.x02*a.x13*a.x30 - a.x03*a.x10*a.x32 + a.x00*a.x13*a.x32 + a.x02*a.x10*a.x33 - a.x00*a.x12*a.x33) / d
-        x13 = (a.x02*a.x13*a.x20 - a.x03*a.x12*a.x20 + a.x03*a.x10*a.x22 - a.x00*a.x13*a.x22 - a.x02*a.x10*a.x23 + a.x00*a.x12*a.x23) / d
-        x20 = (a.x11*a.x23*a.x30 - a.x13*a.x21*a.x30 + a.x13*a.x20*a.x31 - a.x10*a.x23*a.x31 - a.x11*a.x20*a.x33 + a.x10*a.x21*a.x33) / d
-        x21 = (a.x03*a.x21*a.x30 - a.x01*a.x23*a.x30 - a.x03*a.x20*a.x31 + a.x00*a.x23*a.x31 + a.x01*a.x20*a.x33 - a.x00*a.x21*a.x33) / d
-        x22 = (a.x01*a.x13*a.x30 - a.x03*a.x11*a.x30 + a.x03*a.x10*a.x31 - a.x00*a.x13*a.x31 - a.x01*a.x10*a.x33 + a.x00*a.x11*a.x33) / d
-        x23 = (a.x03*a.x11*a.x20 - a.x01*a.x13*a.x20 - a.x03*a.x10*a.x21 + a.x00*a.x13*a.x21 + a.x01*a.x10*a.x23 - a.x00*a.x11*a.x23) / d
-        x30 = (a.x12*a.x21*a.x30 - a.x11*a.x22*a.x30 - a.x12*a.x20*a.x31 + a.x10*a.x22*a.x31 + a.x11*a.x20*a.x32 - a.x10*a.x21*a.x32) / d
-        x31 = (a.x01*a.x22*a.x30 - a.x02*a.x21*a.x30 + a.x02*a.x20*a.x31 - a.x00*a.x22*a.x31 - a.x01*a.x20*a.x32 + a.x00*a.x21*a.x32) / d
-        x32 = (a.x02*a.x11*a.x30 - a.x01*a.x12*a.x30 - a.x02*a.x10*a.x31 + a.x00*a.x12*a.x31 + a.x01*a.x10*a.x32 - a.x00*a.x11*a.x32) / d
-        x33 = (a.x01*a.x12*a.x20 - a.x02*a.x11*a.x20 + a.x02*a.x10*a.x21 - a.x00*a.x12*a.x21 - a.x01*a.x10*a.x22 + a.x00*a.x11*a.x22) / d
+        let x00 = (a.x12*a.x23*a.x31 - a.x13*a.x22*a.x31 + a.x13*a.x21*a.x32 - a.x11*a.x23*a.x32 - a.x12*a.x21*a.x33 + a.x11*a.x22*a.x33) / d
+        let x01 = (a.x03*a.x22*a.x31 - a.x02*a.x23*a.x31 - a.x03*a.x21*a.x32 + a.x01*a.x23*a.x32 + a.x02*a.x21*a.x33 - a.x01*a.x22*a.x33) / d
+        let x02 = (a.x02*a.x13*a.x31 - a.x03*a.x12*a.x31 + a.x03*a.x11*a.x32 - a.x01*a.x13*a.x32 - a.x02*a.x11*a.x33 + a.x01*a.x12*a.x33) / d
+        let x03 = (a.x03*a.x12*a.x21 - a.x02*a.x13*a.x21 - a.x03*a.x11*a.x22 + a.x01*a.x13*a.x22 + a.x02*a.x11*a.x23 - a.x01*a.x12*a.x23) / d
+        let x10 = (a.x13*a.x22*a.x30 - a.x12*a.x23*a.x30 - a.x13*a.x20*a.x32 + a.x10*a.x23*a.x32 + a.x12*a.x20*a.x33 - a.x10*a.x22*a.x33) / d
+        let x11 = (a.x02*a.x23*a.x30 - a.x03*a.x22*a.x30 + a.x03*a.x20*a.x32 - a.x00*a.x23*a.x32 - a.x02*a.x20*a.x33 + a.x00*a.x22*a.x33) / d
+        let x12 = (a.x03*a.x12*a.x30 - a.x02*a.x13*a.x30 - a.x03*a.x10*a.x32 + a.x00*a.x13*a.x32 + a.x02*a.x10*a.x33 - a.x00*a.x12*a.x33) / d
+        let x13 = (a.x02*a.x13*a.x20 - a.x03*a.x12*a.x20 + a.x03*a.x10*a.x22 - a.x00*a.x13*a.x22 - a.x02*a.x10*a.x23 + a.x00*a.x12*a.x23) / d
+        let x20 = (a.x11*a.x23*a.x30 - a.x13*a.x21*a.x30 + a.x13*a.x20*a.x31 - a.x10*a.x23*a.x31 - a.x11*a.x20*a.x33 + a.x10*a.x21*a.x33) / d
+        let x21 = (a.x03*a.x21*a.x30 - a.x01*a.x23*a.x30 - a.x03*a.x20*a.x31 + a.x00*a.x23*a.x31 + a.x01*a.x20*a.x33 - a.x00*a.x21*a.x33) / d
+        let x22 = (a.x01*a.x13*a.x30 - a.x03*a.x11*a.x30 + a.x03*a.x10*a.x31 - a.x00*a.x13*a.x31 - a.x01*a.x10*a.x33 + a.x00*a.x11*a.x33) / d
+        let x23 = (a.x03*a.x11*a.x20 - a.x01*a.x13*a.x20 - a.x03*a.x10*a.x21 + a.x00*a.x13*a.x21 + a.x01*a.x10*a.x23 - a.x00*a.x11*a.x23) / d
+        let x30 = (a.x12*a.x21*a.x30 - a.x11*a.x22*a.x30 - a.x12*a.x20*a.x31 + a.x10*a.x22*a.x31 + a.x11*a.x20*a.x32 - a.x10*a.x21*a.x32) / d
+        let x31 = (a.x01*a.x22*a.x30 - a.x02*a.x21*a.x30 + a.x02*a.x20*a.x31 - a.x00*a.x22*a.x31 - a.x01*a.x20*a.x32 + a.x00*a.x21*a.x32) / d
+        let x32 = (a.x02*a.x11*a.x30 - a.x01*a.x12*a.x30 - a.x02*a.x10*a.x31 + a.x00*a.x12*a.x31 + a.x01*a.x10*a.x32 - a.x00*a.x11*a.x32) / d
+        let x33 = (a.x01*a.x12*a.x20 - a.x02*a.x11*a.x20 + a.x02*a.x10*a.x21 - a.x00*a.x12*a.x21 - a.x01*a.x10*a.x22 + a.x00*a.x11*a.x22) / d
         
         return new Fresco.Matrix(
             x00, x01, x02, x03,
@@ -283,26 +277,26 @@ const ScaleMatrix = (scale) => new Fresco.Matrix(
  * @returns {Fresco.Matrix} Rotation Matrix
  */
 const RotationMatrix = (axis, angle) => {
-    let v = p5.Vector.normalize(axis);
+    let v = axis.copy().normalize();
     let s = Math.sin(angle);
     let c = Math.cos(angle);
     let m = 1 - c; 
     return new Fresco.Matrix (
-        m * v.X * v.X + c,       m * v.X * v.Y + v.Z * s, m * v.Z * v.X - v.Y * s, 0,
-        m * v.X * v.Y - v.Z * s, m * v.Y * v.Y + c,       m * v.Y * v.Z + v.X * s, 0,
-        m * v.Z * v.X + v.Y * s, m * v.Y * v.Z - v.X * s, m * v.Z * v.Z + c,       0,
+        m * v.x * v.x + c,       m * v.x * v.y + v.z * s, m * v.z * v.x - v.y * s, 0,
+        m * v.x * v.y - v.z * s, m * v.y * v.y + c,       m * v.y * v.z + v.x * s, 0,
+        m * v.z * v.x + v.y * s, m * v.y * v.z - v.x * s, m * v.z * v.z + c,       0,
         0,                       0,                       0,                       1
     );
 };
 
 /**
  * Returns the Frustrum projection matrix
- * @param {Number} l The X coordinate of the left side of the near projection plane in view space.
- * @param {Number} r The X coordinate of the right side of the near projection plane in view space.
- * @param {Number} b The Y coordinate of the bottom side of the near projection plane in view space.
- * @param {Number} t The Y coordinate of the top side of the near projection plane in view space.
- * @param {Number} n Z distance to the near plane from the origin in view space.
- * @param {Number} f Z distance to the far plane from the origin in view space.
+ * @param {Number} l The x coordinate of the left side of the near projection plane in view space.
+ * @param {Number} r The x coordinate of the right side of the near projection plane in view space.
+ * @param {Number} b The y coordinate of the bottom side of the near projection plane in view space.
+ * @param {Number} t The y coordinate of the top side of the near projection plane in view space.
+ * @param {Number} n z distance to the near plane from the origin in view space.
+ * @param {Number} f z distance to the far plane from the origin in view space.
  * @returns {Fresco.Matrix} Frustrum projection matrix
  */
 const FrustrumProjection = (l, r, b, t, n, f) => {
@@ -320,12 +314,12 @@ const FrustrumProjection = (l, r, b, t, n, f) => {
 
 /**
  * Returns the Orthographic projection matrix
- * @param {Number} l The X coordinate of the left side of the near projection plane in view space.
- * @param {Number} r The X coordinate of the right side of the near projection plane in view space.
- * @param {Number} b The Y coordinate of the bottom side of the near projection plane in view space.
- * @param {Number} t The Y coordinate of the top side of the near projection plane in view space.
- * @param {Number} n Z distance to the near plane from the origin in view space.
- * @param {Number} f Z distance to the far plane from the origin in view space.
+ * @param {Number} l The x coordinate of the left side of the near projection plane in view space.
+ * @param {Number} r The x coordinate of the right side of the near projection plane in view space.
+ * @param {Number} b The y coordinate of the bottom side of the near projection plane in view space.
+ * @param {Number} t The y coordinate of the top side of the near projection plane in view space.
+ * @param {Number} n z distance to the near plane from the origin in view space.
+ * @param {Number} f z distance to the far plane from the origin in view space.
  * @returns {Fresco.Matrix} Orthographic projection matrix
  */
 const OrthographicProjection = (l, r, b, t, n, f) => {
@@ -342,8 +336,8 @@ const OrthographicProjection = (l, r, b, t, n, f) => {
  * of the image and field of view rather than the plane bounds.
  * @param {Number} fovy Vertical field of view angle in Radians 
  * @param {Number} aspectRatio Camera aspect ratio width / height
- * @param {Number} near Z distance to the near plane from the origin in view space.
- * @param {Number} far Z distance to the far plane from the origin in view space.
+ * @param {Number} near z distance to the near plane from the origin in view space.
+ * @param {Number} far z distance to the far plane from the origin in view space.
  * @returns {Fresco.Matrix} Frustrum projection matrix
  */
 const PerspectiveProjection = (fovy, aspectRatio, near, far) => {
@@ -360,10 +354,10 @@ const PerspectiveProjection = (fovy, aspectRatio, near, far) => {
  * @returns {Fresco.Matrix} The LookAt transfrom matrix
  */
 const LookAtTransform = (eye, center, up) => {
-    let u = p5.Vector.normalize(up);
-    let f = p5.Vector.normalize(center.copy().sub(eye));
-    let s = p5.Vector.normalize(f.cross(u));
-    u = p5.Vector.normalize(a.cross(f));
+    let up_normed = up.copy().normalize();
+    let f = center.copy().sub(eye).normalize();
+    let s = f.cross(up_normed).copy().normalize();
+    let u = s.cross(f).copy().normalize();
 
     let m = new Fresco.Matrix(
         s.x, u.x, -f.x, eye.x,
@@ -406,7 +400,7 @@ function scaleVector(v, scale) {
  * @param {Fresco.Point} translation Scale vector
  * @returns {Fresco.Point} The modified vector
  */
- function translateVector(v, translation) {
+function translateVector(v, translation) {
     let p = v.copy();
     p.x += translation.x;
     p.y += translation.y;
@@ -414,6 +408,7 @@ function scaleVector(v, scale) {
 
     return p;
 }
+
  
 /**
  * Container describing a ray hit
@@ -452,7 +447,7 @@ Fresco.Hit = class {
     }
 }
 
-const NoHit = Fresco.Hit(null, INF);
+const NoHit = new Fresco.Hit(null, INF);
 
 Fresco.Shape3D = class {
     getBoundingBox() {return null};
@@ -471,6 +466,7 @@ Fresco.Shape3D = class {
      * @param {p5.Vector} M position of the furthest top right corner 
      */
     constructor(m, M) {
+        super()
         this.min = m;
         this.max = M;
     }
@@ -480,7 +476,7 @@ Fresco.Shape3D = class {
      * @returns {p5.Vector} Box size along each axis
      */
     size() {
-        return this.max.copy().sub(this.max);
+        return this.max.copy().sub(this.min);
     }
 
     /**
@@ -505,9 +501,40 @@ Fresco.Shape3D = class {
      * @returns {Boolean} Whether the point is contained
      */
     contains(v) {
-        return this.min.X <= v.X && this.max.X >= v.X &&
-		this.min.Y <= v.Y && this.max.Y >= v.Y &&
-		this.min.Z <= v.Z && this.max.Z >= v.Z
+        return (
+            this.min.x <= v.x && this.max.x >= v.x &&
+		    this.min.y <= v.y && this.max.y >= v.y &&
+		    this.min.z <= v.z && this.max.z >= v.z
+        )
+    }
+
+    /**
+     * Translates this box
+     * @param {p5.Vector} translation 
+     */
+    translate(translation) {
+        this.min.add(translation);
+        this.max.add(translation);
+    }
+
+    /**
+     * Scale this box
+     * @param {p5.Vector} scaleVector
+     */
+    scale(scaleVector) {
+        // Center the shape on zero
+        let c = this.center();
+        this.min.sub(c);
+        this.max.sub(c);
+
+        // scale each corner by half the transform
+        scaleVector.mult(0.5);
+        this.min.mult(scaleVector);
+        this.max.mult(scaleVector);
+
+        // move back the shape in place
+        this.min.add(c);
+        this.max.add(c);
     }
 
     /**
@@ -555,9 +582,8 @@ Fresco.Shape3D = class {
 
     /**
      * Computes the intersection of a ray with this box. Note: This method is weird.
-     * TODO: Come back and improve if used. There is a risk of division by 0 right now...
      * @param {Fresco.Ray} r Ray 
-     * @returns {Array<Number>} candidate positions
+     * @returns {Fresco.Hit} Hit
      */
      computeRayIntersection(r) {
         let m = this.min.copy().sub(r.ori).div(r.dir);
@@ -580,10 +606,16 @@ Fresco.Shape3D = class {
             M.z = buf;
         }
 
-        let t1 = Math.max(Math.max(m.x, m.y), m.z);
-        let t2 = Math.min(Math.min(M.x, M.y), M.z);
+        let tmin = Math.max(Math.max(m.x, m.y), m.z);
+        let tmax = Math.min(Math.min(M.x, M.y), M.z);
 
-        return [t1, t2];
+        if (tmin < 1e-3 && tmax > 1e-3) {
+            return [new Fresco.Hit(this, tmax), tmin, tmax];
+        }
+        else if (tmin >= 1e-3 && tmin <= tmax) {
+            return [new Fresco.Hit(this, tmin), tmin, tmax];
+        }
+        return [NoHit, tmin, tmax];
     }
 
     toShapes(){return []};
@@ -601,6 +633,7 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
      * @param {Fresco.Point} v3 
      */
     constructor(v1, v2, v3) {
+        super();
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
@@ -692,6 +725,7 @@ Fresco.TriMesh = class extends Fresco.Shape3D {
      * @param {Fresco.Tri3D} tris tirangles 
      */
     constructor(tris) {
+        super();
         this.tris = tris;
         this.aabb = tris[0].getBoundingBox();
         this.tris.forEach(t => this.aabb = this.aabb.extend(t.getBoundingBox()));
@@ -739,7 +773,7 @@ Fresco.TriMesh = class extends Fresco.Shape3D {
 
 Fresco.Cube = class extends Fresco.Box {
     getBoundingBox() {
-        return new Box(this.min, this.max)
+        return new Fresco.Box(this.min, this.max)
     }
 
     /**
@@ -755,19 +789,13 @@ Fresco.Cube = class extends Fresco.Box {
     }
 
     computeRayIntersection(r) {
-        let [t0, t1] = super.computeRayIntersection(r);
-        if (t0 < EPS && t1 > EPS) {
-            return new Fresco.Hit(this, t1);
-        }
-        else if (t0 >= EPS && t0 <= t1) {
-            return new Fresco.Hit(this, t0);
-        }
-        return NoHit;
+        let [hit, tmin, tmax] = super.computeRayIntersection(r);
+        return hit;
     }
 
     toShapes() {
-        let m = c.min;
-        let M = c.Max;
+        let m = this.min;
+        let M = this.max;
         return [
             new Fresco.Line(createVector(m.x, m.y, m.z), createVector(m.x, m.y, M.z)),
             new Fresco.Line(createVector(m.x, m.y, m.z), createVector(m.x, M.y, m.z)),
@@ -798,6 +826,7 @@ Fresco.BooleanShape = class extends Fresco.Shape3D {
      * @param {String} type 
      */
     constructor(A, B, type) {
+        super();
         this.A = A;
         this.B = B;
         this.type = type;
@@ -859,8 +888,21 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
      * @param {Fresco.Shape} shape 
      */
     constructor(shape) {
+        super();
+        if (this.isPolygonal) {
+            console.log('Warning! Shapes3D does not support non polygonal shapes.' +
+                'End result may look weird.')
+        }
         this.shape = shape;
         this.tris = [];
+    }
+
+    contains(v) {
+        return isInside(v, this.shape, true);
+    }
+
+    getBoundingBox() {
+        return this.shape.getBoundingBox();
     }
 
     /**
@@ -1002,7 +1044,7 @@ Fresco.Node = class {
                 return 0;
             }
             else if (n % 2 == 1) {
-                return arr[n / 2];
+                return arr[(n + 1) / 2];
             }
             else {
                 return 0.5 * (arr[n / 2] + arr[n / 2 - 1]);
@@ -1042,8 +1084,8 @@ Fresco.Node = class {
         let [l, r] = this.partition(bestAxis, bestPoint);
         this.axis = bestAxis;
         this.point = bestPoint;
-        this.right = l;
-        this.right = r;
+        this.left = new Fresco.Node(l, bestPoint);
+        this.right = new Fresco.Node(r, bestPoint);
         l.split();
         r.split();
         this.shapes = []; // only leaf nodes have shapes
@@ -1060,7 +1102,7 @@ Fresco.Node = class {
         let tsplit, leftFirst;
         switch (this.axis) {
             // if the axis is None, this is a leaf node so we hit the shapes
-            case this.axis.Node:
+            case Axis.None:
                 let hit = NoHit;
                 this.shapes.forEach(s => {
                     let h = s.computeRayIntersection(r);
@@ -1130,7 +1172,7 @@ Fresco.Tree = class {
         this.aabb = new Fresco.Box(createVector(0, 0, 0), createVector(0, 0, 0));
         shapes.forEach(s => this.aabb = this.aabb.extend(s.getBoundingBox()));
 
-        this.root = new Node(shapes, 0);
+        this.root = new Fresco.Node(shapes, 0);
         this.root.split();
     }
 
@@ -1140,21 +1182,28 @@ Fresco.Tree = class {
      * @returns {Fresco.Hit} ray hit
      */
     computeRayIntersection(r) {
-        let [t0, t1] = this.aabb.computeRayIntersection(r);
-        if (t1 < t0 || t1 <= 0) {
-            return NoHit;
+        let [hit, tmin, tmax] = this.aabb.computeRayIntersection(r);
+        if (hit.distance < NoHit.distance) {
+            return this.root.computeRayIntersection(r, tmin, tmax);
         }
         else {
-            return this.root.computeRayIntersection(r, t0, t1);
+            return NoHit;
         }
     }
 }
 
 Fresco.Scene3D = class {
+    /**
+     * @constructor
+     * @property {Array<Fresco.Shape3D>} shapes
+     * @property {Array<Fresco.Shape2D>} extraShapes
+     * @property {Fresco.Tree} tree
+     */
     constructor() {
         this.shapes = [];
         this.tree;
         this.isBuilt = false;
+        this.extraShapes = [];
     }
 
     /**
@@ -1202,29 +1251,29 @@ Fresco.Scene3D = class {
      */
     isVisible(eye, v) {
         let dist = eye.copy().sub(v);
-        let r = Fresco.Ray(v, p5.Vector.normalize(dist));
+        let r = new Fresco.Ray(v.copy(), dist.copy().normalize());
         let hit = this.computeRayIntersection(r);
-        return hit.distance * hit.distance >= dist.mag();
+        return hit.distance * hit.distance >= dist.magSq();
     }
 
     /**
      * 
      * @param {p5.Vector} eye Position of the eye/camera
-     * @param {p5.Vector} center Center of the projection plane
+     * @param {p5.Vector} center Point to look at
      * @param {p5.Vector} up Up vector
      * @param {Number} width width of the image
      * @param {Number} height height of the image
      * @param {Number} fovy vertical field of view in Radians
-     * @param {Number} near Z distance to the near plane from the origin in view space.
-     * @param {Number} far Z distance to the far plane from the origin in view space.
+     * @param {Number} near z distance to the near plane from the origin in view space.
+     * @param {Number} far z distance to the far plane from the origin in view space.
      * @param {Number} step 
      * @returns {Array<Fresco.Shape>} Rendered shapes
      */
     render(eye, center, up, width, height, fovy, near, far, step) {
         let aspectRatio = width / height;
         let cameraTransform = LookAtTransform(eye, center, up);
-        cameraTransform = cameraTransform.matmul(PerspectiveProjection(fovy, aspectRatio, near, far));
-        return renderWithTransform(cameraTransform, eye, width, height, step);
+        cameraTransform = PerspectiveProjection(fovy, aspectRatio, near, far).matmul(cameraTransform);
+        return this.renderWithTransform(cameraTransform, eye, width, height, step);
     }
 
     renderWithTransform(transform, eye, width, height, subdivisionStep) {
@@ -1244,7 +1293,7 @@ Fresco.Scene3D = class {
                     let edge = p.vertices[i + 1].copy().sub(p.vertices[i]);
                     let l = edge.mag();
                     if (i == 0) {
-                        buf.push(p.vertices[i]);
+                        buf.push(p.vertices[i].copy());
                     }
                     let d = subdivisionStep;
                     while (d < l) {
@@ -1255,23 +1304,23 @@ Fresco.Scene3D = class {
                     buf.push(p.vertices[i + 1]);
                 }
                 p.vertices = buf;
-            })
+            });
         }
 
         let clipBox = new Fresco.Box(createVector(-1, -1, -1), createVector(1, 1, 1));
 
         // create occlusion filter
         let filter = (v) => {
-            let w = transform.positionMul(v);
-            if (!this.isVisible(eye, w)) {
-                return w, false;
+            let w = transform.apply(v);
+            if (!this.isVisible(eye, v)) {
+                return [w, false];
             }
 
             if (!clipBox.contains(w)) {
-                return w, false;
+                return [w, false];
             }
 
-            return w, true;
+            return [w, true];
         };
 
         // filter out occluded vertices
@@ -1279,33 +1328,33 @@ Fresco.Scene3D = class {
         paths.forEach(p => {
             let vtxBuf = [];
             p.vertices.forEach(v => {
-                let nuVtx, ok = filter(v);
+                let [nuVtx, ok] = filter(v);
                 if (ok) {
                     vtxBuf.push(nuVtx);
                 }
                 else if (vtxBuf.length > 0) {
                     let nuPath = p.copy();
                     nuPath.vertices = vtxBuf;
-                    pathBuf.push(new Fresco.Shape(nuPath));
+                    pathBuf.push(nuPath);
+                    vtxBuf = [];
                 }
             });
-            if (vtxBuf.length > 0) {
+            if (vtxBuf.length > 1) {
                 let nuPath = p.copy();
                 nuPath.vertices = vtxBuf;
-                pathBuf.push(new Fresco.Shape(nuPath));
+                pathBuf.push(nuPath);
             }
         });
 
+        paths = pathBuf;
 
         //transform all paths
-        let translation = createVector(1, 1, 0);
         let scale = createVector(width / 2, height / 2, 0);
         paths.forEach(p => {
             p.vertices.forEach(v => {
-                v = scaleVector(translateVector(v, translation), scale)
+                v.mult(scale);
             });
-        })
-
+        });
         return paths;
     }
 }
