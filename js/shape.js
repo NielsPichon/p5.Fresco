@@ -1834,6 +1834,8 @@ Fresco.Shape = class {
     //   throw 'hatch fill not yet supported for non polygonal shapes'
     // }
 
+    // make sure the angle is positive to avoid issues down the line
+    angle = (angle + 2 * Math.PI) % (2 * Math.PI);
     // line direction is periodic of period PI
     angle = angle % Math.PI;
 

@@ -738,6 +738,76 @@ Fresco.Cube = class extends Fresco.Box {
         return hit;
     }
 
+    /**
+     * Returns a number of lines to hatch fill the specified face 
+     * @param {Number} angle hatch angle
+     * @param {Number} spacing hatch lines spacing
+     * @param {String} face hatch face specified as e.g. "+xy" where + or - specify it is the face on
+     * the max or min corner side and the 2 letters indicate the plane (xy, yz, xz)
+     */
+    hatchFace(angle, spacing, face) {
+        let l;
+        let r;
+
+        switch (face.substring(1)) {
+            case 'xy':
+                l = createPoint(this.min.x, this.min.y);
+                r = createPoint(this.max.x, this.max.y);
+                break;
+            case 'yz':
+                l = createPoint(this.min.y, this.min.z);
+                r = createPoint(this.max.y, this.max.z);
+                break;
+            case 'xz':
+                l = createPoint(this.min.x, this.min.z);
+                r = createPoint(this.max.x, this.max.z);
+                break;   
+        }
+
+        let square = new Fresco.Shape([l, createPoint(l.x, r.y), r, createPoint(r.x, l.y), l]);
+        square.isPolygonal = true;
+
+        let lines = square.hatchFill(angle, spacing);
+
+        let p;
+        if (face.substring(0, 1) === '+') {
+            p = this.max;
+        }
+        else {
+            p = this.min;
+        }
+
+        switch (face.substring(1)) {
+            case 'xy':
+                lines.forEach(l => {
+                    l.vertices.forEach(v => {
+                        v.z = p.z;
+                    })
+                })
+                break;
+            case 'yz':
+                lines.forEach(l => {
+                    l.vertices.forEach(v => {
+                        v.z = v.y;
+                        v.y = v.x;
+                        v.x = p.x;
+                    })
+                })
+                break;
+            case 'xz':
+                lines.forEach(l => {
+                    l.vertices.forEach(v => {
+                        v.z = v.y;
+                        v.x = v.x;
+                        v.y = p.y;
+                    })
+                })
+                break;   
+        }
+
+        return lines;
+    }
+
     toShapes() {
         let m = this.min;
         let M = this.max;
@@ -1375,7 +1445,7 @@ Fresco.Scene3D = class {
         paths = pathBuf;
 
         //transform all paths
-        let scale = createVector(width / 2, height / 2, 0);
+        let scale = createVector(-width / 2, - height / 2, 0);
         paths.forEach(p => {
             p.vertices.forEach(v => {
                 v.mult(scale);
