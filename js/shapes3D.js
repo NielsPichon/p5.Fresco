@@ -1430,7 +1430,7 @@ Fresco.Scene3D = class {
                 }
                 else if (vtxBuf.length > 0) {
                     let nuPath = p.copy();
-                    nuPath.vertices = vtxBuf;
+                    nuPath.vertices = [...vtxBuf];
                     pathBuf.push(nuPath);
                     vtxBuf = [];
                 }
