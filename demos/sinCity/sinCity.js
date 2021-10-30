@@ -3,15 +3,18 @@ const resGrid = 5;
 const minSize = [0.2, 0.2, 0.2];
 const maxSize = [0.2, 0.2, 0.4];
 const maxFloors = 6;
-const camPos = [-3, -3, 5];
+const camPos = [-6, -6, 9.5];
 const camTarget = [0, 0, 0.5];
 const roadSize = 0;
 const hatch = true;
 const hatchSpacing = 0.01;
 const angle = -Math.PI / 3;
 const citySeed = 6186;
-const animate = true;
 const rotationPeriod = 280; // in number of frames
+const animate = false;
+const startPhase = 0.31; // angle at start
+const addText = true;
+const globalOffsetY = 150;
 
 let shapes;
 let center;
@@ -25,7 +28,7 @@ let step = 0.01;
 
 function setup() {
   // createSVGCanvas(1000, 1000);
-  createCanvas(1000, 1000);
+  createA4RatioCanvas(1000);
   background(colorFromHex(backgroundClr));
   setSeed(citySeed);
   loadFonts();
@@ -76,22 +79,30 @@ function setup() {
     X += sizeX;
   }
 
-  up = createVector(0, 0, 1); 
+  up = createVector(0, 0, 1);
+
+  jsonExportCallback = () => {return shapes};
 }
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
   background(colorFromHex(backgroundClr));
-  let c = Math.cos(frameCount / rotationPeriod * 2 * Math.PI);
-  let s = Math.sin(frameCount / rotationPeriod * 2 * Math.PI);
+  let c = Math.cos(startPhase + frameCount / rotationPeriod * 2 * Math.PI);
+  let s = Math.sin(startPhase + frameCount / rotationPeriod * 2 * Math.PI);
   center = createVector(c * camTarget[0] + s * camTarget[1], -s * camTarget[0] + c * camTarget[1], camTarget[2]);
   camera = createVector(c * camPos[0] + s * camPos[1], -s * camPos[0] + c * camPos[1], camPos[2]);
   shapes = scene.render(camera, center, up, width, height, fovy, znear, zfar, step);
 
   shapes.forEach(s => {
+    s.position = createPoint(0, globalOffsetY);
     s.draw();
   });
+
+  if (addText) {
+    let letterShapes = Fresco.Futural.drawText('Sin City · Fresco 2021', 8, createVector(0, - 2.5 * height / 8), true, true);
+    shapes.push(...letterShapes);
+  }
 
   if (!animate) {
     noLoop();

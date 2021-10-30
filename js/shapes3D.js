@@ -467,8 +467,8 @@ Fresco.Shape3D = class {
      */
     constructor(m, M) {
         super()
-        this.min = m;
-        this.max = M;
+        this.min = vectorMin(m, M);
+        this.max = vectorMax(m, M);
     }
 
     /**
@@ -992,6 +992,7 @@ Fresco.Quad = class extends Fresco.ArbitraryShape {
  */
 Fresco.Polymesh = class extends Fresco.Shape3D {
     constructor(vertices, faces) {
+        super();
         this.vertices = vertices;
         this.faces = faces;
         this.shapes = [];
@@ -1047,6 +1048,37 @@ Fresco.Polymesh = class extends Fresco.Shape3D {
         let shapes = [];
         this.edges.forEach(e => shapes.push(new Fresco.Line(...e)));
         return shapes;
+    }
+}
+
+
+Fresco.Icosphere = class extends Fresco.Polymesh {
+    constructor() {
+        const X = .525731112119133606;
+        const Z = .850650808352039932;
+        const vertices = [
+            (-X, 0.0, Z),
+            (X, 0.0, Z),
+            (-X, 0.0, -Z),
+            (X, 0.0, -Z),    
+            (0.0, Z, X),
+            (0.0, Z, -X),
+            (0.0, -Z, X),
+            (0.0, -Z, -X),    
+            (Z, X, 0.0),
+            (-Z, X, 0.0),
+            (Z, -X, 0.0),
+            (-Z, -X, 0.0) 
+        ]
+
+        const faces = [
+            [0,4,1], [0,9,4], [9,5,4], [4,5,8], [4,8,1],    
+            [8,10,1], [8,3,10], [5,3,8], [5,2,3], [2,7,3],    
+            [7,10,3], [7,6,10], [7,11,6], [11,0,6], [0,1,6], 
+            [6,1,10], [9,0,11], [9,11,2], [9,2,5], [7,2,11]
+        ]
+
+        super(vertices, faces);
     }
 }
 
@@ -1442,7 +1474,41 @@ Fresco.Scene3D = class {
             }
         });
 
-        paths = pathBuf;
+
+        if (subdivisionStep > 0) {
+            // Simplify paths following the subdivide by removing all colinear points but the end points.
+            // We also discard all shapes that only contain a single vertex
+            paths = [];
+            pathBuf.forEach(p => {
+                if (p.vertices.length > 2) {
+                    let start = p.vertices[0].copy();
+                    let end = p.vertices[1].copy();
+                    let dir = end.copy().sub(start).normalize();
+                    let buf = [start];
+                    for (let i = 2; i < p.vertices.length; i++) {
+                        let dir1 = p.vertices[i].copy().sub(start).normalize();
+                        if (Math.abs(dir.x - dir1.x) <= 1e-3 && (Math.abs(dir.y - dir1.y) <= 1e-3) && (Math.abs(dir.z - dir1.z) <= 1e-3)) {
+                            dir = dir1;
+                        }
+                        else {
+                            buf.push(end.copy());
+                            start = end.copy();
+                        }
+                        end = p.vertices[i].copy();
+                    };
+                    buf.push(end);
+
+                    p.vertices = [...buf];
+                    paths.push(p);
+                }
+                else if (p.vertices.length == 2) {
+                    paths.push(p);
+                };
+            });
+        }
+        else {
+            paths = pathBuf;
+        }
 
         //transform all paths
         let scale = createVector(-width / 2, - height / 2, 0);
