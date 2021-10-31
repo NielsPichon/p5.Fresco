@@ -33,7 +33,7 @@ Fresco.Font = class {
 
         this.fontWeight = 1;
         this.fontColor = (255, 255, 255, 255);
-        this.fontSpacing = 0;
+        this.fontSpacing = 1;
     }
 
     /**
@@ -55,7 +55,7 @@ Fresco.Font = class {
             if (actuallyDraw) {
                 s.drawInstantiate(
                     false, position, size / this.fontSize,
-                    0, this.color, null, this.fontWeight
+                    0, this.fontColor, null, this.fontWeight
                 );
             }
 

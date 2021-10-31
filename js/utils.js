@@ -52,14 +52,23 @@ function exportToAxidraw() {
   axidrawManager.shapes = jsonData;
 }
 
+
+let keyPressedEnable = true;
+
+function disableKeyPresses() {
+  keyPressedEnable = false;
+}
+
 /**
  * Overide of the p5 keyPressed function which handles various  key presses.
  * * Pausing with the p and space keys
  * * Saving the current frame to png with the s key
  * * Right arrow key will draw one frame.
  * * Display/hide the noise seed with n
+ * * Launch the Axidraw manager with a
  */
 function keyPressed() {
+  if (keyPressedEnable) {
     // pause/unpause
     if (key == 'p' || key == ' ') {
       if (isLooping()) {
@@ -99,6 +108,7 @@ function keyPressed() {
     if (key == 'a') {
       exportToAxidraw();
     }
+  }
 }
 
 

@@ -100,7 +100,7 @@ function draw() {
   });
 
   if (addText) {
-    let letterShapes = Fresco.Futural.drawText('Sin City · Fresco 2021', 8, createVector(0, - 2.5 * height / 8), true, true);
+    let letterShapes = Fresco.Futural.drawText('Sin City · Fresco 2021', 10, createVector(0, - 2.5 * height / 8), true, true);
     shapes.push(...letterShapes);
   }
 
