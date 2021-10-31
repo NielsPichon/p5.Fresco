@@ -548,11 +548,11 @@ Fresco.Shape3D = class {
 
     /**
      * Computes whether a point is outside the box along a certain axis
-     * @param {Number} value Coordinate of the point along the specified axis 
      * @param {String} axis Axis along which to check the partition 
+     * @param {Number} value Coordinate of the point along the specified axis 
      * @returns {Boolean} Whether the coordinate is outside the box
      */
-    partition(value, axis) {
+    partition(axis, value) {
         let left = false;
         let right = false;
         switch (axis) {
@@ -671,8 +671,42 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
         let ori = r.ori;
         let dir = r.dir;
 
-        let edge_1 = this.v2.position().sub(this.v1);
-        let edge_2 = this.v3.position().sub(this.v2);
+        let edge_1 = this.v2.copy().sub(this.v1);
+        let edge_2 = this.v3.copy().sub(this.v2);
+        // let edge_3 = this.v1.position().sub(this.v3);
+
+        // let N = edge_1.cross(edge_2);
+
+        // let NdotRayDirection = N.dot(dir);
+
+        // if (Math.abs(NdotRayDirection) <= EPS) {
+        //     return NoHit;
+        // }
+
+        // let d = N.dot(this.v0);
+
+        // let t = (N.dot(ori) + d) / NdotRayDirection;
+
+        // if (t < 0) {
+        //     return false;
+        // }
+
+        // let P = ori.copy().add(dir.copy().mult(t));
+        // let vp0 = P.copy().sub(this.v0);
+        // let C = edge_1.cross(vp0); 
+        // if (N.dot(C) < 0) return false;
+
+
+        // let vp1 = P.copy().sub(this.v1);
+        // C = edge_2.cross(vp1);
+        // if (N.dot(C) < 0)  return false;
+
+
+        // let vp2 = P.copy().sub(this.v2);
+        // C = edge_3.cross(vp2);
+        // if (N.dot(C) < 0) return false;
+
+        // return new Fresco.Hit(this, t);
 
         let cross_prod = dir.cross(edge_2);
         let det = edge_1.dot(cross_prod);
@@ -698,7 +732,7 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
 
         let dist = edge_2.dot(q) * inv;
 
-        if (d < EPS) {
+        if (dist < EPS) {
             return NoHit;
         }
 
@@ -710,7 +744,7 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
      * @returns {Array<Fresco.Shape>} Array containing the Fresco.Shape corresponding to the shape
      */
     toShapes() {
-        let tri = new Fresco.Shape([this.v1.copy(), this.v2.copy(), this.v3.copy()]);
+        let tri = new Fresco.Shape([this.v1.copy(), this.v2.copy(), this.v3.copy(), this.v1.copy()]);
         tri.isPolygonal = true;
         return [tri];
     }
@@ -904,12 +938,17 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
      */
     constructor(shape) {
         super();
-        if (this.isPolygonal) {
+        if (!shape.isPolygonal) {
             console.log('Warning! Shapes3D does not support non polygonal shapes.' +
-                'End result may look weird.')
+                'End result may look weird.');
+            shape.isPolygonal = true;
         }
         this.shape = shape;
         this.tris = [];
+        this.triangulate();
+        this.showTris = false;
+        this.aabb = new Fresco.Box(createVector(0,0,0), createVector(0,0,0));
+        this.tris.forEach(t => this.aabb = this.aabb.extend(t.getBoundingBox()));
     }
 
     contains(v) {
@@ -917,7 +956,7 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
     }
 
     getBoundingBox() {
-        return new Fresco.Box(...this.shape.getBoundingBox());
+        return this.aabb;
     }
 
     /**
@@ -928,9 +967,9 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
             return;
         }
 
-        let n = this.shape.vertices.length - 2;
+        let n = this.shape.vertices.length - 1;
         let s = 0;
-        for (let i = 0; i < this.vertices.length - 1; i++) {
+        for (let i = 0; i < this.shape.vertices.length - 1; i++) {
             if (i % 2 == 0) {
                 this.tris.push(new Fresco.Tri3D(
                     this.shape.vertices[s].copy(),
@@ -960,12 +999,25 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
             if (h1.distance < h.distance) {
                 h = h1;
             }
-        })
+        });
         return h;
     }
 
     toShapes() {
-        return [this.shape];
+        if (this.showTris) {
+            let shapes = [];
+            this.tris.forEach(t =>{
+                let triShapes = t.toShapes();
+                triShapes.forEach(t => t.color = [random(100,255), random(100,255), random(100,255)]);
+                shapes.push(...triShapes);
+
+            });
+            return shapes;
+        }
+        else {
+            return [this.shape.copy()];
+        }
+        
     }
 }
 
@@ -981,7 +1033,7 @@ Fresco.Quad = class extends Fresco.ArbitraryShape {
      * @param {p5.Vector} v4 vertex 
      */
     constructor(v1, v2, v3, v4) {
-        let quad = new Fresco.Shape([v1, v2, v3, v4]);
+        let quad = new Fresco.Shape([v1, v2, v3, v4, v1]);
         quad.isPolygonal = true;
         super(quad);
     }
@@ -1114,19 +1166,20 @@ Fresco.Node = class {
             if (r) {
                 right ++;
             }
-
-            if (left >= right) {
-                return left;
-            }
-            else {
-                return right;
-            }
         });
+
+        if (left >= right) {
+            return left;
+        }
+        else {
+            return right;
+        }
     }
 
 
     partition(axis, point) {
-        let left, right = [];
+        let left = [];
+        let right = [];
         this.shapes.forEach(s => {
             let box = s.getBoundingBox();
             let [l, r] = box.partition(axis, point);
@@ -1145,6 +1198,7 @@ Fresco.Node = class {
      * along the axis which best separates the node shapes
      */
     split() {
+        return;
         if (this.shapes.length < 8) {
             return
         }
@@ -1208,14 +1262,14 @@ Fresco.Node = class {
         if (bestAxis === Axis.None) {
             return
         }
-
+        
         let [l, r] = this.partition(bestAxis, bestPoint);
         this.axis = bestAxis;
         this.point = bestPoint;
         this.left = new Fresco.Node(l, bestPoint);
         this.right = new Fresco.Node(r, bestPoint);
-        l.split();
-        r.split();
+        this.left.split();
+        this.right.split();
         this.shapes = []; // only leaf nodes have shapes
     }
 
