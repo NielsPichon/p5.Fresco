@@ -7,18 +7,18 @@
 /**
  * <a href="https://github.com/spite/ccapture.js">CCapture</a> object which allows for recording animations 
  */
-let recorder;
+Fresco.recorder;
 
 /**
  * The random seed used in the sketch
  */
-let seed;
+Fresco.seed;
 
 
 /**
  * 
  */
-let isSVGCanvas = false;
+Fresco.isSVGCanvas = false;
 
 /**
  * Create an canvas with the svg renderer and stores that
@@ -27,16 +27,16 @@ let isSVGCanvas = false;
  * @param {number} h height of the canvas
  */function createSVGCanvas(w, h)
 {
-  isSVGCanvas = true;
+  Fresco.isSVGCanvas = true;
   createCanvas(w, h, SVG);
 }
 
 /**
  * Callback function called when pressing the json export key. 
  * It should return an array of Fresco.Shapes.
- * By default returns an empty array.
+ * By default returns the shape buffer
  */
-let jsonExportCallback = () => {return []};
+let jsonExportCallback = () => {return Fresco.shapeBuffer};
 
 function exportToAxidraw() {
   let shapes = jsonExportCallback();
@@ -81,7 +81,7 @@ function keyPressed() {
 
     // save current frame to png
     if (key == 's') {
-      if (isSVGCanvas) {
+      if (Fresco.isSVGCanvas) {
         save();
       }
       else 
@@ -123,12 +123,12 @@ function showSeed() {
   }
   else {
     seedDisplay =  document.createElement('div');
-    if (!seed) {
+    if (!Fresco.seed) {
       seedDisplay.innerText = "undifined seed";
       console.log("Seed was not set. Consider calling `setSeed()`")
     }
     else {
-      seedDisplay.innerText = "Seed: " + seed.toFixed();
+      seedDisplay.innerText = "Seed: " + Fresco.seed.toFixed();
 
     }
     
@@ -153,16 +153,16 @@ function showSeed() {
 function setSeed(newSeed=null) {
   // set the seed or generate a random new one
   if (newSeed) {
-    seed = newSeed;
+    Fresco.seed = newSeed;
   }
   else {
     // set random seed in [0, 1e4]
-    seed = Math.floor(Math.random() * 1e4);
+    Fresco.seed = Math.floor(Math.random() * 1e4);
   }
 
   // Set the seeds
-  randomSeed(seed);
-  noiseSeed(seed);
+  randomSeed(Fresco.seed);
+  noiseSeed(Fresco.seed);
 }
 
 /**
@@ -184,7 +184,7 @@ function recordAnimation(fps=60, video=false) {
       codec: "mpeg4"});
   }
   else {
-    recorder = new CCapture({ format: 'png', framerate: fps});
+    Fresco.recorder = new CCapture({ format: 'png', framerate: fps});
   }
 
   // set draw framerate to capture framerate
@@ -195,11 +195,11 @@ function recordAnimation(fps=60, video=false) {
   let drawAndRecord = function () {
     if (frameCount == 1) {
       // start the recording
-      recorder.start(); 
+      Fresco.recorder.start(); 
     }
     document.getElementById('rec').innerText = "Recording... " + (frameCount / fps).toFixed(1) + "s"; 
     drawCopy();
-    recorder.capture(document.getElementById('defaultCanvas0'));
+    Fresco.recorder.capture(document.getElementById('defaultCanvas0'));
   }
   draw = drawAndRecord;
 
@@ -217,9 +217,9 @@ function recordAnimation(fps=60, video=false) {
  * Stops the recording and saves it
  */
 function stopRecording() {
-  if (recorder) {
-    recorder.stop();
-    recorder.save();
+  if (Fresco.recorder) {
+    Fresco.recorder.stop();
+    Fresco.recorder.save();
     document.getElementById('rec').remove();
   }
   else {

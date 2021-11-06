@@ -8,8 +8,30 @@
  * Defines the namespace for all classes of the p5.Fresco library
  * @namespace
  */
-var Fresco = {};
+let Fresco = {};
 
+/**
+ * Buffer of shapes in which each and every shape that is drawn to the canvas will be registered.
+ */
+Fresco.shapeBuffer = [];
+
+/**
+ * Toggle shape registration on and off
+ */
+Fresco.registerShapes = true;
+
+/**
+ * Registers a reference to a shape
+ * @param {Fresco.Shape} shape shape to register 
+ */
+function registerDrawnShape(shape) {
+  if (registerShapes) {
+    let idx = Fresco.shapeBuffer.indexOf(shape);
+    if (idx == -1) {
+      Fresco.shapeBuffer.push(shape);
+    }
+  }
+}
 
 /**
  * Type of shadows that can be used when drawing the shadow of a shape
@@ -423,8 +445,25 @@ Fresco.Shape = class {
    * multiple vertices color so this will
    * most likely result in drawing the shape  with the last vertex's color.
    */
-  draw(usePointColor = false) {
-    this.drawInstantiate(usePointColor);
+  draw(usePointColor=false) {
+    registerDrawnShape(this);
+    this._draw(usePointColor);
+  }
+
+  /**
+   * Duplicate of the draw method except the shape won't be registered
+   * @param {boolean} [usePointColor] Whether to use  the shape color or the
+   * individual vertices color.
+   * At the current time, p5.js does not support drawing shapes with
+   * multiple vertices color so this will
+   * most likely result in drawing the shape  with the last vertex's color.
+   */
+  drawNoRegister(usePointColor=false) {
+    this._draw(usePointColor);
+  }
+
+  _draw(usePointColor) {
+    this._drawInstantiate(usePointColor);
   }
 
   /**
@@ -447,9 +486,59 @@ Fresco.Shape = class {
    * If not specified, will default to the shape's strokeWeight.
    * At the current time, p5.js does not support drawing shapes with
    * multiple vertices color so this will
-   * most likely result in drawing the sahpe  with the last vertex's color.
+   * most likely result in drawing the shape  with the last vertex's color.
+   * Note: This will register a copy of this shape with the appropriate transform rather than 
+   * the shape itself, allowing to register several instances. 
    */
-  drawInstantiate(usePointColor = false, position=null,
+  drawInstantiate(usePointColor=false, position=null,
+    scale=null, rotation=null, color=null, fillColor=null,
+    lineWeight=null) {
+      if (registerShapes) {
+        let shapeBuf = this.copy();
+        if (position != null) {
+          shapeBuf.position = position;
+        }
+        if (scale != null) {
+          shapeBuf.scale = scale;
+        }
+        if (rotation != null) {
+          shapeBuf.rotation = rotation;
+        }
+        registerDrawnShape(shapeBuf);
+      }
+
+      this._drawInstantiate(usePointColor, position, scale, rotation, color, fillColor, lineWeight);
+    }
+
+  /**
+   * Duplicate of the draw instantiate function in which the drawn shape will not be registered
+   * @param {boolean} [usePointColor] Whether to use  the shape color or the
+   * individual vertices color.
+   * @param {p5.Vector} [position] Position offset. If not specified,
+   * the method will use the shape's own transform.
+   * @param {p5.Vector} [scale] Scale. If `position` is specified,
+   * this will default to unit scale.
+   * @param {number} [rotation] Rotation. If `position` is specified,
+   * this will default to 0.
+   * @param {Array.<number>} color RGBA color the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * Ignored if `usePointColor`. If not specified, will default to the shape's color.
+   * @param {Array.<number>} fillColor RGBA fill color of the stroke of the instance,
+   * as an array of 4 values in the range [0,255].
+   * If not specified, will default to the shape's fillColor.
+   * @param {number} lineWeight Weight of the stroke.
+   * If not specified, will default to the shape's strokeWeight.
+   * At the current time, p5.js does not support drawing shapes with
+   * multiple vertices color so this will
+   * most likely result in drawing the shape  with the last vertex's color.
+   */
+  drawInstantiateNoRegister(usePointColor=false, position=null,
+    scale=null, rotation=null, color=null, fillColor=null,
+    lineWeight=null) {
+    this._drawInstantiate(usePointColor, position, scale, rotation, color, fillColor, lineWeight);
+  }
+  
+  _drawInstantiate(usePointColor=false, position=null,
     scale=null, rotation=null, color=null, fillColor=null,
     lineWeight=null) {
 
