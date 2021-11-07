@@ -518,11 +518,18 @@ Fresco.Particle = class extends Fresco.Point {
                 start = this.trail.vertices[this.trail.vertices - 2];
             }
             if (start) {
-                // Draw the line between the start point and current one
-                let line = new Fresco.Line(this, start);
-                line.color = this.color;
-                line.strokeWidth = this.radius;
-                line.draw();
+                if (Fresco.registerShapes) {
+                    // Draw the line between the start point and current one
+                    let line = new Fresco.Line(this, start);
+                    line.color = this.color;
+                    line.strokeWidth = this.radius;
+                    line.draw();
+                }
+                else {
+                    strokeWeight(this.radius);
+                    stroke(this.color);
+                    drawLine(start, this);
+                }
             }
         }
     }

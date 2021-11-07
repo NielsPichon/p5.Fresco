@@ -7,6 +7,7 @@ const shapeColor = '507dbc';
 const shapeThickness = 2;
 const shapeOutlineColor = 'd81159';
 const shapeOutlineThickness = 0.2;
+const extraOutline = false;
 
 let s;
 let s1;
@@ -14,7 +15,7 @@ let s2;
 let normalizedVerticesDirection = []
 
 function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
+  createA4RatioCanvas(1440);
   background(colorFromHex(backgroundClr));
 
   s = new Fresco.Polygon(minRadius, numberOfSides);
@@ -33,9 +34,12 @@ function setup() {
 }
 
 function draw() {
-  s.draw();
-  s1.draw();
-  s2.draw();
+  // draw and register a copy of the shape
+  s.draw(false, true);
+  if (extraOutline) {
+    s1.drawInstantiate(false, true);
+    s2.drawInstantiate(false, true);
+  }
 
   // Increment the scale and rotation
   s.scale.add(createVector(scaleIncrement, scaleIncrement));

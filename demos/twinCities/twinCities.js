@@ -25,6 +25,8 @@ const addText = false; // whether to draw the drawing title
 const finalTranslateY = 0; // Translate the rendered drawing by some amount vertically to ease centering
 const globalScale = 0.8; // Scale the result of the path tracing
 
+const drawBox = true; // draws a box around the drawing
+
 let shapes;
 let center;
 let up;
@@ -83,7 +85,7 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
   let c = Math.cos(startPhase + frameCount / rotationPeriod * 2 * Math.PI);
   let s = Math.sin(startPhase + frameCount / rotationPeriod * 2 * Math.PI);
   center = createVector(c * camTarget[0] + s * camTarget[1], -s * camTarget[0] + c * camTarget[1], camTarget[2]);
@@ -99,6 +101,11 @@ function draw() {
   if (addText) {
     let letterShapes = Fresco.Futural.drawText('Twin Cities · Fresco 2021', 6, createVector(0, - 2.5 * height / 8), true, true);
     shapes.push(...letterShapes);
+  }
+
+  if (drawBox) {
+    let rect = new Fresco.Rect(width - 140, height - 200);
+    rect.draw();
   }
 
   if (!animate) {

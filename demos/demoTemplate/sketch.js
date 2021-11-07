@@ -1,10 +1,11 @@
 const backgroundClr = '000';
 
 function setup() {
-  createSVGCanvas(1000, 1000);
+  createCanvas(1000, 1000);
   background(colorFromHex(backgroundClr));
   setSeed();
   loadFonts();
+  Fresco.registerShapes = false;
 }
 
 // draw function which is automatically 

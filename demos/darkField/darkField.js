@@ -52,7 +52,6 @@ function setup() {
   if (record) {
     recordAnimation();
   }
-
 }
 
 function draw() {

@@ -15,12 +15,16 @@ const maxShapeOscRatio = 0.8; // how much the circle will bend
 const minFreq = 0.5; // min oscillation frequency ratio
 const particleNum = 5;
 
+const axidrawFriendly = true; // makes the drawing axidraw friendly but may be a bit slower
+const axidrawTrailLengthThreshold = 50; // Min length of a particle's trail for it to be drawn 
+
 let s;
 
 function setup() {
   createA4RatioCanvas(1000);
   background(colorFromHex(backgroundClr));
   setSeed();
+  Fresco.registerShapes = false;
 
   s = new Fresco.Polygon(startRadius, resolution)
   let e = new Fresco.ShapeEmitter(s);
@@ -32,6 +36,9 @@ function setup() {
   e.spawnRate = particleNum;
   e.minLife = 1;
   e.maxLife = 5;
+  if (axidrawFriendly) {
+    e.leaveTrail = true;
+  }
 
   e.setColor(colorFromHex(particleClr, particleAlpha));
 
@@ -41,12 +48,25 @@ function setup() {
   for (let i = 0; i < s.vertices.length - 1; i++) {
     s.vertices[i].freq = minFreq + (1 - minFreq) * random();
   }
+
+  if (axidrawFriendly) {
+    jsonExportCallback = () => {
+      let shapes = [];
+      particles.forEach(p => {
+        if (p.trail != null && p.trail.vertices.length > axidrawTrailLengthThreshold) {
+          shapes.push(p.trail);
+        }
+      });
+  
+      return shapes;
+    }
+  }
 }
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr, backgroundAlpha));
+  setBackgroundColor(colorFromHex(backgroundClr, backgroundAlpha));
   for (let i = 0; i < getParticlesNum(); i++) {
     p = getParticle(i);
     p.drawLastMove();

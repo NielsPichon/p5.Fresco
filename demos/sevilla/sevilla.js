@@ -11,7 +11,7 @@ const fadeWidth = 200;
 
 const margins = 110;
 
-const render = true;
+const render = false;
 
 let r = minRadius;
 let circleCount = 0;

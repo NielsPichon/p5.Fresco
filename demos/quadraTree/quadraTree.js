@@ -18,7 +18,7 @@ const privilegedDir = 0; // if 0, splits will happen with random direction
 const areaWeighting = 0.1; // power of the area. The lower, the larger the impact of noise
 const cellShape = 'rect'; // either 'circle' or 'rect'. This only affects the render, not the quadtree algorithm
 
-const record = true;
+const record = false;
 
 let t = 0;
 
@@ -41,7 +41,7 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
   let root = new Cell(0, 0, width, height);
   root.drawCell();
   t += noiseFreq;
@@ -77,8 +77,7 @@ class Cell extends cellType {
       offsetY = this.height / 2
     }
     // choose fill color randomly. We use a pseudo random noise to keep it constant over time
-    let n = starNoise(this.position.x + offsetX, this.position.y + offsetY);
-    print(n, this.position.x + offsetX, this.position.y + offsetY);
+    let n = perlin(this.position.x + offsetX, this.position.y + offsetY);
     let colorIdx = Math.floor(n * shapeFillCrl.length);
     this.fillColor = colorFromHex(shapeFillCrl[colorIdx], shapeFillOpacity);
     this.strokeWeight = lineThickness; 
@@ -107,7 +106,7 @@ class Cell extends cellType {
             offsetY = this.height / 2
           }
           // randomly choose subdivision direction if cell is not squared, unless a prefered direction is set
-          let dir = starNoise(this.position.x + offsetX, this.position.y + offsetY);
+          let dir = perlin(this.position.x + offsetX, this.position.y + offsetY);
           if (this.width > this.height || (this.width == this.height && ((dir > 0.5 && privilegedDir != -1) || privilegedDir == 1))) {
             this.children.push(new Cell(this.position.x - this.width / 4, this.position.y, this.width / 2, this.height));
             this.children.push(new Cell(this.position.x + this.width / 4, this.position.y, this.width / 2, this.height));          

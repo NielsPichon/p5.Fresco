@@ -96,7 +96,7 @@ function setup() {
   else {
     setSeed();
   }
-  print("circles seed", seed);
+  print("circles seed", Fresco.seed);
   let numCircles = random(minNumCircles, maxNumCircles);
   for (let i = 0; i < numCircles; i++) {
     let c = new Fresco.Polygon(random(minCircleRadius, maxCircleRadius), 64);
@@ -116,7 +116,7 @@ function setup() {
   else {
     setSeed(0);
   }
-  print("clouds seed", seed);
+  print("clouds seed", Fresco.seed);
   let maxAngle = Math.atan2(height * (cloudBottomLine - 0.5), width / 2);
   let minAngle = Math.PI - maxAngle;
   let numClouds = random(minCloudNum, maxCloudNum);

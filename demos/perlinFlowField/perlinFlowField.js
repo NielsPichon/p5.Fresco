@@ -27,18 +27,21 @@ function setup() {
   angleMode(DEGREES);
   noiseDetail(1);
 
+  Fresco.registerShapes = false;
+
   let space = 2 * alphaFadeRadius / density;
 
   // spawn particles at even interval + some random modulation
   for (let x = - alphaFadeRadius; x < alphaFadeRadius; x += space) {
     for (let y = - alphaFadeRadius; y < alphaFadeRadius; y += space) {
-        let p = createParticle(
-          x + random(-pointSpacingModulation, pointSpacingModulation),
-          y + random(-pointSpacingModulation, pointSpacingModulation)
-        );
+      let X = x + random(-pointSpacingModulation, pointSpacingModulation);
+      let Y = y + random(-pointSpacingModulation, pointSpacingModulation);
+      if (X * X + Y * Y < alphaFadeRadius * alphaFadeRadius){
+        let p = createParticle(X, Y);
         p.leaveTrail = true;
         p.color = [255, 255, 255, 128];
-   }
+      }
+    }
   }
 
   // Randomize the lines so that they don't spawn from
@@ -61,6 +64,16 @@ function setup() {
       let lineCount = min([i * 5, particles.length]);
       step(lineCount);
     }
+  }
+
+  jsonExportCallback = () => {
+    let shapes = [];
+    particles.forEach(p => {
+      if (p.trail != null) {
+        shapes.push(p.trail)
+      }
+    });
+    return shapes;
   }
 }
 
@@ -118,6 +131,8 @@ function draw() {
         else {
           particles[i].drawLastMove();
         }
+      } else {
+        particles[i].trail.vertices.pop();
       }
     }
 
@@ -130,7 +145,7 @@ function draw() {
     // if pre-simulated, simply draw the whole trajectory of each particle
     for (let i = 0; i < particles.length; i++) {
       if (dist(0, 0, particles[i].x, particles[i].y) < alphaFadeRadius) {
-        particles[i].draw();
+        particles[i].drawLastMove();
       }
     }
     noLoop()

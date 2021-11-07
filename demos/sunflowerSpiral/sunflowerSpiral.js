@@ -47,7 +47,7 @@ function setup() {
 }
 
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
 
   // the scale is modulated by a cosine. We choose cosine over sine, because
   // if the growSpeed is 0, the cos is always 1 while the sine is 0;

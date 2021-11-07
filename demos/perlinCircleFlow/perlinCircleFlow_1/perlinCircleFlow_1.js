@@ -13,7 +13,7 @@ function setup() {
 }
 
 function draw() {
-  c.draw();
+  c.draw(false, true);
   step();
 }
 

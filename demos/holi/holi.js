@@ -33,7 +33,10 @@ const angle = Math.PI / 2; // angle at which the agents look and turn
 const cellSizeMult = 0.7; // display size of each cell
 const screenRes = 1080; // resolution of the image in pixels
 
-const record = true;
+const axidrawFilterThreshold = 0.1; // Minimum compound concentration that will translate to an axidraw shape
+const axidrawRadiusRatio = 0.2; // radius of the drawn circles on the axidraw, relative to the current cell radius
+
+const record = false;
 
 let cells = [];
 let clrs = []; // colors converted to rgb
@@ -235,13 +238,38 @@ function setup() {
   if (record) {
     recordAnimation();
   }
+
+  jsonExportCallback = () => {
+    let shapes = [];
+    cells.forEach(row => {
+      row.forEach(c => {
+        let maxCompoundIdx = -1;
+        let maxConcentration = axidrawFilterThreshold;
+        for (let i = 0; i < c.compounds.length; i++) {
+          if (c.compounds[i] > maxConcentration) {
+            maxConcentration = c.compounds[i];
+            maxCompoundIdx = i;
+          }
+        }
+
+        if (maxCompoundIdx >= 0) {
+          let cell = new Fresco.Circle(c.radius * axidrawRadiusRatio);
+          cell.position = c.position();
+          cell.layer = maxCompoundIdx;
+          shapes.push(cell);
+        }
+      });
+    });
+
+    return shapes;
+  };
 }
 
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
   drawGrid();
   updateAgents();
   diffuse();

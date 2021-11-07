@@ -57,6 +57,8 @@ function setup() {
   createCanvas(1000, 1000);
   background(colorFromHex(backgroundClr));
   setSeed();
+  Fresco.registerShapes = false;
+
 
   let e = new Fresco.ShapeEmitter(new Fresco.Polygon(emitterRadius, 64));
   e.simulatePhysics = true;
@@ -77,7 +79,7 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr, fadeOverTime));
+  setBackgroundColor(colorFromHex(backgroundClr, fadeOverTime));
   simulationStep();
   for (let i = 0; i < particles.length; i++) {
     particles[i].drawLastMove();

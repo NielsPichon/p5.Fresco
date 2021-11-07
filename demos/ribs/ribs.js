@@ -31,7 +31,7 @@ function setup() {
 }
 
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
   noFill();
   stroke(colorFromHex(lineClr));
 

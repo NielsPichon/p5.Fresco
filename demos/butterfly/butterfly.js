@@ -15,7 +15,7 @@ let rings = [];
 
 
 function setup() {
-  createSVGCanvas(1440, 1440);
+  createCanvas(1440, 1440);
   setSeed();
 
   let k;

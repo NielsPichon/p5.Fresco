@@ -144,7 +144,7 @@ function draw() {
 
     
     // draw the line
-    s.draw();
+    s.draw(false, true);
   }
 }
 

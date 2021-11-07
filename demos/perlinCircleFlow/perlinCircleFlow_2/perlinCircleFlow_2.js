@@ -20,12 +20,12 @@ function setup() {
 }
 
 function draw() {
-  circleShape.draw();
+  circleShape.draw(false, true);
   step();
 }
 
 function step() {
-  let nrm = circleShape.normals();
+  let nrm = circleShape.computeNormals();
   for (let i = 0; i < circleShape.vertices.length; i++) {
     // get noise at vertex
     let n = normalizedPerlin(

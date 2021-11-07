@@ -33,6 +33,16 @@ function registerDrawnShape(shape) {
   }
 }
 
+
+/**
+ * Set the background's color. Any registred shape will be removed.
+ * @param {Array<Number>} color rgba array 
+ */
+function setBackgroundColor(color) {
+  Fresco.shapeBuffer = [];
+  background(color);
+}
+
 /**
  * Type of shadows that can be used when drawing the shadow of a shape
  */
@@ -439,14 +449,21 @@ Fresco.Shape = class {
 
   /**
    * Utility to draw the shape
-   * @param {boolean} [usePointColor] Whether to use  the shape color or the
+   * @param {boolean} usePointColor=false Whether to use  the shape color or the
    * individual vertices color.
    * At the current time, p5.js does not support drawing shapes with
    * multiple vertices color so this will
    * most likely result in drawing the shape  with the last vertex's color.
+   * @param {boolean} registerCopy=false If true, a copy of this shape will be registered instead of this shape.
+   * This is necessary if you want to overlay multiple versions of this shape.
    */
-  draw(usePointColor=false) {
-    registerDrawnShape(this);
+  draw(usePointColor=false, registerCopy=false) {
+    if (registerCopy && Fresco.registerShapes) {
+      registerDrawnShape(this.copy());
+    }
+    else {
+      registerDrawnShape(this);
+    }
     this._draw(usePointColor);
   }
 

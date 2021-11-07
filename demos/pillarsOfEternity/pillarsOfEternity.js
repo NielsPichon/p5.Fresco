@@ -45,7 +45,7 @@ function setup() {
 // draw function which is automatically
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
 
   let t = 0;
   for (let i = 0; i < numPillars; i++) {
@@ -195,7 +195,7 @@ class NoisyCube {
 
   draw() {
     for (let i = 0; i < 4; i++) {
-      this.faces[i].draw();
+      this.faces[i].draw(false, true);
     }
   }
 

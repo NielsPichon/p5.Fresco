@@ -86,14 +86,13 @@ function setup() {
     }
   }
 
-
   up = createVector(0, 0, 1);
 }
 
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
   let c = Math.cos(startPhase + frameCount / rotationPeriod * 2 * Math.PI);
   let s = Math.sin(startPhase + frameCount / rotationPeriod * 2 * Math.PI);
   center = createVector(c * camTarget[0] + s * camTarget[1], -s * camTarget[0] + c * camTarget[1], camTarget[2]);

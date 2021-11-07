@@ -74,14 +74,14 @@ function setup() {
 // called in a loop
 function draw() {
   if (refreshAlways) {
-    background(colorFromHex(backgroundClr));
+    setBackgroundColor(colorFromHex(backgroundClr));
   }
 
   for (let k = 0; k < shapes.length; k++) {
     let s = shapes[k];
 
     // draw shape
-    s.draw();
+    s.draw(false);
 
     for (let i = 0; i < s.vertices.length; i++) {
       // change velocity based on noise if relevant

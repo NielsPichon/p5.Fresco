@@ -22,7 +22,7 @@ const rotationSpeed = 0; // how fast the shape spins
 const radiusSpeed = 2 * Math.PI / (4 * 60); // how fast the size oscillates
 const animateTreeSpanSpeed = 2 * Math.PI / (4 * 60); // if > 0 the span of the tree will oscillate
 
-const record = true; // whether to record the animation
+const record = false; // whether to record the animation
 
 
 let rootNode;
@@ -64,7 +64,7 @@ function setup() {
 function draw() {
   if (rotationSpeed > 0 || animateTreeSpanSpeed > 0 ||  radiusSpeed > 0) {
     // draw background
-    background(colorFromHex(backgroundClr));
+    setBackgroundColor(colorFromHex(backgroundClr));
 
     // rotate the shape
     if (rotationSpeed > 0) {
@@ -157,9 +157,10 @@ class Node extends Fresco.Point {
       alpha += this.children[i].alphaWeight / 2;
       this.children[i].setPosition(p5.Vector.fromAngle(alpha).mult(radius * (this.recursionLvl + 1)));
       this.children[i].alpha = alpha;
-      stroke(this.children[i].color);
-      strokeWeight(lineWeight);
-      drawLine(this, this.children[i]);
+      let line = new Fresco.Line(this, this.children[i]);
+      line.color = this.children[i].color;
+      line.strokeWeight = lineWeight
+      line.draw();
       if (pointWeight > 0) {
         stroke(this.children[i].pointColor);
         strokeWeight(pointWeight);

@@ -52,8 +52,6 @@ function draw() {
     X = -width / 2 + margin + xSpacing / 2;
     Y -= ySpacing;
     if (Y < -height / 2 + margin) {
-      text = text.concat(Fresco.Futural.drawText('Ode à la féminité · Fresco', 12, createVector(0, -(height / 2) + 100) , true))
-      // text = text.concat(Fresco.Futural.drawText('Fresco', 12, createVector(0, -(height / 2) + 50) , true))
       noLoop();
     }
   }

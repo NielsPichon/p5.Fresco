@@ -35,7 +35,7 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
   for (let i = 0; i < pots.length; i++) {
     pots[i].draw();
   }

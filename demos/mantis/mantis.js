@@ -29,7 +29,7 @@ const speed = 0.03;
 const strip = false;
 
 const animalSeed = 1133;
-const record = true;
+const record = false;
 
 
 let firstBranching = true;
@@ -74,7 +74,7 @@ function setup() {
 // draw function which is automatically 
 // called in a loop
 function draw() {
-  background(colorFromHex(backgroundClr));
+  setBackgroundColor(colorFromHex(backgroundClr));
   simulationStep();
 
   for (let i = 0; i < particles.length; i++) {

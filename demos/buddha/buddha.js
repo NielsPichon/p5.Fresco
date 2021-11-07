@@ -13,7 +13,7 @@ const symmetry = true;
 const trail = true;
 const noiseTransform = '';
 let noiseType = ridgedNoise;
-const record = true;
+const record = false;
 
 let radius;
 
