@@ -40,16 +40,6 @@ function setup() {
   if (margin > 0) {
     border(margin, colorFromHex(marginColor));
   }
-
-  jsonExportCallback = () => {
-    let shapes = [];
-    geo.forEach(g => {
-      shapes = shapes.concat(g.toShapes());
-    });
-
-    shapes = shapes.concat(text);
-    return shapes;
-  }  
 }
 
 function draw() {

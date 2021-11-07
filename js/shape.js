@@ -25,7 +25,7 @@ Fresco.registerShapes = true;
  * @param {Fresco.Shape} shape shape to register 
  */
 function registerDrawnShape(shape) {
-  if (registerShapes) {
+  if (Fresco.registerShapes) {
     let idx = Fresco.shapeBuffer.indexOf(shape);
     if (idx == -1) {
       Fresco.shapeBuffer.push(shape);
@@ -493,7 +493,7 @@ Fresco.Shape = class {
   drawInstantiate(usePointColor=false, position=null,
     scale=null, rotation=null, color=null, fillColor=null,
     lineWeight=null) {
-      if (registerShapes) {
+      if (Fresco.registerShapes) {
         let shapeBuf = this.copy();
         if (position != null) {
           shapeBuf.position = position;
@@ -504,6 +504,7 @@ Fresco.Shape = class {
         if (rotation != null) {
           shapeBuf.rotation = rotation;
         }
+        shapeBuf.freezeTransform();
         registerDrawnShape(shapeBuf);
       }
 

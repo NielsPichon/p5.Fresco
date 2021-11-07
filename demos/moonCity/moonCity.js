@@ -88,7 +88,6 @@ function setup() {
 
 
   up = createVector(0, 0, 1);
-  jsonExportCallback = () => {return shapes};
 }
 
 // draw function which is automatically 

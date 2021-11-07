@@ -498,10 +498,6 @@ function setup() {
   Fresco.Futural.fontSpacing = 4;
 
   tiler = new Tiler(OneTwoTile, resX, resY, 0, 0, [gapThickness, showText, false]);
-
-  jsonExportCallback = () => {
-    return tiler.toShapes();
-  }
 }
 
 

@@ -1,11 +1,11 @@
 const backgroundClr = '000';
 
-const resGrid = 5; // number of buildings along each axis
+const resGrid = 10; // number of buildings along each axis
 const minSize = [0.2, 0.2, 0.1]; // min size of a building along the x, y, and z axes
 const maxSize = [0.2, 0.2]; // max size of a building along the x, y axes
 const totHeight = resGrid * maxSize[0]; // To try and enforce a cube like city, the totHeight is set to the max width of the city 
 const maxSizeZ = totHeight / 2; // Max height is always at most half the totHeight to avoid building collisions
-const noiseZ = 0; // Changes alignment of building's ground. Set to 0 for perfect alignement
+const noiseZ = 0.2; // Changes alignment of building's ground. Set to 0 for perfect alignement
 
 const citySeed = 3965; // Random seed
 
@@ -14,15 +14,16 @@ const camTarget = [0, 0.15, 0];
 const startPhase = 0.31; // Camera angle at start with regard to the base camera position
 
 const hatch = true; // whether to add cross hatch "shadow"
-const hatchSpacing = 0.01; // spacing between cross hatch lines
+const hatchSpacing = 0.02; // spacing between cross hatch lines
 const hatchAngle = -Math.PI / 3; // angle of the cross hatching
 
 const animate = false; // whether to rotate the camera around the center
 const rotationPeriod = 280; // camera rotation speed, expressed as the revolution period in number of frames
 
-const addText = true; // whether to draw the drawing title
+const addText = false; // whether to draw the drawing title
 
-const finalTranslateY = 75; // Translate the rendered drawing by some amount vertically to ease centering
+const finalTranslateY = 0; // Translate the rendered drawing by some amount vertically to ease centering
+const globalScale = 0.8; // Scale the result of the path tracing
 
 let shapes;
 let center;
@@ -33,6 +34,7 @@ let fovy = 50.0;
 let znear = 0.1;
 let zfar = 100.0;
 let step = 0.01;
+let rings = [];
 
 function setup() {
   createA4RatioCanvas(1000 / Math.sqrt(2));
@@ -76,8 +78,6 @@ function setup() {
   }
 
   up = createVector(0, 0, 1);
-
-  jsonExportCallback = () => {return shapes};
 }
 
 // draw function which is automatically 
@@ -92,6 +92,7 @@ function draw() {
 
   shapes.forEach(s => {
     s.position = createPoint(0, finalTranslateY);
+    s.scale = createVector(globalScale, globalScale);
     s.draw();
   });
 
@@ -99,7 +100,6 @@ function draw() {
     let letterShapes = Fresco.Futural.drawText('Twin Cities · Fresco 2021', 6, createVector(0, - 2.5 * height / 8), true, true);
     shapes.push(...letterShapes);
   }
-
 
   if (!animate) {
     noLoop();
