@@ -1142,12 +1142,13 @@ Fresco.Node = class {
      * @constructor
      * @param {Array<Fresco.Shape3D>} shapes 
      */
-    constructor(shapes, point) {
+    constructor(shapes, point, depth) {
         this.shapes = shapes;
         this.axis = Axis.None;
         this.left;
         this.right;
         this.point = point;
+        this.depth = depth;
     }
 
     /**
@@ -1198,8 +1199,7 @@ Fresco.Node = class {
      * along the axis which best separates the node shapes
      */
     split() {
-        return;
-        if (this.shapes.length < 8) {
+        if (this.shapes.length < 8 || this.depth >= 10) {
             return
         }
         
@@ -1266,8 +1266,8 @@ Fresco.Node = class {
         let [l, r] = this.partition(bestAxis, bestPoint);
         this.axis = bestAxis;
         this.point = bestPoint;
-        this.left = new Fresco.Node(l, bestPoint);
-        this.right = new Fresco.Node(r, bestPoint);
+        this.left = new Fresco.Node(l, bestPoint, this.depth + 1);
+        this.right = new Fresco.Node(r, bestPoint, this.depth + 1);
         this.left.split();
         this.right.split();
         this.shapes = []; // only leaf nodes have shapes
@@ -1354,7 +1354,7 @@ Fresco.Tree = class {
         this.aabb = new Fresco.Box(createVector(0, 0, 0), createVector(0, 0, 0));
         shapes.forEach(s => this.aabb = this.aabb.extend(s.getBoundingBox()));
 
-        this.root = new Fresco.Node(shapes, 0);
+        this.root = new Fresco.Node(shapes, 0, 1);
         this.root.split();
     }
 
