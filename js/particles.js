@@ -511,9 +511,6 @@ Fresco.Particle = class extends Fresco.Point {
      */
     drawLastMove() {
         if (!this.stopSimulate) {
-            stroke(this.color);
-            strokeWeight(this.radius);
-
             let start = this.previousPosition;
             // account for the case where we may have stored the postion in the
             // trail instead of the previousPosition buffer 
@@ -522,7 +519,10 @@ Fresco.Particle = class extends Fresco.Point {
             }
             if (start) {
                 // Draw the line between the start point and current one
-                drawLine(this, this.previousPosition);
+                let line = new Fresco.Line(this, start);
+                line.color = this.color;
+                line.strokeWidth = this.radius;
+                line.draw();
             }
         }
     }

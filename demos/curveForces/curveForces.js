@@ -2,23 +2,23 @@ const backgroundClr = '000';
 const backgroundAlpha = 15;
 const particleClr = 'fff';
 const particleAlpha = 128;
-const startRadius = 300; // raidus of the circle
+const startRadius = 200; // radius of the circle
 const resolution = 12; // number of control points along the shape
-const pullIntensity = 0.1; // how much pull towards the curve is applied
-const driveIntensity = 2; // how much force along the curve is applied
+const pullIntensity = 0.01; // how much pull towards the curve is applied
+const driveIntensity = 0.1; // how much force along the curve is applied
 const noiseIntensity = 5; // particles noise amount
 const noiseFreq = 0.01; // particles noise freq
 const simulationSpeed = 0.01; // particles movement time step
-const distThreshold = 40; // distance beyond which particles will be pulled back to the shape
+const distThreshold = 100; // distance beyond which particles will be pulled back to the shape
 const shapeMoveSpeed = 0.01; // how fast the circle deforms
 const maxShapeOscRatio = 0.8; // how much the circle will bend
 const minFreq = 0.5; // min oscillation frequency ratio
-const particleNum = 10;
+const particleNum = 5;
 
 let s;
 
 function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
+  createA4RatioCanvas(1000);
   background(colorFromHex(backgroundClr));
   setSeed();
 
