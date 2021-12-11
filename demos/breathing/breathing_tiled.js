@@ -1,11 +1,11 @@
 const backgroundClr = '00010f';
 const lineClr = 'ef476f';
-const lineAlpha = 128;
+const lineAlpha = 255;
 const lineVerticesNum = 5;
-const lineNum = 150;
+const lineNum = 75;
 const maxFactor = 1;
 const noiseFreq = 0.001;
-const noiseAmplitude = 20;
+const noiseAmplitude = 30;
 const displayCircle = false;
 const noiseModSpeed = 10;
 
@@ -26,6 +26,7 @@ const playBackSpeed = Math.PI / numSteps;
 
 function setup() {
   createCanvas(1440, 1440 * sqrt(2));
+  setSeed()
 
   r = width / 2 - 100;
 
@@ -64,6 +65,7 @@ function draw() {
 
   // create new subdivided line
   let l = new Fresco.Line(a, b, lineVerticesNum);
+  l.isPolygonal = false;
   l.color = colorFromHex(lineClr, lineAlpha);
 
   // displace line vertices

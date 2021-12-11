@@ -35,6 +35,7 @@ const screenRes = 1080; // resolution of the image in pixels
 
 const axidrawFilterThreshold = 0.1; // Minimum compound concentration that will translate to an axidraw shape
 const axidrawRadiusRatio = 0.2; // radius of the drawn circles on the axidraw, relative to the current cell radius
+const maxAxidrawLayers = 5; // Compounds will be grouped in max thi many layers
 
 const record = false;
 
@@ -255,7 +256,7 @@ function setup() {
         if (maxCompoundIdx >= 0) {
           let cell = new Fresco.Circle(c.radius * axidrawRadiusRatio);
           cell.position = c.position();
-          cell.layer = maxCompoundIdx;
+          cell.layer = maxCompoundIdx % maxAxidrawLayers;
           shapes.push(cell);
         }
       });

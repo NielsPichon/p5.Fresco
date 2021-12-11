@@ -16,7 +16,7 @@ const polyShape = true;
 const partNum = 10;
 const noiseFreq = 0.01;
 const noiseAmplitude = 0.3;
-const emitterSize = [1000];
+const emitterSize = [1000, 700, 400];
 const borderSize = 500;
 const maxPartCount = 10000;
 const circleModulation = 100;
@@ -31,9 +31,10 @@ let partCount = 0;
 
 
 function setup() {
-  createCanvas(1440, 1440);
+  createA4RatioCanvas(1440)
   background(0);
-  setSeed();
+  setSeed(6242);
+  Fresco.registerShapes = false
 
   // Create a number of emitters
   for (let i = 0; i < emitterSize.length; i++) {
@@ -42,7 +43,7 @@ function setup() {
     e.minV = createVector(0, 0);
     e.maxV = createVector(0, 0);
     e.minNormalV = 1; // Make sure all particles start with equal normal velocity
-    e.leaveTrail = false;
+    e.leaveTrail = true;
     e.burst = false;
     e.spawnRate = partNum;
     e.setColor(colorFromHex(lineClr, opacity));
@@ -52,11 +53,27 @@ function setup() {
   if (record) {
     recordAnimation();
   }
+
+  jsonExportCallback = () => {
+    particles.forEach(p => {
+      if (!p.isDead) {
+        p.trail.isPolygonal = true;
+        Fresco.shapeBuffer.push(p.trail);
+      }
+    });
+
+    Fresco.shapeBuffer.forEach(s => {
+      if (s.vertices.length > 10) {
+        s = resample(s, 10);
+      }
+    });
+    return Fresco.shapeBuffer;
+  }
 }
 
 function draw() {
   simulationStep();
-  partCount += partNum;
+  partCount += partNum * emitterSize.length;
   if (partCount >= maxPartCount) {
     e.isDead = true;
   }
@@ -67,6 +84,8 @@ function draw() {
     if (Math.abs(particles[i].x)  > radius_i || Math.abs(particles[i].y) > radius_i) {
       particles[i].velocity = createVector(0, 0); 
       particles[i].isDead = true;
+      particles[i].trail.isPolygonal = true;
+      Fresco.shapeBuffer.push(particles[i].trail);
     } 
     else {
       // We add to the particle's velocity based on the underlying noise which is remapped to an angle 

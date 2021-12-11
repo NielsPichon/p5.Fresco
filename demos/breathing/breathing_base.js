@@ -1,18 +1,19 @@
 const backgroundClr = '00010f';
 const lineClr = 'ef476f';
-const lineAlpha = 128;
-const lineVerticesNum = 10;
-const lineNum = 300;
+const lineAlpha = 255;
+const lineVerticesNum = 20;
+const lineNum = 200;
 const maxFactor = 1;
 const noiseFreq = 0.001;
-const noiseAmplitude = 10;
+const noiseAmplitude = 25;
 const displayCircle = false;
 const playBackSpeed = 2 * Math.PI / 360;
 const noiseModSpeed = 10;
+const startFactor = - Math.PI / 10;
 
 const render = false;
 
-let factor = - Math.PI / 2;
+let factor = startFactor;
 let playbackSign = 1;
 let r;
 let c;
@@ -20,6 +21,7 @@ let c;
 
 function setup() {
   createCanvas(1440, 1440);
+  setSeed(151);
 
   r = width / 2 - 100;
 
@@ -55,32 +57,34 @@ function draw() {
 
   // create new subdivided line
   let l = new Fresco.Line(a, b, lineVerticesNum);
+  l.isPolygonal = false;
   l.color = colorFromHex(lineClr, lineAlpha);
 
-  // displace line vertices
-  for (let j = 1; j < l.vertices.length - 1; j++) {
-    // for each loop iteration
+    // displace line vertices
+    for (let j = 1; j < l.vertices.length - 1; j++) {
+      // for each loop iteration
 
-    // Create noise
-    let noiseVect = noiseVector(
-      normalizedRidgedNoise, 
-      l.vertices[j].x * noiseFreq,
-      l.vertices[j].y * noiseFreq, 
-      frameCount * noiseFreq * noiseModSpeed
-    );
-    noiseVect.mult(noiseAmplitude);
-    // Add noise = displace vertex based on noise
-    l.vertices[j].add(noiseVect);
-    // Check if vertex is still in the circle
-    if (l.vertices[j].magSq() > r * r) {
-      // If out, bring back on circle
-      l.vertices[j] = l.vertices[j].normalize().mult(r);
+      // Create noise
+      let noiseVect = noiseVector(
+        normalizedRidgedNoise, 
+        l.vertices[j].x * noiseFreq,
+        l.vertices[j].y * noiseFreq, 
+        frameCount * noiseFreq * noiseModSpeed
+      );
+      noiseVect.mult(noiseAmplitude);
+      // Add noise = displace vertex based on noise
+      l.vertices[j].add(noiseVect);
+      // Check if vertex is still in the circle
+      if (l.vertices[j].magSq() > r * r) {
+        // If out, bring back on circle
+        l.vertices[j] = l.vertices[j].normalize().mult(r);
+      }
     }
-  }
 
-  // draw
-  l.draw();
- }
+    // draw
+    l.draw();
+  }
+  noLoop()
 
  if (render && frameCount > 2 * PI / playBackSpeed) {
     stopRecording();
