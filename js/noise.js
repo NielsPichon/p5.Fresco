@@ -176,11 +176,11 @@ function perlin(x, y=null, z=null) {
 function normalizedPerlin(x, y, z = null) {
   if (z) {
     let n = noise(x, y, z);
-    return map(n, -sqrt(3) / 4  + 0.5, sqrt(3) / 4 + 0.5, 0, 1);
+    return max(map(n, -sqrt(3) / 4  + 0.5, sqrt(3) / 4 + 0.5, 0, 1), 0);
   }
   else {
     let n = noise(x, y);
-    return map(n, (-1 + sqrt(2)) / (2 * sqrt(2)), (1 + sqrt(2)) / (2 * sqrt(2)), 0, 1);
+    return max(map(n, (-1 + sqrt(2)) / (2 * sqrt(2)), (1 + sqrt(2)) / (2 * sqrt(2)), 0, 1), 0);
   }
 }
 
