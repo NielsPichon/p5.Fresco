@@ -11,10 +11,12 @@ const splitByDist = true; // whether to split the path if points are too far
 const minDist = 100; // min distance between points along the arc
 const maxDist = 500; // max distance between points along the arc
 const distThresh = 50; // distance threshold beyond which the path is split, removing long lines
-const radialDist = 10; // radial distance between 2 circles = Density
-const trueThresh = 0.25; // noise value below which to record the points for the final path = Lacunarity
 const useRidgedNoise = true; // use Ridged noise rather than perlin noise
 const randomLayerColor = true; // Whether to draw each layer with a random different color
+
+// most important params
+const radialDist = 3; // radial distance between 2 circles = Density
+const trueThresh = 0.4; // noise value below which to record the points for the final path = Lacunarity
 const maxLayer = 3; // if strictly positive, this is the max number of layers that can be
 
 const drawingSeed = 9344;
@@ -54,7 +56,7 @@ function setup() {
   background(colorFromHex(backgroundClr));
   setSeed(drawingSeed);
   loadFonts();
-  Fresco.registerShapes = false;
+  // Fresco.registerShapes = false;
 
   points = [createPoint(-width / 2, -height / 2)]
 }
