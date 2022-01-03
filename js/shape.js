@@ -85,10 +85,17 @@ function drawPoint(p1) {
  * Note that everything is shifted so that 0,0 is 
  * always the center of the Canvas and the y axis is
  * pointing upwards
- * @param {p5.Vector} p1 Vertex position 
+ * @param {p5.Vector} p1 Vertex position
+ * @param {p5.Graphics} buffer Optional buffer to draw to instead of the actual canvas 
  */
-function drawCurveVertex(p1) {
-  curveVertex(p1.x + width / 2, -p1.y + height / 2);
+function drawCurveVertex(p1, buffer=null) {
+  let [x, y] = [p1.x + width / 2, -p1.y + height / 2];
+  if (!buffer) {
+    curveVertex(x, y);
+  }
+  else {
+    buffer.curveVertex(x, y);
+  }
 }
 
 
@@ -97,10 +104,17 @@ function drawCurveVertex(p1) {
  * Note that everything is shifted so that 0,0 is 
  * always the center of the Canvas and the y axis is
  * pointing upwards
- * @param {p5.Vector} p1 Vertex position 
+ * @param {p5.Vector} p1 Vertex position
+ * @param {p5.Graphics} buffer Optional buffer to draw to instead of the actual canvas 
  */
-function drawVertex(p1) {
-  vertex(p1.x + width / 2, -p1.y + height / 2);
+function drawVertex(p1, buffer=null) {
+  let [x, y] = [p1.x + width / 2, -p1.y + height / 2];
+  if (!buffer) {
+    vertex(x, y);
+  }
+  else {
+    buffer.vertex(x, y);
+  }
 }
 
 
@@ -663,6 +677,66 @@ Fresco.Shape = class {
     this.fillColor = fillBuffer;
   }
 
+  /**
+   * Draws the shape to a buffer rather than to the actual canvas.
+   * @param {p5.Graphics} buffer The p5.Graphics buffer object to draw to 
+   */
+  drawToBuffer(buffer) {
+    // set brush properties
+    buffer.stroke(this.color);
+    buffer.strokeWeight(this.strokeWeight);
+    if (this.noFill) {
+      buffer.noFill();
+    }
+    else {
+      buffer.fill(this.fillColor);
+    }
+
+    buffer.beginShape();
+    if (this.isPolygonal) {
+      let start = 0;
+      let end = this.vertices.length;
+      if (this.ignoreEnds) {
+        start++;
+        end--;
+      }
+
+      let vtx;
+      for (let i = start; i < end; i++) {
+        vtx = this.applyTransform(this.vertices[i]);
+        drawVertex(vtx, buffer);
+      }
+    } else {
+      let vtx;
+      if (!this.ignoreEnds) {
+        // we add the first and last vertex twice to make sure all points
+        // are part of the curve. Note that if the shape is closed, we 
+        // use the last but one and second points instead
+        vtx = this.applyTransform(this.vertices[0]);
+        if (this.isClosed()) {
+          vtx = this.applyTransform(
+            this.vertices[this.vertices.length - 2]);
+        }
+        drawCurveVertex(vtx, buffer);
+      }
+
+      for (let i = 0; i < this.vertices.length; i++) {
+        vtx = this.applyTransform(this.vertices[i]);
+        drawCurveVertex(vtx, buffer);
+      }
+
+      if (!this.ignoreEnds) {
+        vtx = this.applyTransform(
+          this.vertices[this.vertices.length - 1]);
+
+        if (this.isClosed()) {
+          vtx = this.applyTransform(this.vertices[1]);
+        }
+        drawCurveVertex(vtx. buffer);
+      }
+    }
+    buffer.endShape();
+  }
 
   /**
    * Draws each and  every point of the shape
