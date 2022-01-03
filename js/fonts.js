@@ -42,6 +42,7 @@ Fresco.Font = class {
      * @param {number} size 
      * @param {p5.Vector} position
      * @param {Boolean} actuallyDraw
+     * @param {p5.Graphics} buffer
      * @returns {Array<Fresco.Shape>}
      */
     drawLetter(letter, size, position, actuallyDraw=true) {
@@ -63,6 +64,7 @@ Fresco.Font = class {
             let s_copy = s.copy();
             s_copy.position = position;
             s_copy.scale.mult(size / this.fontSize);
+            s_copy.color = this.fontColor;
             s_copy.freezeTransform();
             shapes.push(s_copy);
         })
