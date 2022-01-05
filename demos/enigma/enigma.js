@@ -1,11 +1,22 @@
 const backgroundClr = '000';
-const resX = 5;
-const resY = 6;
-const gapThickness = 5;
-const showText = false;
-const crossHatch = true;
-const hatchAngle = Math.PI / 4;
-const interHatch = 8.4;
+
+const gapThickness = 10; // gap size inside the squares. 5 looks nice on a regular grid, 10 on a recursive grid
+const showText = false; // whether to display the seed below each tile. Not available in recursive tiling.
+
+const crossHatch = true; // whether to cross hatch some of the pieces
+const hatchAngle = Math.PI / 4; // hatching direction
+const interHatch = 8.4; // distance between hatches
+
+const resX = 5; // number of tiles on the horizontal axis. Use 10 for a filled grid (==width / 100)
+const resY = 6; // number of tiles on the vertical axis. Use 14 for a roughly filled grid (~=height / 100)
+
+const tileRecursive = true; // if true, the tiling will be on a multi-scale grid rather than a regular grid
+const minRecursiveDepth = 2; // Max recursion depth. The larger, the smaller the largest cells.
+const maxRecursiveDepth = 4; // Max recursion depth. The larger, the smaller the smallest cells.
+const fillRecursiveTiles = true; // whether to try to fill the recursive grid cells
+const recursiveMargins = 8; // if filling the grid cells, apply this margin in each cell first
+
+const drawingSeed = null;
 
 let tiler;
 
@@ -488,16 +499,74 @@ class Tiler {
   }
 }
 
+/**
+ * A quad-tree like tiler
+ */
+class RecursiveTiler {
+  constructor(tileClass, classParams, minDepth=2, maxDepth = 4, fillCell = false, margin = 0) {
+    let doneTiles = [];
+    let tileBuffer = [
+      [-width / 4, -width / 4, 1],
+      [-width / 4, width / 4, 1],
+      [width / 4, -width / 4, 1],
+      [width / 4, width / 4, 1],
+    ];
+
+    // recursively create all the tiles
+    while (tileBuffer.length > 0) {
+      let [x, y, depth] = tileBuffer.pop();
+
+      if (depth >= minDepth && (random() > 0.5 || depth == maxDepth)) {
+        doneTiles.push([x, y, depth]);
+      } else {
+        let w = width / Math.pow(2, depth);
+        tileBuffer.push(...[
+          [x - w / 4, y - w / 4, depth + 1],
+          [x - w / 4, y + w / 4, depth + 1],
+          [x + w / 4, y - w / 4, depth + 1],
+          [x + w / 4, y + w / 4, depth + 1],
+        ]);
+      }
+    }
+
+    // spawn actual tiles
+    this.tiles = [];
+    doneTiles.forEach(t => {
+      let [x, y, depth] = t;
+      let nuTile = new tileClass(...classParams);
+      nuTile.setPosition(createVector(x, y));
+      let scale = 1 / Math.pow(2, depth);
+      if (fillCell) {
+        scale = width *scale / 100 - 2 * margin / 100;
+      }
+      nuTile.setScale(createVector(scale, scale));
+      this.tiles.push(nuTile);
+    })
+  }
+
+  draw() {
+    this.tiles.forEach(t => t.draw());
+  }
+}
+
 function setup() {
-  createA4RatioCanvas(1000);
+  if (tileRecursive) {
+    createCanvas(1000, 1000);
+  }
+  else {
+    createA4RatioCanvas(1000);
+  }
   background(colorFromHex(backgroundClr));
-  // setSeed(3908);
-  setSeed(7172);
+  setSeed(drawingSeed);
   loadFonts();
 
   Fresco.Futural.fontSpacing = 4;
 
-  tiler = new Tiler(OneTwoTile, resX, resY, 0, 0, [gapThickness, showText, false]);
+  if (tileRecursive) {
+    tiler = new RecursiveTiler(OneTwoTile, [gapThickness, false, false], minRecursiveDepth, maxRecursiveDepth, fillRecursiveTiles, recursiveMargins)
+  } else {
+    tiler = new Tiler(OneTwoTile, resX, resY, 0, 0, [gapThickness, showText, false]);
+  }
 }
 
 
