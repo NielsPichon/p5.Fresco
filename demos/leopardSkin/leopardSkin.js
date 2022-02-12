@@ -1,18 +1,42 @@
 const backgroundClr = '000';
-const noiseAmount = 7;
-const sizeVariabilityPercentage = 0.5;
-const noiseFreq = 0.005;
-const hatchLength = 35;
-const hatchSpacing = 1.5;
+const lineAlpha = 200;
+const lineThickness = 3;
+const boxThickness = 10;
+const noiseAmount = 30;
+const sizeVariabilityPercentage = 0.7;
+const noiseFreq = 0.001;
+const hatchLength = 200;
+const hatchSpacing = 6;
 const hatchAngle = -Math.PI / 4;
 const minRandomOffset = 3;
 const maxCuts = 2;
 const cutSize = 15;
 const spotSpacing = 235;
-const spotSize = 75;
+const spotSize = 200;
 const margin = spotSpacing;
+// const backgroundClr = '000';
+// const lineAlpha = 200;
+// const lineThickness = 3;
+// const boxThickness = 10;
+// const noiseAmount = 7;
+// const sizeVariabilityPercentage = 0.7;
+// const noiseFreq = 0.005;
+// const hatchLength = 35;
+// const hatchSpacing = 6;
+// const hatchAngle = -Math.PI / 4;
+// const minRandomOffset = 3;
+// const maxCuts = 2;
+// const cutSize = 15;
+// const spotSpacing = 235;
+// const spotSize = 50;
+// const margin = spotSpacing;
 
-const spotsSeed = 9867;
+const boxDraw = false;
+
+const tiling = false;
+const poisson = true;
+
+const spotsSeed = null;
 
 
 let sampler;
@@ -83,7 +107,10 @@ class Spot extends Fresco.Collection {
           let end = p.copy().add(hatchDir.copy().mult(-hatchLength * 0.5));
 
           // create hair
-          this.attach(new Fresco.Line(start, end));
+          let hatch = new Fresco.Line(start, end);
+          hatch.strokeWeight = lineThickness;
+          hatch.color = colorFromHex('fff', lineAlpha);
+          this.attach(hatch);
         }
       }
     });
@@ -97,15 +124,32 @@ function setup() {
   loadFonts();
   // Fresco.registerShapes = false;
 
-  sampler = new PoissonSampler(Spot, [spotSize, sizeVariabilityPercentage], width - margin, height - margin, spotSpacing, 10);
-  sampler.setScale(createVector(0.5, 0.5));
+  if (tiling) {
+    if (poisson) {
+      // good seed 1730
+      sampler = new PoissonSampler(Spot, [spotSize, sizeVariabilityPercentage], width - margin, height - margin, spotSpacing, 10);
+    } else {
+      sampler = new Tiler(Spot, [spotSize, sizeVariabilityPercentage], 4, 5, 20, 20);
+    }
+  } else {
+    sampler = new Spot(spotSize, sizeVariabilityPercentage);
+  }
+
+  if (boxDraw) {
+    sampler.setScale(createVector(0.5, 0.5));
+  }
 }
 
 // draw function which is automatically
 // called in a loop
 function draw() {
   sampler.draw();
-  let sq = new Fresco.Rect(0.5 * width, 0.5 * height);
-  sq.draw();
+
+  if (boxDraw) {
+    let sq = new Fresco.Rect(0.55 * width, 0.55 * height);
+    sq.layer = 1;
+    sq.strokeWeight = boxThickness;
+    sq.draw();
+  }
   noLoop();
 }

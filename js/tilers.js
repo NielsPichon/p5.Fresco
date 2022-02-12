@@ -1,8 +1,9 @@
 /**
  * A regular grid tiler
  */
-class Tiler {
+class Tiler extends Fresco.Collection{
     constructor(tileClass, classParams, num_x, num_y, margin_x, margin_y) {
+        super();
         this.tiles = [];
         let incX = (width - 2 * margin_x) / num_x;
         let incY = (height - 2 * margin_y) / num_y;
@@ -12,15 +13,11 @@ class Tiler {
             for (let j = 0; j < num_y; j++) {
                 let nuTile = new tileClass(...classParams);
                 nuTile.setPosition(createVector(X, Y));
-                this.tiles.push(nuTile);
+                this.attach(nuTile);
                 Y += incY;
             }
             X += incX;
         }
-    }
-
-    draw() {
-      this.tiles.forEach(t => t.draw());
     }
 
     toShapes() {
