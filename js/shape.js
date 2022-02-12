@@ -22,7 +22,7 @@ Fresco.registerShapes = true;
 
 /**
  * Registers a reference to a shape
- * @param {Fresco.Shape} shape shape to register 
+ * @param {Fresco.Shape} shape shape to register
  */
 function registerDrawnShape(shape) {
   if (Fresco.registerShapes) {
@@ -36,7 +36,7 @@ function registerDrawnShape(shape) {
 
 /**
  * Set the background's color. Any registred shape will be removed.
- * @param {Array<Number>} color rgba array 
+ * @param {Array<Number>} color rgba array
  */
 function setBackgroundColor(color) {
   Fresco.shapeBuffer = [];
@@ -56,10 +56,10 @@ const shadowType = {
 
 /**
  * Helper function to draw a line from 2 p5.vectors.
- * Note that everything is shifted so that 0,0 is 
+ * Note that everything is shifted so that 0,0 is
  * always the center of the Canvas and the y axis is
  * pointing upwards
- * @param {p5.Vector} p1 first line extremity 
+ * @param {p5.Vector} p1 first line extremity
  * @param {p5.Vector} p2 second line extremity
  */
 function drawLine(p1, p2) {
@@ -70,10 +70,10 @@ function drawLine(p1, p2) {
 
 /**
  * Helper function to draw a point from a p5.vector
- * Note that everything is shifted so that 0,0 is 
+ * Note that everything is shifted so that 0,0 is
  * always the center of the Canvas and the y axis is
  * pointing upwards
- * @param {p5.Vector} p1 Point to draw 
+ * @param {p5.Vector} p1 Point to draw
  */
 function drawPoint(p1) {
   point(p1.x + width / 2, -p1.y + height / 2);
@@ -82,11 +82,11 @@ function drawPoint(p1) {
 
 /**
  * Helper function to add a Vertex to a curve from a p5.vector.
- * Note that everything is shifted so that 0,0 is 
+ * Note that everything is shifted so that 0,0 is
  * always the center of the Canvas and the y axis is
  * pointing upwards
  * @param {p5.Vector} p1 Vertex position
- * @param {p5.Graphics} buffer Optional buffer to draw to instead of the actual canvas 
+ * @param {p5.Graphics} buffer Optional buffer to draw to instead of the actual canvas
  */
 function drawCurveVertex(p1, buffer=null) {
   let [x, y] = [p1.x + width / 2, -p1.y + height / 2];
@@ -101,11 +101,11 @@ function drawCurveVertex(p1, buffer=null) {
 
 /**
  * Helper function to add a Vertex to a curve from a p5.vector.
- * Note that everything is shifted so that 0,0 is 
+ * Note that everything is shifted so that 0,0 is
  * always the center of the Canvas and the y axis is
  * pointing upwards
  * @param {p5.Vector} p1 Vertex position
- * @param {p5.Graphics} buffer Optional buffer to draw to instead of the actual canvas 
+ * @param {p5.Graphics} buffer Optional buffer to draw to instead of the actual canvas
  */
 function drawVertex(p1, buffer=null) {
   let [x, y] = [p1.x + width / 2, -p1.y + height / 2];
@@ -120,7 +120,7 @@ function drawVertex(p1, buffer=null) {
 
 /**
  * Helper function to draw a bezier curve from some p5.vector
- * Note that everything is shifted so that 0,0 is 
+ * Note that everything is shifted so that 0,0 is
  * always the center of the Canvas and the y axis is
  * pointing upwards
  * @param {p5.Vector} p1 First anchor point
@@ -140,10 +140,10 @@ function drawBezier(p1, p2, p3, p4) {
 
 /**
  * Helper to draw text at a position specified from a p5.Vector
- * Note that everything is shifted so that 0,0 is 
+ * Note that everything is shifted so that 0,0 is
  * always the center of the Canvas and the y axis is
  * pointing upwards
- * @param {string} str Text to write 
+ * @param {string} str Text to write
  * @param {p5.Vector} pos Position of the text
  */
 function drawText(str, pos) {
@@ -153,9 +153,9 @@ function drawText(str, pos) {
 
 /**
  * Helper function to draw a circle centered on a p5.Vector.
- * Note that everything is shifted so that 0,0 is 
+ * Note that everything is shifted so that 0,0 is
  * always the center of the Canvas and the y axis is
- * pointing upwards 
+ * pointing upwards
  * @param {p5.Vector} center Position of the circle center
  * @param {number} radius Radius of the circle in pixels
  */
@@ -166,8 +166,8 @@ function drawCircle(center, radius) {
 
 /**
  * Converts an array of shapes to JSON.
- * WARNING: Will freeze any  existing transform. 
- * @param {Array<Fresco.Shape>} shapes 
+ * WARNING: Will freeze any  existing transform.
+ * @param {Array<Fresco.Shape>} shapes
  */
 function shapesToJSON(shapes) {
   buffer = [];
@@ -177,13 +177,13 @@ function shapesToJSON(shapes) {
   jsonData =  {
     shapes: buffer
   };
-  return JSON.stringify(jsonData)  
+  return JSON.stringify(jsonData)
 }
 
 /**
  * Converts an array of shapes to JSON and saves it to file.
- * WARNING: Will freeze any  existing transform. 
- * @param {Array<Fresco.Shape>} shapes 
+ * WARNING: Will freeze any  existing transform.
+ * @param {Array<Fresco.Shape>} shapes
  */
 function shapesToFile(shapes, filename) {
   let content = shapesToJSON(shapes);
@@ -197,13 +197,13 @@ function shapesToFile(shapes, filename) {
 
 /**
  * Helper function which draws a normal to a vertex of a shape.
- * 
- * @param {p5.Vector} normal Normal we want to draw. It should be 
+ *
+ * @param {p5.Vector} normal Normal we want to draw. It should be
  * normalized and expressed in the shape referential
  * @param {p5.Vector} pt Point at which the normal was computed,
  * in the shape referential
  * @param {Fresco.Shape} shape Shape to which the point belongs
- * @param {number} length Lenght we want to draw the normal at 
+ * @param {number} length Lenght we want to draw the normal at
  */
 function drawNormal(normal, pt, shape, length = 10) {
   let n = shape.applyTransform(pt.position().add(
@@ -244,7 +244,7 @@ Fresco.Point = class extends p5.Vector{
   }
 
   /**
-   * Utility function which draws the point on the canvas. It will use 
+   * Utility function which draws the point on the canvas. It will use
    * the point color for the `stroke` and its radius for the `strokeWeight`
    */
   draw() {
@@ -261,7 +261,7 @@ Fresco.Point = class extends p5.Vector{
   /**
    * Generic function for setting this point's position.
    * Can be used interchangeably with setting the position attribute directly
-   * @param {p5.Vector} pos 
+   * @param {p5.Vector} pos
    */
   setPosition(pos) {
     this.position = pos;
@@ -270,7 +270,7 @@ Fresco.Point = class extends p5.Vector{
   /**
    * Generic function for setting this point's rotation.
    * Can be used interchangeably with setting the position attribute directly
-   * @param {Number} rot 
+   * @param {Number} rot
    */
   setRotation(rot) {
     this.rotation = rot;
@@ -279,7 +279,7 @@ Fresco.Point = class extends p5.Vector{
   /**
    * Generic function for setting this point's scale.
    * Can be used interchangeably with setting the position attribute directly
-   * @param {p5.Vector} scale 
+   * @param {p5.Vector} scale
    */
   setScale(scale) {
     this.scale = scale;
@@ -288,7 +288,7 @@ Fresco.Point = class extends p5.Vector{
   /**
    * Computes a falloff value based on the distance to the point. The falloff
    * will reach zero when reaching the radius of  the particle.
-   * @param {p5.Vector} vtx Point to evaluate the falloff at 
+   * @param {p5.Vector} vtx Point to evaluate the falloff at
    * @param {number} decayPower How fast the falloff decays. The distance will be
    * put at the the specified power. For example a value of 1 means linear decay,
    * 2 quadratic decay and so on...
@@ -300,14 +300,14 @@ Fresco.Point = class extends p5.Vector{
     let r = distance / this.radius;
     return 1 - pow(r, decayPower);
   }
-  
+
   /**
    * Checks whether all properties are equal. Is so, the other point
    * is considered the same as this one.
    * This ignores ownership so 2 points belonging to 2 different shapes will
    * still be detected as one and only
    * @param {Fresco.Point} pt Point to compare this one with
-   * @returns {boolean} True is the provided point is found to be the same as this one 
+   * @returns {boolean} True is the provided point is found to be the same as this one
    */
   equals(pt) {
     return this.position().equals(pt.position()) &&
@@ -317,12 +317,12 @@ Fresco.Point = class extends p5.Vector{
       this.color[0] == pt.color[0] &&
       this.color[1] == pt.color[1] &&
       this.color[2] == pt.color[2] &&
-      this.color[3] == pt.color[3];    
+      this.color[3] == pt.color[3];
   }
 
   /**
    * Sets the point color
-   * @param {Array.<number>} color Array of RGBA values in the range [0, 255] 
+   * @param {Array.<number>} color Array of RGBA values in the range [0, 255]
    */
   setColor(color) {
     this.color = color;
@@ -336,23 +336,23 @@ Fresco.Point = class extends p5.Vector{
   position() {
     return createVector(this.x, this.y, this.z);
   }
-  
+
 
   /**
    * Set a provided p5.Vector as the new position of this
    * point
-   * @param {p5.Vector} nu_pos New position to set this point at 
+   * @param {p5.Vector} nu_pos New position to set this point at
    */
   setPosition(nu_pos) {
     this.x = nu_pos.x;
     this.y = nu_pos.y;
     this.z = nu_pos.z;
   }
-  
+
 
   // returns a deepcopy of this point
   /**
-   * Copies this point. 
+   * Copies this point.
    * This behaves as a deepcopy so the new point can be messed with
    * without fear of backpropagating changes to this one.
    * To avoid cyclic references due to the
@@ -434,7 +434,7 @@ Fresco.Shape = class {
     for (let i = 0; i < vertices.length; i++) {
       this.vertices[i].owner = this;
     }
-    
+
     this.isPolygonal = false; //Whether to use lines or sdrawLines to connect vertices
     this.position = createVector(0, 0);
     this.rotation = 0;
@@ -455,7 +455,7 @@ Fresco.Shape = class {
   /**
    * Generic function for setting this shape's position.
    * Can be used interchangeably with setting the position attribute directly
-   * @param {p5.Vector} pos 
+   * @param {p5.Vector} pos
    */
   setPosition(pos) {
     this.position = pos;
@@ -464,7 +464,7 @@ Fresco.Shape = class {
   /**
    * Generic function for setting this shape's rotation.
    * Can be used interchangeably with setting the position attribute directly
-   * @param {Number} rot 
+   * @param {Number} rot
    */
   setRotation(rot) {
     this.rotation = rot;
@@ -473,12 +473,12 @@ Fresco.Shape = class {
   /**
    * Generic function for setting this shape's scale.
    * Can be used interchangeably with setting the position attribute directly
-   * @param {p5.Vector} scale 
+   * @param {p5.Vector} scale
    */
   setScale(scale) {
     this.scale = scale;
   }
-  
+
   /**
    * Returns a minimal description of the shape
    * WARNING: Freezes the transform
@@ -489,10 +489,10 @@ Fresco.Shape = class {
     let points = []
     for (let i = 0; i < this.vertices.length; i++) {
       points.push(this.vertices[i].toJSON());
-    } 
+    }
     return {
       canvas_width: width,
-      canvas_height: height, 
+      canvas_height: height,
       vertices: points,
       isPolygonal: this.isPolygonal,
       layer: this.layer,
@@ -572,8 +572,8 @@ Fresco.Shape = class {
    * At the current time, p5.js does not support drawing shapes with
    * multiple vertices color so this will
    * most likely result in drawing the shape  with the last vertex's color.
-   * Note: This will register a copy of this shape with the appropriate transform rather than 
-   * the shape itself, allowing to register several instances. 
+   * Note: This will register a copy of this shape with the appropriate transform rather than
+   * the shape itself, allowing to register several instances.
    */
   drawInstantiate(usePointColor=false, position=null,
     scale=null, rotation=null, color=null, fillColor=null,
@@ -623,7 +623,7 @@ Fresco.Shape = class {
     lineWeight=null) {
     this._drawInstantiate(usePointColor, position, scale, rotation, color, fillColor, lineWeight);
   }
-  
+
   _drawInstantiate(usePointColor=false, position=null,
     scale=null, rotation=null, color=null, fillColor=null,
     lineWeight=null) {
@@ -644,7 +644,7 @@ Fresco.Shape = class {
         strokeWeight(this.strokeWeight);
       }
     }
-    
+
     let fillBuffer = this.fillColor;
     if (this.noFill) {
       noFill();
@@ -678,7 +678,7 @@ Fresco.Shape = class {
       let vtx;
       if (!this.ignoreEnds) {
         // we add the first and last vertex twice to make sure all points
-        // are part of the curve. Note that if the shape is closed, we 
+        // are part of the curve. Note that if the shape is closed, we
         // use the last but one and second points instead
         vtx = this.applyTransform(this.vertices[0],
           position, scale, rotation);
@@ -733,7 +733,7 @@ Fresco.Shape = class {
 
   /**
    * Draws the shape to a buffer rather than to the actual canvas.
-   * @param {p5.Graphics} buffer The p5.Graphics buffer object to draw to 
+   * @param {p5.Graphics} buffer The p5.Graphics buffer object to draw to
    */
   drawToBuffer(buffer) {
     // set brush properties
@@ -764,7 +764,7 @@ Fresco.Shape = class {
       let vtx;
       if (!this.ignoreEnds) {
         // we add the first and last vertex twice to make sure all points
-        // are part of the curve. Note that if the shape is closed, we 
+        // are part of the curve. Note that if the shape is closed, we
         // use the last but one and second points instead
         vtx = this.applyTransform(this.vertices[0]);
         if (this.isClosed()) {
@@ -802,7 +802,7 @@ Fresco.Shape = class {
   }
 
 
-  // 
+  //
   // diffusivity defines how far from the original
   // line points may be moved
   /**
@@ -813,7 +813,7 @@ Fresco.Shape = class {
    * Each point  will have a different `strokeWeight` which will be randomly
    * chosen within the user specified interval.
    * @param {number} [numPoints] Number of points  to Fresco.
-   * @param {number} [diffusivity] How far form the original contour, in pixels, a point can land 
+   * @param {number} [diffusivity] How far form the original contour, in pixels, a point can land
    * @param {number} [minWeight] Minimum random stroke weight with which a point  can be  drawn
    * @param {number} [maxWeight] Maximum random stroke weight with which a point  can be  drawn
    */
@@ -836,13 +836,13 @@ Fresco.Shape = class {
 
 
   // draws multiple lines on top of one another
-  // with a bit of noise. 
+  // with a bit of noise.
   /**
    * Draws multiple contours on top of one another,
    * Each one of   them being displaced by some noise,
    * to  give some organic feel to the  drawing.
    * @param {number} [numLines] Number of line to draw
-   * @param {number} [diffusivity] How  far  a contour vertex may be displaced in pixels 
+   * @param {number} [diffusivity] How  far  a contour vertex may be displaced in pixels
    * @param {number} [lineOpacity] Opacity of  each contour line
    * @param {number} [close] Whether to force the displaced line to come back
    * to the starting point, should the original  shape be closed.
@@ -871,18 +871,18 @@ Fresco.Shape = class {
 
   /**
    * Draws the shadow of a 2D shape using hatching or stippling
-   * @param {number} [type] Whether to use hatching or stippling. 
+   * @param {number} [type] Whether to use hatching or stippling.
    * @param {number} [angle] Angle of the shadow. The shadow will only be cast
    * where the normals are oriented in the shadows direction
    * @param {number} [tolerance] Angle tolerance to consider a normal to be in
-   * the right direction for the shape to cast a shadow at the point 
+   * the right direction for the shape to cast a shadow at the point
    * @param {number} [density] How many points to evaluate the normal of along the contour
    * and draw hatches or stipples from
    * @param {number} [length] Max length of the hatches or max distance of a stipple
    * @param {number} [inside] Should the shadow be cast inside or outside the shape
    * @param {number} [stipplingDensity] Max number of stipple to draw for each evaluated point
-   * @param {number} [weight] Min stroke weight of the hatching lines and stipples 
-   * @param {number} [weightRandomness] Max random amount to add to the stroke weight 
+   * @param {number} [weight] Min stroke weight of the hatching lines and stipples
+   * @param {number} [weightRandomness] Max random amount to add to the stroke weight
    * @param {boolean} [constantLength] Whether the `length` should be modulated by
    * the angle relative to the normal
    * @param {number} [vanishingBands] Number of bands to use when drawing a `vanishing` shadow type.
@@ -910,7 +910,7 @@ Fresco.Shape = class {
         p5.Vector.fromAngle(angle).mult(length * dir)),
         this.scale, this.rotation,
         color, color, this.strokeWeight);
-      
+
       this.noFill = shapeNoFill;
     }
     else if (type == shadowType.vanishing) {
@@ -1008,7 +1008,7 @@ Fresco.Shape = class {
               dirToNextVtx = vtx[i + 1].position().sub(vtx[i]);
             }
 
-            // draw many points scattered around 
+            // draw many points scattered around
             for (let j = 0; j < stipplingDensity * mod; j++) {
               strokeWeight(weight + random(0, weightRandomness));
               nu_pt = this.applyTransform(vtx[i]);
@@ -1037,7 +1037,7 @@ Fresco.Shape = class {
    * @param {Array.<number>} [contourColor] Color of the contour as an array of RGBA values in the range [0, 255].
    * If not specified this shape will have no contour.
    * @param {Array.<number>} [fillColor] Color of the fill as an array of RGBA values in the range [0, 255].
-   * If not specified the shape will have no fill. 
+   * If not specified the shape will have no fill.
    */
   setColor(contourColor=null, fillColor=null) {
     if (contourColor) {
@@ -1061,8 +1061,8 @@ Fresco.Shape = class {
    * Sets the scale of the shape. If only x is specified,
    * a uniform scale will be used
    * @param {number} x Scale along the x axis. Will be used  as the
-   * uniform scale if y is not specified  
-   * @param {number} [y] Scale along the y axis 
+   * uniform scale if y is not specified
+   * @param {number} [y] Scale along the y axis
    */
   setScaleFromScalar(x, y = null) {
     if (y) {
@@ -1074,7 +1074,7 @@ Fresco.Shape = class {
   }
 
   /**
-   * Utility which prints the number of each vertex of the shape 
+   * Utility which prints the number of each vertex of the shape
    * next to it. This is designed mostly for debug purposes.
    */
   numberVertices() {
@@ -1139,14 +1139,14 @@ Fresco.Shape = class {
   }
 
 
-  // 
+  //
   /**
-   * Freeze the transform of the shape into its vertices. This is to say that the current transform will be applied 
+   * Freeze the transform of the shape into its vertices. This is to say that the current transform will be applied
    * to each vertex and then reset.
    */
   freezeTransform() {
     for (let i = 0; i < this.vertices.length; i++) {
-      this.vertices[i] = 
+      this.vertices[i] =
         this.applyTransform(this.vertices[i]);
       this.vertices[i].rotation += this.rotation;
     }
@@ -1176,13 +1176,13 @@ Fresco.Shape = class {
       ys.push(vtx.y);
     }
     this.boundingBox = [createVector(min(xs), min(ys)), createVector(max(xs), max(ys))]
-  
+
     return this.boundingBox;
   }
 
 
   /**
-   * Checks whether the  shape is closed, that is if the first and  last point are 
+   * Checks whether the  shape is closed, that is if the first and  last point are
    * @returns {boolean} True if the  shape is closed
    */
   isClosed() {
@@ -1190,7 +1190,7 @@ Fresco.Shape = class {
       this.vertices[this.vertices.length - 1]);
   }
 
-  
+
   /**
    * Returns the control point  defining an edge starting at a given vertex.
    * In the case where the shape is polygonal, the edge is a line and
@@ -1199,9 +1199,9 @@ Fresco.Shape = class {
    * the vertex  itself, and  the next to one. Should the first or last vertex extend out of the
    * vertex array, they will be  dealt with accordingly. If the shape is open, the very first and
    * very last vertices of the shape are repeated. Otherwise the next vertex in  the shape
-   * (that is reading the vertices array as a circular buffer) is returned. 
+   * (that is reading the vertices array as a circular buffer) is returned.
    * @param {number} idx Index of the vertex the  shape starts at.
-   * @returns {Array.<Fresco.Point>} Reference to the edge control points  
+   * @returns {Array.<Fresco.Point>} Reference to the edge control points
    */
   controlPoints(idx) {
     if (this.isPolygonal) {
@@ -1267,7 +1267,7 @@ Fresco.Shape = class {
     if (this.isPolygonal) {
       let [p0, p1, p2, p3] = this.controlPoints(startIdx);
       return p1.copy().sub(p0).mag();
-    } 
+    }
     else {
       let [p0, p1, p2, p3] = this.controlPoints(startIdx);
       let [a, b, c, d] = catmullRom(this.applyTransform(p0),
@@ -1322,17 +1322,17 @@ Fresco.Shape = class {
 
   /**
    * Computes the position of a point at specified percentage of a given edge's length.
-   * @param {number} interp  Percentage of the edge at which to compute point position 
+   * @param {number} interp  Percentage of the edge at which to compute point position
    * @param {number} edgeIdx Index of the starting vertex of the edge
    * @param {number} resolution In the case where the shape is not polygonal, we will use
    * a discrete integration
    * to find the point position, because there is no exact expression  to compute it.
-   * This is the number of small segments to divide the edge into for the integration.  
+   * This is the number of small segments to divide the edge into for the integration.
    * @param {boolean} approx If true, the position is  approximated  by the spline equation
    * evaluated at the specified percentage of the edge. In the general case, this will be
    * somewhat different from the point at the specified percentage of the length of the contour.
    * This is however much faster to compute, and is recommended for application where the actual
-   * position does not really matter, such as random point scattering for instance. 
+   * position does not really matter, such as random point scattering for instance.
    * @param {boolean} world Whether the point position should be returned in the world or
    * shape referential
    * @returns {Fresco.Point} Point at specified percentage of the contour length
@@ -1342,7 +1342,7 @@ Fresco.Shape = class {
     if (edgeIdx > this.vertices.length - 1) {
       throw "Cannot interpolate edge starting at last point (or more) of shape";
     }
-    
+
     if (this.isPolygonal) {
       // simple linear interpolation
       let l = edgeIdx + 1;
@@ -1354,7 +1354,7 @@ Fresco.Shape = class {
           throw "Cannot interpolate from last vertex in open shape";
         }
       }
-      
+
       let pt = this.vertices[edgeIdx].copy().mult(1 - interp).add(
         this.vertices[l].position().mult(interp));
       if (world) {
@@ -1363,12 +1363,12 @@ Fresco.Shape = class {
       else {
         return pt;
       }
-    } 
+    }
     else {
       //for a sdrawLine there is no exact expression. Instead we integrate the
       // edge length until we reach the desired value
       let [p0, p1, p2, p3] = this.controlPoints(edgeIdx);
-      
+
       // For non uniform scales, deducing the transformed sdrawLine edge length
       // from the local one is non trivial. We compute everything in world
       // lengths and transform the point back to local coordinates if required
@@ -1378,7 +1378,7 @@ Fresco.Shape = class {
       p3 = this.applyTransform(p3);
 
       let [a, b, c, d] = catmullRom(p0, p1, p2, p3);
-      
+
       if (!approx) {
         let dt = 1 / resolution;
         let l = 0;
@@ -1398,8 +1398,8 @@ Fresco.Shape = class {
             break;
           }
         }
-        
-        if (world) {        
+
+        if (world) {
           return a2;
         }
         else {
@@ -1423,8 +1423,8 @@ Fresco.Shape = class {
 
   /**
    * Converts a point coordinates (in vector form)
-   * to the shape local coordinate system 
-   * @param {p5.Vector} pt Point to compute the local coordinates of 
+   * to the shape local coordinate system
+   * @param {p5.Vector} pt Point to compute the local coordinates of
    * @returns {p5.Vector} Point coordinates the local coordinate system.
    * The function also supports classes that extend `p5.Vector` as long as they
    * implement vector arithmetic functions and the `copy` method. The return will
@@ -1433,18 +1433,18 @@ Fresco.Shape = class {
   toLocalCoordinates(pt) {
     let nu_pt = pt.copy();
     // un-rotate
-    nu_pt.x = pt.x * cos(-this.rotation) + pt.y * 
+    nu_pt.x = pt.x * cos(-this.rotation) + pt.y *
       sin(-this.rotation);
-    nu_pt.y = pt.y * cos(-this.rotation) - pt.x * 
+    nu_pt.y = pt.y * cos(-this.rotation) - pt.x *
       sin(-this.rotation);
-    
+
     // unscale
     nu_pt.x /= this.scale.x;
     nu_pt.y /= this.scale.y;
-    
+
     //translate
     nu_pt = nu_pt.copy().sub(this.position);
-    
+
     return nu_pt;
   }
 
@@ -1470,7 +1470,7 @@ Fresco.Shape = class {
 
   /**
    * Retrieve the normal at a given point along the contour.
-   * 
+   *
    * To do so we first need to  find, where the point is on  the edge. To do so, we do a
    * simple line-point intersection test in the polygonal case.
    * For the non-polygonal case, each edge will be sudvided in smaller segments,
@@ -1480,7 +1480,7 @@ Fresco.Shape = class {
    * In turn, this means that solving the spline equation for the point intersetcion will yield
    * no solution. The adopted dichotomic solution  allows for a small distance espilon to exist
    * between the  point and the line.
-   * 
+   *
    * The normal itself is taken as the orthogonal to the tangent at the found point, and is oriented
    * depending on whether the shape is described in a clockwise fashion, to always face outwards.
    * @param {p5.Vector} pt Point in SHAPE's coordinate
@@ -1537,13 +1537,13 @@ Fresco.Shape = class {
     }
   }
 
-  
+
   /**
    * Projects a point the shape. This is not a "true" projection. A more accurate description would
    * be that this method finds the closest point on the shape. This is because we project on each edge
    * and keep the closest egde. The subtelty is that if the projection is not actually on the edge
    * (but further along the edge direction), we'll cap to the esge limits.
-   * @param {Fresco.Point} pt Point to project 
+   * @param {Fresco.Point} pt Point to project
    * @param {number} resolution Resolution for the distance estimation
    * @returns {Array<p5.Vector, number, number, number>} Projection, Index of the closest edge,
    * Percentage along the edge where the point is, Distance from the projection to the point
@@ -1640,7 +1640,7 @@ Fresco.Shape = class {
    * Computes the normals to each vertex in local coordinates.
    * If the shape is open, the first and last points will use the only
    * connected edge to compute the normal, otherwise the computation will
-   * consider both connected edges (in the non polygonal case this does not make 
+   * consider both connected edges (in the non polygonal case this does not make
    * any difference though, as the shape is supposed to have a continuous curvature).
    * @returns {Array.<p5.Vector>} Normals at each vertex of the shape
    */
@@ -1654,13 +1654,13 @@ Fresco.Shape = class {
     let p3;
     let nu_nrm;
     let a;
-    let b; 
+    let b;
     let c;
     let d;
     for (let i = 0; i < l - 1; i++) {
       p0 = this.vertices[max([i - 1, 0])];
       p1 = this.vertices[i + 1];
-      
+
       // if closed shape, last but one point is the one precedeing the
       // first point
       if(i == 0 && this.isClosed()) {
@@ -1669,7 +1669,7 @@ Fresco.Shape = class {
 
       if (this.isPolygonal) {
         // direction from previous point to next is direction of tangent
-        // at point(or more precisely the average of the tangent from 
+        // at point(or more precisely the average of the tangent from
         // the left edge and the right edge)
         tangent = p1.copy().sub(p0);
       }
@@ -1677,7 +1677,7 @@ Fresco.Shape = class {
         p2 = p1.copy();
         p1 = this.vertices[i];
         p3 = this.vertices[min([i + 2, l - 1])];
-        // If the mesh is closed, the last and first vertex 
+        // If the mesh is closed, the last and first vertex
         // are the same.
         // Hence we retrieve the  second point;
         if (i + 2 >= l && this.isClosed()) {
@@ -1722,7 +1722,7 @@ Fresco.Shape = class {
 
         // we assume that the derivative is continuous at the point
         // that is the tangent is the derivative for t = 1;
-        tangent = a.mult(3).add(b.mult(2)).add(c);            
+        tangent = a.mult(3).add(b.mult(2)).add(c);
       }
 
       // orthogonal vector to tangent is the normal
@@ -1733,7 +1733,7 @@ Fresco.Shape = class {
       // normalize it
       append(nrm, nu_nrm.normalize());
     }
-    
+
     // Fresco.Shapes may be numbered clockwise or anticlockwise.
     // if the shape is clockwise we reverse the normals
     if (this.isClockwise()) {
@@ -1743,7 +1743,7 @@ Fresco.Shape = class {
     }
     return nrm;
   }
-  
+
 
   /**
    * Computes whether the shape is described in a clockwise fashion.
@@ -1766,15 +1766,15 @@ Fresco.Shape = class {
   }
 
 
-  // return a deep copy of the 
+  // return a deep copy of the
   /**
    * Returns a "deep-copy" of the shape. This is done manually to avoid
    * cyclic dependencied issue with the vertices when using JSON
    * Serialization-Desrialization.
-   * @returns {Fresco.Shape} Deep-copy of this shape, meaning the resulting shape 
+   * @returns {Fresco.Shape} Deep-copy of this shape, meaning the resulting shape
    * can  me modified in any way
    * wanted without fear of interfering with this one. Even the  vertices are
-   * deep-copied and can be altered at will.  
+   * deep-copied and can be altered at will.
    */
   copy() {
     // ugly but avoids cyclic references with JSON deserialization
@@ -1799,8 +1799,8 @@ Fresco.Shape = class {
 
   /**
    * Provided another shape, returns a list of all the intersection points with the other shape
-   * @param {Freco.Shape} shape 
-   * @returns {Array<*>}An array of {this_idx, other_idx, point} object literals where the index is that of the intersecting edge 
+   * @param {Freco.Shape} shape
+   * @returns {Array<*>}An array of {this_idx, other_idx, point} object literals where the index is that of the intersecting edge
    * (this shape first then the other shape)
    */
   getIntersectionsPoints(shape) {
@@ -1830,7 +1830,7 @@ Fresco.Shape = class {
   /**
    * Sort interestions returned by getIntersectionsPoints, such that they
    * appear in contour order
-   * @param {*} intersections 
+   * @param {*} intersections
    */
   sortIntersections(intersections) {
     let buffer = [];
@@ -1869,7 +1869,7 @@ Fresco.Shape = class {
    * Returns an array of shapes corresponding to individual parts of the contour in between intersections.
    * Intersections should be formatted to match the return of the getIntersectionsPoints function, that is a an array of object literals
    * {this_idx, other_idx, point}.
-   * @param {*} intersections 
+   * @param {*} intersections
    * @returns {Array<Shape>} Split contour
    */
   splitShape(intersections) {
@@ -1903,9 +1903,9 @@ Fresco.Shape = class {
       prev_inter = inter.point.copy();
       prev_idx = inter.this_idx + 1;
     });
-    
+
     // Add the remaining points as either a separate shape if the shape is open,
-    // or as part as the first sub-shape if it is closed 
+    // or as part as the first sub-shape if it is closed
     if (this.isClosed()) {
       let vtxBuff = this.vertices.slice(prev_idx, this.vertices.length - 1);
       subShapes[0].vertices.forEach(vtx => vtxBuff.push(vtx));
@@ -1926,7 +1926,7 @@ Fresco.Shape = class {
   /**
    * Subtract the specified shape from this one. As of now, this will remove the overlapped parts entirely,
    * not even leaving a contour.
-   * @param {Fresco.Shape} shape Shape to subtract to this one 
+   * @param {Fresco.Shape} shape Shape to subtract to this one
    */
   subtract(shape) {
     if (!shape.isPolygonal || !this.isPolygonal)
@@ -2012,7 +2012,7 @@ Fresco.Shape = class {
   /**
    * Invert operation of the subtract path finding operation.
    * Will only leave the contours inside of the specified shape visible
-   * @param {Fresco.Shape} shape 
+   * @param {Fresco.Shape} shape
    * @returns {Array<Fresco.Shape>} Resulting contours from the original clipped shape
    */
   clip(shape) {
@@ -2054,11 +2054,11 @@ Fresco.Shape = class {
     });
 
     remainingShapes[0].isPolygonal = true;
-    return mergeContours(remainingShapes);    
+    return mergeContours(remainingShapes);
   }
 
   /**
-   * 
+   *
    * @param {number} angle angle of the hatching
    * @param {number} interline spacing of the lines (must be positive)
    * @param {boolean} approx=true consider the shape is polygonal no matter what
@@ -2077,7 +2077,7 @@ Fresco.Shape = class {
     if (interline <= 0) {
       throw 'Hatching interline must be strictly positive'
     }
-  
+
     // init a hatch line at the bottom left hand corner of the
     // bounding box with specified angle, if angle below 90deg,
     // then we take the bottom right hand corner
@@ -2114,7 +2114,7 @@ Fresco.Shape = class {
     }
 
     while (!done) {
-      // compute all intersections along the hatch line 
+      // compute all intersections along the hatch line
       let intersections = [];
       for (let i = 0; i < this.vertices.length - 1; i++) {
         if (this.isPolygonal) {
@@ -2134,7 +2134,7 @@ Fresco.Shape = class {
           );
         }
       }
-      // if there is an even number of intersections, proceed. 
+      // if there is an even number of intersections, proceed.
       if (intersections.length % 2 == 0) {
         // if there previously was an intersection and there no longer is,
         // this means we are done scanning the shape
@@ -2178,7 +2178,7 @@ Fresco.Shape = class {
   /**
    * Turn the shape into a polygonal one. If the shape is already polygonal, nothing wil happen.
    * If the shape isn't, each spline will be split in a set number of segments.
-   * @param {number} resolution=10 Number of splits that will be made for each segment 
+   * @param {number} resolution=10 Number of splits that will be made for each segment
    */
   poligonize(resolution=10) {
     if (this.isPolygonal){
@@ -2193,7 +2193,7 @@ Fresco.Shape = class {
     for (let i = 0; i < this.vertices.length - 1; i++) {
       let [p0, p1, p2, p3] = this.controlPoints(i);
       let [a, b, c, d] = catmullRom(p0, p1, p2, p3);
-      
+
       splits.forEach(t => {
         buffer.push(((a.copy().mult(t).add(b)).mult(t).add(c)).mult(t).add(d))
       });
@@ -2206,10 +2206,10 @@ Fresco.Shape = class {
 }
 
 /**
- * Creates a Fresco.Shape from some json data 
+ * Creates a Fresco.Shape from some json data
  * @param {*} json_dict data loaded from a json file
- * @param {boolean} apply_scale=true If true, the points will be 
- * rescaled by the canvas size specified in the file  
+ * @param {boolean} apply_scale=true If true, the points will be
+ * rescaled by the canvas size specified in the file
  */
 function shapeFromJSON(json_dict, apply_scale=true) {
   vtxBuffer = []
@@ -2240,10 +2240,10 @@ function shapeFromJSON(json_dict, apply_scale=true) {
 
 /**
  * Class describing a collection of geometric objects
- * in the Fresco namespace. This collection has a transform of its own which 
+ * in the Fresco namespace. This collection has a transform of its own which
  * can be used to modify multiple objects at once in a rigid body fashion
- * (meaning they will keep  their scale , position and  rotation relative to one another). 
- * @class 
+ * (meaning they will keep  their scale , position and  rotation relative to one another).
+ * @class
  */
 Fresco.Collection = class {
   /**
@@ -2278,10 +2278,10 @@ Fresco.Collection = class {
 
   /**
    * Set the position of the Geometry.
-   * Use this method rather than setting `this.position`, 
+   * Use this method rather than setting `this.position`,
    * as this will propagate
-   * the position change to the underlying objects 
-   * @param {p5.Vector} position 
+   * the position change to the underlying objects
+   * @param {p5.Vector} position
    */
   setPosition(position) {
     this.position = position;
@@ -2290,10 +2290,10 @@ Fresco.Collection = class {
 
   /**
    * Set the rotation of the Geometry.
-   * Use this method rather than setting `this.rotation`, 
+   * Use this method rather than setting `this.rotation`,
    * as this will propagate
-   * the position change to the underlying objects 
-   * @param {number} rotation 
+   * the position change to the underlying objects
+   * @param {number} rotation
    */
   setRotation(rotation) {
     this.rotation = rotation;
@@ -2302,13 +2302,14 @@ Fresco.Collection = class {
 
   /**
    * Set the scale of the Geometry.
-   * Use this method rather than setting `this.scale`, 
+   * Use this method rather than setting `this.scale`,
    * as this will propagate
-   * the position change to the underlying objects 
-   * @param {p5.Vector} scale 
+   * the position change to the underlying objects
+   * @param {p5.Vector} scale
    */
   setScale(scale) {
     this.scale = scale;
+    this.position.mult(scale);
     this.setObjectsTransform();
   }
 
@@ -2335,7 +2336,7 @@ Fresco.Collection = class {
    * transform of the new object relative to this
    * Geometry and store it.
    * @param {object} object Object in the Scatter namespace
-   * to attach to this Geometry 
+   * to attach to this Geometry
    */
   attach(object) {
     this.objects.push(object);
@@ -2345,7 +2346,7 @@ Fresco.Collection = class {
     this.objectsScale.push(relativeScale);
     this.objectsRotation.push(object.rotation - this.rotation);
     // apply this geometry inverse transform to the object position
-    // to retrieve its relative position 
+    // to retrieve its relative position
     let relativePosition = object.position.copy();
     relativePosition.rotate(-this.rotation);
     relativePosition.x /= this.scale.x;
@@ -2356,7 +2357,7 @@ Fresco.Collection = class {
   /**
    * Removes all references to the specified object
    * in this Geometry and returns the object
-   * @param {number} objectIdx Index of the object to detach 
+   * @param {number} objectIdx Index of the object to detach
    */
   detach(objectIdx) {
     // remove the original transform references
@@ -2369,7 +2370,7 @@ Fresco.Collection = class {
   }
 
   /**
-   * Serialize the collection. Points will be converted to shapes 
+   * Serialize the collection. Points will be converted to shapes
    * containing a unique point.
    * @returns {Array<string>} An array of serialized shapes
    */
@@ -2378,7 +2379,7 @@ Fresco.Collection = class {
     this.objects.forEach(obj => {
       // Serialize object
       let jsonObj = obj.toJSON();
-      
+
       // If the object was a point, it should have a key named x.
       // In this case, return as a single vertex shape
       if ('x' in jsonObj) {
@@ -2397,7 +2398,7 @@ Fresco.Collection = class {
     this.objects.forEach(obj => {
       // Serialize object
       let jsonObj = obj.toJSON();
-      
+
       // If the object was a point, it should have a key named x.
       // In this case, return as a single vertex shape
       if ('x' in jsonObj) {
@@ -2417,7 +2418,7 @@ Fresco.Collection = class {
  * Perfoms a deep copy of an object. This will play poorly with cyclic dependencies.
  * Use at your own risks
  * @param {*} obj Object to copy
- * @returns {*} Deep copy of the input  object 
+ * @returns {*} Deep copy of the input  object
  */
 function deepcopy(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -2434,7 +2435,7 @@ Fresco.Line = class extends Fresco.Shape {
    * @constructor
    * @param {p5.Vector} pt1 First extremity Point
    * @param {p5.Vector} pt2 Second extremity Point
-   * @param {number} resolution number of points subdividing the 
+   * @param {number} resolution number of points subdividing the
    * line (min 2, the extremities).
    */
   constructor(pt1, pt2, resolution = 2) {
@@ -2465,10 +2466,10 @@ Fresco.Line = class extends Fresco.Shape {
 Fresco.Circle = class extends Fresco.Shape {
   /**
    * @constructor
-   * @param {number} radius Radius  of the circle in pixels 
+   * @param {number} radius Radius  of the circle in pixels
    * @param {number} resolution Number of vertices
    * @property {number} radius Radius of the circle
-   * which describe the circle 
+   * which describe the circle
    */
   constructor(radius = 50, resolution = 24) {
     super([]);
@@ -2479,7 +2480,7 @@ Fresco.Circle = class extends Fresco.Shape {
   /**
    * Allows to change the sphere resolution on the fly.
    * WARNING: this will reset point positions
-   * @param {number} resolution New number of points 
+   * @param {number} resolution New number of points
    */
   resetResolution(resolution) {
     const angleIncr = 2 * PI / resolution;
@@ -2498,7 +2499,7 @@ Fresco.Circle = class extends Fresco.Shape {
 
 /**
  * Class describing an Arc from a collection of splines.
- * By default the arc faces downwards and is centered on the vertical center line 
+ * By default the arc faces downwards and is centered on the vertical center line
  */
 Fresco.Arc = class extends Fresco.Shape {
   /**
@@ -2575,7 +2576,7 @@ Fresco.Square = class extends Fresco.Rect {
 Fresco.Polygon = class extends Fresco.Circle {
   /**
    * @constructor
-   * @param {number} radius Radius of the  polygon 
+   * @param {number} radius Radius of the  polygon
    * @param {number} resolution Number of summit vertices
    */
   constructor(radius = 50, resolution = 24) {
@@ -2588,9 +2589,9 @@ Fresco.Polygon = class extends Fresco.Circle {
 /**
  * Computes the winding number of a curve around a point,
  * which is to say, in lemmans terms, how many time does the curve
- * turn around the point. 
+ * turn around the point.
  * @param {p5.Vector} pt Point of observation
- * @param {Array.<Fresco.Point>} vertices Vertices describing the curve 
+ * @param {Array.<Fresco.Point>} vertices Vertices describing the curve
  * @returns {number} The winding number
  */
 function windingNumber(pt, vertices) {
@@ -2600,7 +2601,7 @@ function windingNumber(pt, vertices) {
   for (let i = 0; i < vertices.length - 1; i++) {
     a = b.copy();
     b = (vertices[i + 1].position().sub(pt)).normalize();
-    
+
     winding_nb += a.angleBetween(b);
   }
 
@@ -2614,9 +2615,9 @@ function windingNumber(pt, vertices) {
  * Returns the catmull rom centripetal spline equation (3rd order polynomial)
  * coefficients given 4 points position.
  * This is usefull as the vertexCurve in p5 uses Catmull-Rom with its alpha = 0.5.
- * @param {Fresco.Point} p0 
- * @param {Fresco.Point} p1 
- * @param {Fresco.Point} p2 
+ * @param {Fresco.Point} p0
+ * @param {Fresco.Point} p1
+ * @param {Fresco.Point} p2
  * @param {Fresco.Point} p3
  * @returns {Array.<Fresco.Point>} 2D coefficients of the 2D Catmull-Rom spline.
  * This may very well work in 3D as well but is untested
@@ -2634,10 +2635,10 @@ function catmullRom(p0, p1, p2, p3) {
 
 /**
  * Finds the real roots of a 2nd order polynomial
- * @param {number} a 2nd degree coefficient 
- * @param {number} b 1st degree coefficient 
+ * @param {number} a 2nd degree coefficient
+ * @param {number} b 1st degree coefficient
  * @param {number} c 0th degree coeeficient
- * @returns {Array.<number>} Real roots if they exist  
+ * @returns {Array.<number>} Real roots if they exist
  */
 function parabolicRoots(a, b, c) {
   let roots = [];
@@ -2660,18 +2661,18 @@ function parabolicRoots(a, b, c) {
       append(roots, (- b - sqrt(delta)) / 2 / a);
     }
   }
-  
+
   return roots;
 }
 
 
 /**
  * Finds the real roots of a 3rd order polynomial
- * @param {number} a 3rd degree coefficient 
- * @param {number} b 2nd degree coefficient 
- * @param {number} c 1st degree coefficient 
+ * @param {number} a 3rd degree coefficient
+ * @param {number} b 2nd degree coefficient
+ * @param {number} c 1st degree coefficient
  * @param {number} d 0th degree coefficient
- * @returns {Array.<number>} Real roots if they exist  
+ * @returns {Array.<number>} Real roots if they exist
  */
 function cubicRoots(a, b, c, d) {
   let roots = [];
@@ -2696,7 +2697,7 @@ function cubicRoots(a, b, c, d) {
   if (delta >= 0) {
     let A = -b2 / 2 + sqrt(delta);
     let B = -b2 / 2 - sqrt(delta);
-    
+
     if (delta == 0) {
       if (b2 < 0) {
         A = - pow(-A, 1 / 3);
@@ -2723,14 +2724,14 @@ function cubicRoots(a, b, c, d) {
       append(roots, A + B);
     }
   }
-  else {  
+  else {
       let phi = acos(sqrt(b2 * b2 / 4 / (-a2 * a2 * a2 / 27)));
       if (b2 > 0) phi += PI;
       for (let k = 0; k < 3; k++) {
         append(roots, 2 * sqrt(-a2 / 3) * cos((phi + 2 * k * PI) / 3));
       }
   }
-  
+
   // convert back the roots of y^3 + ay + b to the form in x
   for (let i = 0; i < roots.length; i++) {
     roots[i] -= p / 3;
@@ -2785,13 +2786,13 @@ function lineIntersection(pt1, dir1, pt2, dir2) {
 // coordinates
 /**
  * Computes the intersection of 2 segments defined by there extremities.
- * @param {p5.Vector} p0 First end of the first line 
- * @param {p5.Vector} p1 Second end of the first line 
- * @param {p5.Vector} p2 First end of the second line 
+ * @param {p5.Vector} p0 First end of the first line
+ * @param {p5.Vector} p1 Second end of the first line
+ * @param {p5.Vector} p2 First end of the second line
  * @param {p5.Vector} p3 Second end of the second line
  * @returns {p5.Vector} Position of the intersection point.
  * If the point does not exist,
- * this method will return false instead. 
+ * this method will return false instead.
  * Note that this method will work with any class which extends
  * p5.Vector as long as it implements the `copy` method and the
  * basic vector arithmetic. The return will have the same type
@@ -2800,7 +2801,7 @@ function lineIntersection(pt1, dir1, pt2, dir2) {
 function segmentIntersection(p0, p1, p2, p3) {
   let dir1 = p1.copy().sub(p0);
   let dir2 = p3.copy().sub(p2);
-  
+
   let [t1, t2] = lineIntersection(p0, dir1, p2, dir2);
 
   // if lines intersect, check that intersection is within the
@@ -2908,7 +2909,7 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
   let a1 = 1;
   let b1;
   let c1;
-  if (dir.y != 0) { 
+  if (dir.y != 0) {
     b1 = -dir.x / dir.y;
     c1 = -pt.x - b1 * pt.y;
   }
@@ -2929,14 +2930,14 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
   let B = a1 * b2.x + b1 * b2.y;
   let C = a1 * c2.x + b1 * c2.y;
   let D = a1 * d2.x + b1 * d2.y + c1;
-  
+
   let intersections = cubicRoots(A, B, C, D);
-  
-  
-  // we derive the line interpolent t_line such that 
+
+
+  // we derive the line interpolent t_line such that
   // pt + t_line * dir = intersection
   let t = []
-  
+
   let ti;
   let interp;
   let X;
@@ -2958,7 +2959,7 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
       append(t, [ti, interp]);
     }
   }
-  
+
   return t;
 }
 
@@ -2977,7 +2978,7 @@ function lineSplineIntersection(pt, dir, p0, p1, p2, p3, returnLineInt=false) {
  */
 function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
   let t = lineSplineIntersection(rayOri, rayDir, p0, p1, p2, p3);
-  
+
   let t2 = [];
   for (let i = 0; i < t.length; i++) {
     if (t[i][0] >= 0 && t[i][0] <=1 && t[i][1] >= 0) {
@@ -2996,9 +2997,9 @@ function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
  * Checks whether a point is inside a givn shape. This uses the even-odd rule.
  * That is, it counts how many times a ray starting from the point intersects
  * the contour. If it is odd, the point is inside.
- * @param {p5.Vector} vtx Point we want to check 
+ * @param {p5.Vector} vtx Point we want to check
  * @param {Fresco.Shape} shape Shape we check the point is in
- * @param {boolean} [approx] If the shape is not polynomial, setting approx 
+ * @param {boolean} [approx] If the shape is not polynomial, setting approx
  * to true will run the test as if the shape was polygonal which is faster
  * but less accurate.
  * @returns {boolean} True if the point is inside the shape
@@ -3007,7 +3008,7 @@ function isInside(vtx, shape, approx = true) {
   let isIn = false;
   let l = shape.vertices.length;
   // cast a horizontal ray and count the number of
-  // intersections with a contour. This assumes the contour does not 
+  // intersections with a contour. This assumes the contour does not
   // self intersect
   let inter;
   let t;
@@ -3033,9 +3034,9 @@ function isInside(vtx, shape, approx = true) {
         if (t == 1) {
           i++;
         }
-        // if the shape is closed and we intersect at the 
+        // if the shape is closed and we intersect at the
         // first vertex,
-        // don't test the last edge to avoid counting 
+        // don't test the last edge to avoid counting
         // twice the intersection at the closing point
         if (t == 0 && i == 0 && shape.isClosed()) {
           l--;
@@ -3043,11 +3044,11 @@ function isInside(vtx, shape, approx = true) {
       }
     }
     else {
-      // for the sdrawLine case we solve for the roots 
+      // for the sdrawLine case we solve for the roots
       // of the intersection
       // or the horizontal line with each sdrawLine
       [p0, p1, p2, p3] = shape.controlPoints(i)
-      
+
       p0 = shape.applyTransform(p0);
       p1 = shape.applyTransform(p1);
       p2 = shape.applyTransform(p2);
@@ -3055,7 +3056,7 @@ function isInside(vtx, shape, approx = true) {
 
       intersections = raySplineIntersection(
         vtx, xVec, p0, p1, p2, p3)
-      
+
       for (k = 0; k < intersections.length; k++) {
         if (intersections[k][0]) {
           isIn = !isIn;
@@ -3064,9 +3065,9 @@ function isInside(vtx, shape, approx = true) {
           if (intersections[k][1] == 1) {
             i++;
           }
-          // if the shape is closed and we intersect at 
+          // if the shape is closed and we intersect at
           // the first vertex,
-          // don't test the last edge to avoid counting 
+          // don't test the last edge to avoid counting
           // twice the intersection
           // at the closing point
           if (intersections[k][1] == 0 && i == 0 &&
@@ -3108,7 +3109,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
   if (shape.vertices.length <= 1) {
     return shape.copy();
   }
-  
+
   let isPolygonal = shape.isPolygonal;
   if (splineResample) {
     shape.isPolygonal = false;
@@ -3118,7 +3119,7 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
     numPoints = shape.vertices.length;
     offset = false;
   }
-  
+
   // sample the specified amount of points on the contour
   let vtx = sample(shape, numPoints, offset, approx);
 
@@ -3148,9 +3149,9 @@ function resample(shape, numPoints = 0, offset=true, approx=false,
  * will be be approximated
  * @returns {Fresco.Shape} Samples along the shape's contour
  */
-function sample(shape, numPoints, offset=true, approx=false) {  
+function sample(shape, numPoints, offset=true, approx=false) {
   let vtx = [];
-  
+
   let totalLength = shape.contourLength();
   let incr = totalLength / (numPoints - 1);
   let l = 0;
@@ -3162,7 +3163,7 @@ function sample(shape, numPoints, offset=true, approx=false) {
     start = 1;
     shift = 0;
   }
-  
+
   let tgt;
   let pt;
   let t;
@@ -3170,7 +3171,7 @@ function sample(shape, numPoints, offset=true, approx=false) {
   for (let i = start; i < numPoints - 1; i++) {
     // retrieve fraction of the contour
     tgt = i * incr + shift;
-    
+
     // find segment which corresponds to the generated distance
     if (l < tgt) {
       j++;
@@ -3186,10 +3187,10 @@ function sample(shape, numPoints, offset=true, approx=false) {
     t = l - tgt;
     t /= shape.edgeLengths[j];
     t = 1 - t;
-    
+
     pt = shape.edgeInterpolation(t, j, 100,
       approx, false);
-    
+
     pt.rotation = shape.vertices[j].rotation * (1 - t) +
       shape.vertices[j + 1].rotation * t;
     for (k = 0; k < shape.vertices[j].color.length; k++) {
@@ -3201,9 +3202,9 @@ function sample(shape, numPoints, offset=true, approx=false) {
     pt.scale = shape.vertices[j].scale.copy().mult(1 - t).add(
       shape.vertices[j + 1].scale.copy().mult(t));
 
-    append(vtx, pt); 
+    append(vtx, pt);
   }
-  
+
   if (offset && shape.isClosed()) {
     append(vtx, vtx[0]);
   }
@@ -3217,7 +3218,7 @@ function sample(shape, numPoints, offset=true, approx=false) {
 
 /**
  * Subdivides each edge of a mesh in equal sub edges.
- * @param {Fresco.Shape} shape The Shape to subdivide 
+ * @param {Fresco.Shape} shape The Shape to subdivide
  * @param {number} numDivision Number of subdivisions to
  * apply to each edge
  * @param {boolean} [approx] If the shape is non polygonal, this
@@ -3243,20 +3244,20 @@ function subdivide(shape, numDivision, approx=false) {
         shape.contourLength();
       }
       vtx.setPosition(
-        shape.edgeInterpolation(t, i, 100, 
+        shape.edgeInterpolation(t, i, 100,
                                 approx, false));
-      
+
       vtx.rotation = nu_shape.vertices[i].rotation * (1 - t) +
         nu_shape.vertices[i + 1].rotation * t;
-      
+
       for (j = 0; j < nu_shape.vertices[i].color.length; j++) {
         vtx.color[j] = nu_shape.vertices[i].color[j] * (1 - t) +
           nu_shape.vertices[i + 1].color[j] * t;
       }
-      
+
       vtx.radius = nu_shape.vertices[i].radius * (1 - t) +
         nu_shape.vertices[i + 1].radius * t;
-      
+
       vtx.scale = nu_shape.vertices[i].scale.copy().mult(1 -t).add(
         nu_shape.vertices[i + 1].scale.copy().mult(t));
       append(nu_vtx, vtx.copy());
@@ -3275,8 +3276,8 @@ function subdivide(shape, numDivision, approx=false) {
  * Randomly scatters points over a shape's contour or inner region
  * @param {Fresco.Shape} shape The shape to scatter points over
  * @param {number} numPoints Number of points to scatter
- * @param {boolean} [contour] If true, points will be scatter on the 
- * contour, else they will be scattered inside the shape. The shape 
+ * @param {boolean} [contour] If true, points will be scatter on the
+ * contour, else they will be scattered inside the shape. The shape
  * must be closed for the latter to be permitted.
  * @param {boolean} [approx] This enables the approximated version of
  * the edge interpolation and when checking whether a point is inside,
@@ -3314,13 +3315,13 @@ function scatter(shape, numPoints = 100,
       l -= t;
       l /= shape.edgeLengths[j];
       l = 1 - l;
-      append(vtx, shape.edgeInterpolation(l, j, 100, approx)); 
+      append(vtx, shape.edgeInterpolation(l, j, 100, approx));
     }
   }
   else {
     if (!shape.isClosed()) {
-      throw "Points can not be scattered within an open shape." + 
-        " Consider adding the first point again as last point " + 
+      throw "Points can not be scattered within an open shape." +
+        " Consider adding the first point again as last point " +
         "to close the shape."
     }
     // Retrieve the bounding box
@@ -3379,7 +3380,7 @@ function scatter(shape, numPoints = 100,
  * @param {number} [maxY] Bounds to constrain the relaxed points to.
  * @returns {Array.<p5.Vector>} The relaxed points.
  */
-function relax(points, 
+function relax(points,
                 iterations = 1, totSamples = 1000,
                 shape = null,
                 minX = -width/2, minY = -height / 2,
@@ -3391,7 +3392,7 @@ function relax(points,
       r = points[i].radius;
     }
   }
-  
+
   let num_pts = points.length;
   // if a shape is closed, ignore last point
   if(points[points.length - 1].equals(points[0])) {
@@ -3400,7 +3401,7 @@ function relax(points,
 
   let cells;
   let sampleCount;
-  let mx; 
+  let mx;
   let Mx;
   let my;
   let My;
@@ -3415,7 +3416,7 @@ function relax(points,
   for (let i = 0; i < iterations; i++) {
     cells = new Array(num_pts).fill(createVector(0, 0));
     sampleCount = new Array(num_pts).fill(0);
-    
+
     // we evaluate the bounding box
     mx = width;
     Mx = -width;
@@ -3433,19 +3434,19 @@ function relax(points,
       }
       else if (points[j].y < my) {
         my = points[j].y
-      }      
+      }
     }
     // we extend the bounding box by the max radius
     mx = max([mx - r, minX]);
     my = max([my - r, minY]);
     Mx = min([Mx + r, maxX]);
     My = min([My + r, maxY]);
-    
+
     // we generate totSample random samples and update the centroid
     // of the closest point's voronoi cell
     for (j = 0; j < totSamples; j++) {
       p = createVector(random(mx, Mx), random(my, My));
-    
+
       // find closest point's idx
       m = width * width + height * height;
       idx = 0;
@@ -3462,14 +3463,14 @@ function relax(points,
           isCell = true;
         }
       }
-      
+
       // add the new points position to the centroid
       if (isCell) {
         cells[idx] = cells[idx].copy().add(p.copy());
         sampleCount[idx]++;
       }
     }
-    
+
     // for each cell divide the centroid by the sample count
     for (j = 0; j < num_pts; j++) {
       if (sampleCount[j] != 0) {
@@ -3483,7 +3484,7 @@ function relax(points,
         points[j].setPosition(cells[j]);
       }
     }
-    
+
     if (num_pts == points.length - 1) {
       points[points.length - 1] = points[0].copy();
     }
@@ -3560,7 +3561,7 @@ function shapeInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir 
   if (!keepA) {
     C = B.copy();
   }
-  
+
   // reset transform of object, as well as velocity because we
   // interpolate between world coordinates of points
   C.scale = createVector(1, 1);
@@ -3582,10 +3583,10 @@ function shapeInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir 
       for (i = 0; i < A.vertices.length; i++) {
         d += (A.applyTransform(A.vertices[i]).sub(
           B.applyTransform(
-            B.vertices[(i + k) % A.vertices.length]))).mag();    
+            B.vertices[(i + k) % A.vertices.length]))).mag();
         d1 += (A.applyTransform(A.vertices[i]).sub(
           B.applyTransform(
-            B.vertices[(-i - k + 2 * A.vertices.length) % 
+            B.vertices[(-i - k + 2 * A.vertices.length) %
                        A.vertices.length]))).mag();
       }
 
@@ -3616,7 +3617,7 @@ function shapeInterpolate(A, B, interp, keepA = true, pointMatch = -1, matchDir 
 
 /**
  * Given an array of contours, merge those that have connected ends
- * @param {Array<Fresco.Shape>} contours 
+ * @param {Array<Fresco.Shape>} contours
  * @returns {Array<Fresco.Shape>} Array of merged contours
  */
 function mergeContours(contours) {
@@ -3646,8 +3647,8 @@ function mergeContours(contours) {
  * Computes the offset between 2 sets of points to minimize
  * average pair-wise distance
  * WARNING: Currently Non-functional
- * @param {Fresco.Shape} A Shape A 
- * @param {Fresco.Shape} B Shape B 
+ * @param {Fresco.Shape} A Shape A
+ * @param {Fresco.Shape} B Shape B
  * @returns {number} Offset between the 2 points vertices
  * @returns {number} Matching direction
  */
@@ -3660,9 +3661,9 @@ function matchPoints(A, B) {
       s0 += (A[i].position().sub(B[(i + 1) % A.length])).mag();
       s1 += (A[i].position().sub(B[(i) % A.length])).mag();
     }
-    
+
     if (s0 < s1) {
-      return 
+      return
     }
   }
   else {
@@ -3691,7 +3692,7 @@ function matchPoints(A, B) {
       s0 += (A[i].position().sub(B[(i + k + 1) % A.length])).mag();
       s1 += (A[i].position().sub(B[(i + k - 1) % A.length])).mag();
     }
-    
+
     let k0 = k;
     if (s0 < sum) {
       sum = s0;
@@ -3782,7 +3783,7 @@ function distort(point, func, amplitude, step) {
     buffer = depth;
     if (u / lenX >= uv.x) {
       nu_pt.x = i;
-      break; 
+      break;
     }
   }
   buffer = func(point.x, -height / 2);
@@ -3792,7 +3793,7 @@ function distort(point, func, amplitude, step) {
     buffer = depth;
     if (v / lenY >= uv.y) {
       nu_pt.y = i;
-      break; 
+      break;
     }
   }
 

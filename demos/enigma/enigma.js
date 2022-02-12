@@ -36,7 +36,7 @@ class Tile extends Fresco.Collection {
     this.stopAtCenter = false;
     this.lines = [];
     this.name = '';
-    
+
     for (let i = 0; i < lineNumber; i++) {
       let nuLine = this.generateLine(i == lineNumber - 1);
       if (nuLine == null) {
@@ -63,7 +63,7 @@ class Tile extends Fresco.Collection {
       }
     }
   }
-  
+
   generateLine(isLast){
     let startPoint;
     let endPoint;
@@ -136,7 +136,7 @@ class Tile extends Fresco.Collection {
             let idx = (vtxIdx + randomInt(2, 4)) % 4;
             endPoint = this.square.vertices[idx].copy();
             combination += idx + 'a';
-          } 
+          }
           else {
             let idx = (vtxIdx + 2) % 4;
             endPoint = this.square.vertices[idx].copy();
@@ -336,7 +336,7 @@ class Tile extends Fresco.Collection {
 
     // use interesection as new center
     half1Vtx[zeroIdx] = newOri1.add(oldOri1.mult(t1)).copy();
-    
+
     // register the shape
     let half1 = new Fresco.Shape(half1Vtx);
 
@@ -345,8 +345,8 @@ class Tile extends Fresco.Collection {
     let half2Vtx = this.square.vertices.slice(Math.min(inter1, inter2), Math.max(inter1, inter2) + 1);
     let idx2 = half2Vtx.length - 1;
     half2Vtx.push(createPoint(0, 0));
-    
-    let oldOri21 = half2Vtx[idx2].copy(); // position of the 1st side vertex before offset  
+
+    let oldOri21 = half2Vtx[idx2].copy(); // position of the 1st side vertex before offset
 
     // offset vertices around center
     let idx22 = (idx2 - 1) % half2Vtx.length;
@@ -357,7 +357,7 @@ class Tile extends Fresco.Collection {
     half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2.mult(gap / offset2));
 
     let newOri21 = half2Vtx[idx2].copy();
-    
+
     idx2 = 0;
     idx22 = 1;
     // register initial position of 2nd side vtx
@@ -368,7 +368,7 @@ class Tile extends Fresco.Collection {
     orth2b = createVector(-orth2b.y, orth2b.x);
     let offset2b = orth2b.dot(dir2);
     half2Vtx[idx2] = half2Vtx[idx2].copy().add(dir2.mult(-gap / offset2b));
-    
+
     let newOri22 = half2Vtx[idx2].copy();
 
     // compute intersection
@@ -377,7 +377,7 @@ class Tile extends Fresco.Collection {
     half2Vtx[half2Vtx.length - 1] = newOri21.copy().add(oldOri21.copy().mult(t1)).copy();
 
     half2Vtx.push(half2Vtx[0]);
-    
+
     let half2 = new Fresco.Shape(half2Vtx);
     buffer = [half1, half2];
 
@@ -392,7 +392,7 @@ class Tile extends Fresco.Collection {
 
     // Sort lines such that those stopping at the center are at the end.
     // This way, granted we don't only have "center" lines, the intersection
-    // with one such line can be delt with almost like a normal cut 
+    // with one such line can be delt with almost like a normal cut
     let lineBuf = [];
     let centerLines = []
     let allCentered = true;
@@ -415,7 +415,7 @@ class Tile extends Fresco.Collection {
 
     // Cut shapes by line1
     lineBuf.forEach(l => {
-      let [line1, line2] = this.offsetLine(l, gap); 
+      let [line1, line2] = this.offsetLine(l, gap);
       let centerCut = this.isCenterLine(l);
       let newBuffer = [];
       buffer.forEach(s => {
@@ -429,7 +429,7 @@ class Tile extends Fresco.Collection {
         newNewBuffer.push(...this.lineCut(line2, s, centerCut));
       });
 
-      // Filter leftover shapes from the cuts 
+      // Filter leftover shapes from the cuts
       buffer = [];
       newNewBuffer.forEach(s => {
         let throwAway = false;
@@ -468,87 +468,6 @@ class OneTwoTile extends Tile {
   }
 }
 
-class Tiler {
-  constructor(tileClass, num_x, num_y, margin_x, margin_y, classParams) {
-    this.tiles = [];
-    let incX = (width - 2 * margin_x) / num_x;
-    let incY = (height - 2 * margin_y) / num_y;
-    let X = -width / 2 + margin_x + incX / 2;
-    for (let i = 0; i < num_x; i++) {
-      let Y = -height / 2 + margin_y + incY / 2;
-      for (let j = 0; j < num_y; j++) {
-        let nuTile = new tileClass(...classParams);
-        nuTile.setPosition(createVector(X, Y));
-        this.tiles.push(nuTile);
-        Y += incY;
-      }
-      X += incX;
-    }
-  }
-
-  draw() {
-    this.tiles.forEach(t => t.draw());
-  }
-
-  toShapes() {
-    let shapes = [];
-    this.tiles.forEach(t => {
-      shapes.push(...t.toShapes());
-    })
-    return shapes;
-  }
-}
-
-/**
- * A quad-tree like tiler
- */
-class RecursiveTiler {
-  constructor(tileClass, classParams, minDepth=2, maxDepth = 4, fillCell = false, margin = 0) {
-    let doneTiles = [];
-    let tileBuffer = [
-      [-width / 4, -width / 4, 1],
-      [-width / 4, width / 4, 1],
-      [width / 4, -width / 4, 1],
-      [width / 4, width / 4, 1],
-    ];
-
-    // recursively create all the tiles
-    while (tileBuffer.length > 0) {
-      let [x, y, depth] = tileBuffer.pop();
-
-      if (depth >= minDepth && (random() > 0.5 || depth == maxDepth)) {
-        doneTiles.push([x, y, depth]);
-      } else {
-        let w = width / Math.pow(2, depth);
-        tileBuffer.push(...[
-          [x - w / 4, y - w / 4, depth + 1],
-          [x - w / 4, y + w / 4, depth + 1],
-          [x + w / 4, y - w / 4, depth + 1],
-          [x + w / 4, y + w / 4, depth + 1],
-        ]);
-      }
-    }
-
-    // spawn actual tiles
-    this.tiles = [];
-    doneTiles.forEach(t => {
-      let [x, y, depth] = t;
-      let nuTile = new tileClass(...classParams);
-      nuTile.setPosition(createVector(x, y));
-      let scale = 1 / Math.pow(2, depth);
-      if (fillCell) {
-        scale = width *scale / 100 - 2 * margin / 100;
-      }
-      nuTile.setScale(createVector(scale, scale));
-      this.tiles.push(nuTile);
-    })
-  }
-
-  draw() {
-    this.tiles.forEach(t => t.draw());
-  }
-}
-
 function setup() {
   if (tileRecursive) {
     createCanvas(1000, 1000);
@@ -569,8 +488,7 @@ function setup() {
   }
 }
 
-
-// draw function which is automatically 
+// draw function which is automatically
 // called in a loop
 function draw() {
   tiler.draw();
