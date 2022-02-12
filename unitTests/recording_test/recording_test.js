@@ -10,7 +10,7 @@ function setup() {
 
 function draw() {
   background(0);
-  s.setScale(Math.sin(0.01  * frameCount));
+  s.setScaleFromScalar(Math.sin(0.01  * frameCount));
   s.draw();
 
   if (frameCount > 100) {

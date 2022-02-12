@@ -4,7 +4,7 @@ const noiseFreq = 0.01; // underlying noise freq
 const pointsPerFrame = 500; // number of points to draw each frame = draw speed
 const radialWobble = false; // whether to apply some noise to the radial position
 const compensateAngularDist = true; // whether to modify the points distances for each ring to make sure they remain constant 
-const sortByDist = true; // whther to sort the points along the path by closest neighbour
+const sortByDist = true; // whether to sort the points along the path by closest neighbour
 const hidePoints = true; // whether to hide points once the path is drawn
 const splitByDist = true; // whether to split the path if points are too far
 
@@ -19,7 +19,7 @@ const radialDist = 3; // radial distance between 2 circles = Density
 const trueThresh = 0.4; // noise value below which to record the points for the final path = Lacunarity
 const maxLayer = 3; // if strictly positive, this is the max number of layers that can be
 
-const drawingSeed = 9344;
+const drawingSeed = 9344; //4422
 
 const deg2rad = Math.PI / 180;
 let points = [];
@@ -54,7 +54,7 @@ function greedySort(arr) {
 function setup() {
   createCanvas(1000, 1000);
   background(colorFromHex(backgroundClr));
-  setSeed(drawingSeed);
+  setSeed(4422);
   loadFonts();
   // Fresco.registerShapes = false;
 

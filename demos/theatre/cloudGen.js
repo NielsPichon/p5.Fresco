@@ -196,7 +196,7 @@ function createCloud(angularPosition) {
     cloud.position.mult(t);
 
     // choose random scale
-    cloud.setScale(random(cloudMinScale, cloudMaxScale));
+    cloud.setScaleFromScalar(random(cloudMinScale, cloudMaxScale));
   
     return cloud;
   }

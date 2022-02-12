@@ -115,7 +115,8 @@ class RandomPot extends Pot {
 
     super(levels, maxLevels, maxSize, segmentRes, circleBase, baseWidth, basePower, baseMaxX, nextX, nextDX);
 
-    this.color = colorFromHex(randomSelect(potColors));
+    this.layer = randomInt(potColors.length);
+    this.color = colorFromHex(potColors[this.layer]);
     this.fillColor = this.color;
     this.noFill = false;
   }

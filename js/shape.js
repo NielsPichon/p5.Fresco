@@ -259,6 +259,33 @@ Fresco.Point = class extends p5.Vector{
   }
 
   /**
+   * Generic function for setting this point's position.
+   * Can be used interchangeably with setting the position attribute directly
+   * @param {p5.Vector} pos 
+   */
+  setPosition(pos) {
+    this.position = pos;
+  }
+
+  /**
+   * Generic function for setting this point's rotation.
+   * Can be used interchangeably with setting the position attribute directly
+   * @param {Number} rot 
+   */
+  setRotation(rot) {
+    this.rotation = rot;
+  }
+
+  /**
+   * Generic function for setting this point's scale.
+   * Can be used interchangeably with setting the position attribute directly
+   * @param {p5.Vector} scale 
+   */
+  setScale(scale) {
+    this.scale = scale;
+  }
+
+  /**
    * Computes a falloff value based on the distance to the point. The falloff
    * will reach zero when reaching the radius of  the particle.
    * @param {p5.Vector} vtx Point to evaluate the falloff at 
@@ -273,8 +300,7 @@ Fresco.Point = class extends p5.Vector{
     let r = distance / this.radius;
     return 1 - pow(r, decayPower);
   }
-
-
+  
   /**
    * Checks whether all properties are equal. Is so, the other point
    * is considered the same as this one.
@@ -425,6 +451,34 @@ Fresco.Shape = class {
     this.layer = 0;
   }
 
+
+  /**
+   * Generic function for setting this shape's position.
+   * Can be used interchangeably with setting the position attribute directly
+   * @param {p5.Vector} pos 
+   */
+  setPosition(pos) {
+    this.position = pos;
+  }
+
+  /**
+   * Generic function for setting this shape's rotation.
+   * Can be used interchangeably with setting the position attribute directly
+   * @param {Number} rot 
+   */
+  setRotation(rot) {
+    this.rotation = rot;
+  }
+
+  /**
+   * Generic function for setting this shape's scale.
+   * Can be used interchangeably with setting the position attribute directly
+   * @param {p5.Vector} scale 
+   */
+  setScale(scale) {
+    this.scale = scale;
+  }
+  
   /**
    * Returns a minimal description of the shape
    * WARNING: Freezes the transform
@@ -1010,7 +1064,7 @@ Fresco.Shape = class {
    * uniform scale if y is not specified  
    * @param {number} [y] Scale along the y axis 
    */
-  setScale(x, y = null) {
+  setScaleFromScalar(x, y = null) {
     if (y) {
       this.scale = createVector(x, y);
     }
@@ -1118,8 +1172,8 @@ Fresco.Shape = class {
     let ys = [];
     for (let i = 0; i < this.vertices.length; i++) {
       let vtx = this.applyTransform(this.vertices[i]);
-      append(xs, vtx.x);
-      append(ys, vtx.y);
+      xs.push(vtx.x);
+      ys.push(vtx.y);
     }
     this.boundingBox = [createVector(min(xs), min(ys)), createVector(max(xs), max(ys))]
   
@@ -2197,7 +2251,7 @@ Fresco.Collection = class {
    * @property {p5.Vector} scale=1,1 - Scale of the geometry collection
    * @property {number} rotation=0 - Rotation of the geometry collection
    * @property {p5.Vector} position=0,0 - Position of the geometry collection
-   * @property {Array.<*>} objects Objects in the collection. These must be in the Scatter
+   * @property {Array.<*>} objects Objects in the collection. These must be in the Fresco
    * namespace and implement the `draw` function as well have a transform of their own.
    * @property {Array.<number>} objectsRotation Rotation of the individual objects of the collection relative to the collection itself
    * @property {Array.<p5.Vector>} objectsScale Scale of the individual objects of the collection relative to the collection itself
@@ -2222,7 +2276,6 @@ Fresco.Collection = class {
     }
   }
 
-
   /**
    * Set the position of the Geometry.
    * Use this method rather than setting `this.position`, 
@@ -2232,9 +2285,8 @@ Fresco.Collection = class {
    */
   setPosition(position) {
     this.position = position;
-    this.setobjectsTransform();
+    this.setObjectsTransform();
   }
-
 
   /**
    * Set the rotation of the Geometry.
@@ -2245,7 +2297,7 @@ Fresco.Collection = class {
    */
   setRotation(rotation) {
     this.rotation = rotation;
-    this.setobjectsTransform();
+    this.setObjectsTransform();
   }
 
   /**
@@ -2257,27 +2309,25 @@ Fresco.Collection = class {
    */
   setScale(scale) {
     this.scale = scale;
-    this.setobjectsTransform();
+    this.setObjectsTransform();
   }
-
 
   /**
    * Applies this Geometry collection's transform to its objects
    */
-  setobjectsTransform() {
+  setObjectsTransform() {
     for (let i = 0; i < this.objects.length; i++) {
       // set rotation
-      this.objects[i].rotation = this.objectsRotation[i] + this.rotation;
+      this.objects[i].setRotation(this.objectsRotation[i] + this.rotation);
       // set scale
-      this.objects[i].scale = this.objectsScale[i].copy().mult(this.scale);
+      this.objects[i].setScale(this.objectsScale[i].copy().mult(this.scale));
       // set position using this scale, rotation and position
-      this.objects[i].position =
-        this.objectsPosition[i].copy().mult(this.scale); //scale
-      this.objects[i].position.rotate(this.rotation); // rotate
-      this.objects[i].position.add(this.position); // offset
+      let newPos = this.objectsPosition[i].copy().mult(this.scale);
+      newPos.rotate(this.rotation);
+      newPos.add(this.position);
+      this.objects[i].setPosition(newPos);
     }
   }
-
 
   /**
    * Attaches a new object to this geometry.

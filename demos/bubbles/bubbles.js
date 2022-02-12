@@ -70,7 +70,7 @@ function draw() {
   t = t % 1; 
 
   scale = 1 / Math.pow(2, frameCount * shrinkSpeed);
-  s.setScale(scale); 
+  s.setScaleFromScalar(scale); 
 }
 
 function addOrRemoveBubble() {

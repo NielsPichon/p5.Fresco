@@ -7,7 +7,7 @@ const totHeight = resGrid * maxSize[0]; // To try and enforce a cube like city, 
 const maxSizeZ = totHeight / 2; // Max height is always at most half the totHeight to avoid building collisions
 const noiseZ = 0.2; // Changes alignment of building's ground. Set to 0 for perfect alignement
 
-const citySeed = 3965; // Random seed
+const citySeed = 3965; // Random seed 1524, 7590, 4627, 1190, 
 
 const camPos = [-6, -5.85, 0];
 const camTarget = [0, 0.15, 0];
@@ -41,7 +41,7 @@ let rings = [];
 function setup() {
   createA4RatioCanvas(1000 / Math.sqrt(2));
   background(colorFromHex(backgroundClr));
-  setSeed(citySeed);
+  setSeed(7590);
   loadFonts();
 
   scene = new Fresco.Scene3D();
