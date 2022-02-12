@@ -1136,8 +1136,7 @@ Fresco.Shape = class {
     }
 
     let nu_vtx = vtx.copy();
-    nu_vtx.x = Math.cos(rotation) * vtx.x + Math.sin(rotation) * vtx.y;
-    nu_vtx.y = -Math.sin(rotation) * vtx.x + Math.cos(rotation) * vtx.y;
+    nu_vtx.rotate(rotation);
     nu_vtx.mult(scale);
     nu_vtx.add(position);
 

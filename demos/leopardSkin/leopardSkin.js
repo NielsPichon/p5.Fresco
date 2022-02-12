@@ -1,19 +1,31 @@
 const backgroundClr = '000';
-const lineAlpha = 200;
-const lineThickness = 3;
+const lineAlpha = 255;
+const lineThickness = 1;
 const boxThickness = 10;
 const noiseAmount = 30;
-const sizeVariabilityPercentage = 0.7;
+const sizeVariabilityPercentage = 0;
 const noiseFreq = 0.001;
 const hatchLength = 200;
-const hatchSpacing = 6;
+const hatchSpacing = 3;
 const hatchAngle = -Math.PI / 4;
 const minRandomOffset = 3;
 const maxCuts = 2;
 const cutSize = 15;
 const spotSpacing = 235;
-const spotSize = 200;
+const spotSize = 150;
 const margin = spotSpacing;
+const curvyHatch = true;
+const curveAmount = 50;
+const curveNoiseFreq = 0.01;
+const boxDraw = true;
+const tiling = false;
+const poisson = true;
+const spotsSeed = null;
+const shapeResolution = 64;
+const addRing = true;
+const ringThickness = 3;
+
+// leopard skin box tiled
 // const backgroundClr = '000';
 // const lineAlpha = 200;
 // const lineThickness = 3;
@@ -30,24 +42,53 @@ const margin = spotSpacing;
 // const spotSpacing = 235;
 // const spotSize = 50;
 // const margin = spotSpacing;
+// const curvyHatch = false;
+// const boxDraw = true;
+// const tiling = true;
+// const poisson = false;
+// const spotsSeed = null;
+// const shapeResolution = 64;
+// const addRing = false;
+// const ringThickness = 3;
 
-const boxDraw = false;
-
-const tiling = false;
-const poisson = true;
-
-const spotsSeed = null;
+// leopard skin box poisson
+// const backgroundClr = '000';
+// const lineAlpha = 200;
+// const lineThickness = 3;
+// const boxThickness = 10;
+// const noiseAmount = 7;
+// const sizeVariabilityPercentage = 0.7;
+// const noiseFreq = 0.005;
+// const hatchLength = 35;
+// const hatchSpacing = 6;
+// const hatchAngle = -Math.PI / 4;
+// const minRandomOffset = 3;
+// const maxCuts = 2;
+// const cutSize = 15;
+// const spotSpacing = 235;
+// const spotSize = 50;
+// const margin = spotSpacing;
+// const curvyHatch = false;
+// const boxDraw = true;
+// const tiling = true;
+// const poisson = true;
+// const spotsSeed = 1730;
+// const shapeResolution = 64;
+// const addRing = false;
+// const ringThickness = 3;
 
 
 let sampler;
 let hatchDir = p5.Vector.fromAngle(hatchAngle);
+let hatchNormal = p5.Vector.fromAngle(hatchAngle + Math.PI / 2);
+
 
 class Spot extends Fresco.Collection {
-  constructor(radius, variability = 0) {
+  constructor(radius, variability = 0, resolution = 64) {
     super();
     let r = radius - variability * radius + random(2 * variability * radius);
     // create circle
-    let base = new Fresco.Circle(r, 64);
+    let base = new Fresco.Circle(r, resolution);
     base.isPolygonal = true;
 
     //deform circle
@@ -107,13 +148,34 @@ class Spot extends Fresco.Collection {
           let end = p.copy().add(hatchDir.copy().mult(-hatchLength * 0.5));
 
           // create hair
-          let hatch = new Fresco.Line(start, end);
+          let hatch = new Fresco.Line(start, end, 10);
           hatch.strokeWeight = lineThickness;
           hatch.color = colorFromHex('fff', lineAlpha);
+          if (curvyHatch) {
+            for (let i = 1; i < hatch.vertices.length - 1; i++) {
+              hatch.vertices[i].add(hatchNormal.copy().mult(
+                noise(
+                  hatch.vertices[i].x * curveNoiseFreq + offset,
+                  hatch.vertices[i].y * curveNoiseFreq + offset
+                  ) * 2 * curveAmount - curveAmount
+              ));
+            }
+            hatch.isPolygonal = false;
+          }
           this.attach(hatch);
         }
       }
     });
+  }
+}
+
+class SpotInASpot extends Fresco.Collection {
+  constructor(spotSize, sizeVariabilityPercentage, shapeResolution) {
+    super();
+    this.attach(new Spot(spotSize, sizeVariabilityPercentage, shapeResolution));
+    let smallerSpot = new Spot(spotSize, sizeVariabilityPercentage, shapeResolution);
+    smallerSpot.setScale(createVector(0.5, 0.5));
+    this.attach(smallerSpot);
   }
 }
 
@@ -126,13 +188,12 @@ function setup() {
 
   if (tiling) {
     if (poisson) {
-      // good seed 1730
       sampler = new PoissonSampler(Spot, [spotSize, sizeVariabilityPercentage], width - margin, height - margin, spotSpacing, 10);
     } else {
       sampler = new Tiler(Spot, [spotSize, sizeVariabilityPercentage], 4, 5, 20, 20);
     }
   } else {
-    sampler = new Spot(spotSize, sizeVariabilityPercentage);
+    sampler = new SpotInASpot(spotSize, sizeVariabilityPercentage, shapeResolution);
   }
 
   if (boxDraw) {
@@ -151,5 +212,15 @@ function draw() {
     sq.strokeWeight = boxThickness;
     sq.draw();
   }
+
+  let ring = new Fresco.Circle(spotSize * 1.5);
+  ring.setScale(createVector(1, 0.25));
+  ring.freezeTransform();
+  ring.setRotation(Math.PI / 4);
+  ring.strokeWeight = 2;
+  ring.layer = 2;
+  ring.draw();
+
   noLoop();
+  print('Number of shapes', Fresco.shapeBuffer.length)
 }
