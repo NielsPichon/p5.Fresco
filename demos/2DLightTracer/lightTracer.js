@@ -1,8 +1,10 @@
 const backgroundClr = '000';
-const cutOff = 0.01;
-const epsilon = 0.1;
-const drawShapes = false;
-
+const cutOff = 0.01; // intensity below which a ray is "dead"
+const epsilon = 0.1; // how much the rays should be offset by to avoid self intersection
+const drawShapes = false; // whether to draw the colider shapes
+const opacity = false; // whether to decrease light opacity as intensity decreases
+const randomLightSpray = false; // whether a light should spray some rays in a regular pattern or randomly
+const rayCount = 300; // if positive, defines the tot number of rays
 
 let shapes = [];
 let lightSources = [];
@@ -25,7 +27,12 @@ class Source {
   }
 
   shootRay() {
-    let randomAngle = this.rotation - this.dispersion + random(2 * this.dispersion);
+    let randomAngle;
+    if (randomLightSpray) {
+      randomAngle = this.rotation - this.dispersion + 2 * this.dispersion * frameCount / rayCount;
+    } else {
+      randomAngle = this.rotation - this.dispersion + random(2 * this.dispersion);
+    }
     let randomDir = p5.Vector.fromAngle(randomAngle);
     let ray = new Ray(this.position.copy(), randomDir, this.intensity, this.hexColor, this.index);
     ray.shoot();
@@ -149,6 +156,7 @@ class Ray {
       // otherwise shoot ray to somewhere outside the canvas.
       // We simply take a point that is at least one canvas diagonal (+/- the start pos)
       // away along the ray direction
+      // TODO clamp to canvas
       let dist = width * width + height * height
       this.end = this.direction.copy().mult(dist);
     }
@@ -156,21 +164,25 @@ class Ray {
 
   draw() {
     let shape = new Fresco.Line(this.start, this.end);
-    shape.color = colorFromHex(this.hexColor, this.intensity * 255);
+    if (opacity) {
+      shape.color = colorFromHex(this.hexColor, this.intensity * 255);
+    } else {
+      shape.color = colorFromHex(this.hexColor);
+    }
     shape.draw();
   }
 }
 
 function setup() {
-  createCanvas(1000, 1000);
+  createA4RatioCanvas(1000);
   background(colorFromHex(backgroundClr));
   setSeed();
   loadFonts();
   Fresco.registerShapes = false;
 
-  shapes.push(new Collider(new Fresco.Circle(100, 256), 0, 0.5, 0.1, 1.44));
-  lightSources.push(new Source(-200, 0, 0, Math.PI / 4, 'f00', 0.1, 1));
-  lightSources.push(new Source(200, 0, Math.PI, Math.PI / 4, '00f', 0.1, 1));
+  shapes.push(new Collider(new Fresco.Circle(100, 256), 0, 0., 0., 1.44));
+  lightSources.push(new Source(0, 200, -Math.PI / 2, Math.PI / 4, 'f00', 0.1, 1));
+  lightSources.push(new Source(0, -200, Math.PI / 2, Math.PI / 4, '00f', 0.1, 1));
 }
 
 // draw function which is automatically
@@ -188,4 +200,8 @@ function draw() {
 
   // delete the rays
   rays = [];
+
+  if (rayCount > 0 && rayCount <= frameCount) {
+    noLoop();
+  }
 }
