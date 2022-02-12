@@ -259,6 +259,12 @@ Fresco.Point = class extends p5.Vector{
   }
 
   /**
+   * Does nothing. Simply here to homogenize with other Fresco objects
+   */
+  freezeTransform() {
+  }
+
+  /**
    * Generic function for setting this point's position.
    * Can be used interchangeably with setting the position attribute directly
    * @param {p5.Vector} pos
@@ -2327,6 +2333,19 @@ Fresco.Collection = class {
       newPos.rotate(this.rotation);
       newPos.add(this.position);
       this.objects[i].setPosition(newPos);
+    }
+  }
+
+  freezeTransform() {
+    this.position = createVector(0, 0);
+    this.rotation = 0;
+    this.scale = createVector(1, 1);
+    for (let i = 0; i < this.objects.length; i++) {
+      let o = this.objects.shift();
+      this.objectsPosition.shift();
+      this.objectsRotation.shift();
+      this.objectsScale.shift();
+      this.attach(o);
     }
   }
 

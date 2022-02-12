@@ -484,7 +484,7 @@ function setup() {
   if (tileRecursive) {
     tiler = new RecursiveTiler(OneTwoTile, [gapThickness, false, false], minRecursiveDepth, maxRecursiveDepth, fillRecursiveTiles, recursiveMargins)
   } else {
-    tiler = new Tiler(OneTwoTile, resX, resY, 0, 0, [gapThickness, showText, false]);
+    tiler = new Tiler(OneTwoTile, [gapThickness, showText, false], resX, resY, 0, 0);
   }
 }
 
