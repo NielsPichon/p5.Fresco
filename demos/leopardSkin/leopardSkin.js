@@ -20,7 +20,7 @@ const curveNoiseFreq = 0.01;
 const boxDraw = true;
 const tiling = false;
 const poisson = true;
-const spotsSeed = null;
+const spotsSeed = 6545;
 const shapeResolution = 64;
 const addRing = true;
 const ringThickness = 3;
@@ -170,10 +170,15 @@ class Spot extends Fresco.Collection {
 }
 
 class SpotInASpot extends Fresco.Collection {
-  constructor(spotSize, sizeVariabilityPercentage, shapeResolution) {
+  constructor(spotSize, sizeVariabilityPercentage, shapeResolution, same=true) {
     super();
     this.attach(new Spot(spotSize, sizeVariabilityPercentage, shapeResolution));
-    let smallerSpot = new Spot(spotSize, sizeVariabilityPercentage, shapeResolution);
+    let smallerSpot;
+    if (same) {
+      smallerSpot = this.objects[0].copy();
+    } else {
+      smallerSpot = new Spot(spotSize, sizeVariabilityPercentage, shapeResolution);
+    }
     smallerSpot.setScale(createVector(0.5, 0.5));
     this.attach(smallerSpot);
   }
@@ -197,7 +202,7 @@ function setup() {
   }
 
   if (boxDraw) {
-    sampler.setScale(createVector(0.5, 0.5));
+    sampler.setScale(createVector(0.6, 0.6));
   }
 }
 

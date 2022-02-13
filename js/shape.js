@@ -2429,6 +2429,15 @@ Fresco.Collection = class {
     });
     return buffer;
   }
+
+  copy() {
+    let newCollection = new Fresco.Collection();
+    newCollection.position = this.position.copy();
+    newCollection.rotation = this.rotation;
+    newCollection.scale = this.scale.copy();
+    this.objects.forEach(o => newCollection.attach(o.copy()));
+    return newCollection;
+  }
 }
 
 
