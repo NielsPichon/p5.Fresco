@@ -1136,7 +1136,12 @@ Fresco.Shape = class {
     }
 
     let nu_vtx = vtx.copy();
+    let z_buff = nu_vtx.z;
+    if (nu_vtx !== 0) {
+      nu_vtx.z = 0;
+    }
     nu_vtx.rotate(rotation);
+    nu_vtx.z = z_buff;
     nu_vtx.mult(scale);
     nu_vtx.add(position);
 
