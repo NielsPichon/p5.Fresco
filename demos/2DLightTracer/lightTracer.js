@@ -5,6 +5,7 @@ const drawShapes = false; // whether to draw the colider shapes
 const opacity = false; // whether to decrease light opacity as intensity decreases
 const randomLightSpray = false; // whether a light should spray some rays in a regular pattern or randomly
 const rayCount = 300; // if positive, defines the tot number of rays
+const margin = 0;
 
 let shapes = [];
 let lightSources = [];
@@ -156,9 +157,15 @@ class Ray {
       // otherwise shoot ray to somewhere outside the canvas.
       // We simply take a point that is at least one canvas diagonal (+/- the start pos)
       // away along the ray direction
-      // TODO clamp to canvas
       let dist = width * width + height * height
       this.end = this.direction.copy().mult(dist);
+
+      if (Math.abs(this.end.x) > width / 2 - margin) {
+        this.end.mult((width / 2 - margin) / Math.abs(this.end.x));
+      }
+      if (Math.abs(this.end.y) > height / 2 - margin) {
+        this.end.mult((height / 2 - margin) / Math.abs(this.end.y));
+      }
     }
   }
 
@@ -178,11 +185,11 @@ function setup() {
   background(colorFromHex(backgroundClr));
   setSeed();
   loadFonts();
-  Fresco.registerShapes = false;
+  Fresco.registerShapes = true;
 
   shapes.push(new Collider(new Fresco.Circle(100, 256), 0, 0., 0., 1.44));
-  lightSources.push(new Source(0, 200, -Math.PI / 2, Math.PI / 4, 'f00', 0.1, 1));
-  lightSources.push(new Source(0, -200, Math.PI / 2, Math.PI / 4, '00f', 0.1, 1));
+  lightSources.push(new Source(-200, 0, 0, Math.PI / 4, 'fff', 0.1, 1));
+  // lightSources.push(new Source(0, -200, Math.PI / 2, Math.PI / 4, '00f', 0.1, 1));
 }
 
 // draw function which is automatically
