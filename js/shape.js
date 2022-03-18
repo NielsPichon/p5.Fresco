@@ -26,9 +26,11 @@ Fresco.registerShapes = true;
  */
 function registerDrawnShape(shape) {
   if (Fresco.registerShapes) {
-    let idx = Fresco.shapeBuffer.indexOf(shape);
-    if (idx == -1) {
-      Fresco.shapeBuffer.push(shape);
+    if (shape.vertices.length > 1) {
+      let idx = Fresco.shapeBuffer.indexOf(shape);
+      if (idx == -1) {
+        Fresco.shapeBuffer.push(shape);
+      }
     }
   }
 }
@@ -634,6 +636,10 @@ Fresco.Shape = class {
     scale=null, rotation=null, color=null, fillColor=null,
     lineWeight=null) {
 
+    if (this.vertices.length == 0) {
+      return;
+    }
+
     if (this.noStroke && !usePointColor) {
       noStroke();
     } else {
@@ -742,6 +748,11 @@ Fresco.Shape = class {
    * @param {p5.Graphics} buffer The p5.Graphics buffer object to draw to
    */
   drawToBuffer(buffer) {
+    console.log(this.vertices);
+    if (this.vertices.length == 0) {
+      return;
+    }
+
     // set brush properties
     buffer.stroke(this.color);
     buffer.strokeWeight(this.strokeWeight);
@@ -1197,7 +1208,7 @@ Fresco.Shape = class {
    */
   isClosed() {
     return this.vertices[0].equals(
-      this.vertices[this.vertices.length - 1]);
+      this.vertices[this.vertices.length - 1]) && this.vertices.length > 1;
   }
 
 
@@ -2791,6 +2802,7 @@ function cubicRoots(a, b, c, d) {
  */
 function lineIntersection(pt1, dir1, pt2, dir2) {
   if (dir1.x == 0) {
+    // if  both x components of the lines direction are 0 then they are parallel and don't intersect
     if (dir2.x == 0) {
       return [false, false];
     }
@@ -2800,22 +2812,30 @@ function lineIntersection(pt1, dir1, pt2, dir2) {
       return [t1, t2];
     }
   }
+  // check if parallel
   else if (dir2.y == dir1.y * dir2.x / dir1.x) {
     return [false, false];
   }
+  // general case
   else {
-    const v1 = pt1.copy().sub(pt2);
-    const v3 = createVector(-dir1.y, dir1.x);
-    const t2 = v1.dot(v3) / dir2.dot(v3);
-    const t1 = ((pt2.x - pt1.x) + dir2.x * t2) / dir1.x;
+    // this is using geometry tricks
+    // const v1 = pt1.copy().sub(pt2);
+    // const v3 = createVector(-dir1.y, dir1.x);
+    // const t2 = v1.dot(v3) / dir2.dot(v3);
+    // const t1 = ((pt2.x - pt1.x) + dir2.x * t2) / dir1.x;
+    // return [t1, t2];
+
+    // This is using brute force system solving
+    const det = -dir1.x * dir2.y + dir2.x * dir1.y;
+    const ax = pt2.x - pt1.x;
+    const ay = pt2.y - pt1.y;
+    const t1 = (-dir2.y * ax + dir2.x * ay) / det;
+    const t2 = (-dir1.y * ax + dir1.x * ay) / det;
     return [t1, t2];
   }
 }
 
 
-// computes the intersection of 2 segments defined by there extremities
-// if the 2 segments don't intersect return false, else return the intersection
-// coordinates
 /**
  * Computes the intersection of 2 segments defined by there extremities.
  * @param {p5.Vector} p0 First end of the first line
@@ -2838,7 +2858,7 @@ function segmentIntersection(p0, p1, p2, p3) {
 
   // if lines intersect, check that intersection is within the
   // segment extremities
-  if(t1 != false) {
+  if(t1 !== false) {
     if (t1 > 1 || t1 < 0) {
       return false;
     }
@@ -3830,4 +3850,52 @@ function distort(point, func, amplitude, step) {
   }
 
   return nu_pt;
+}
+
+function pointDistToLine(vtx, p0, dir) {
+  // vector from point on line to vtx
+  let ray = vtx.copy().sub(p0);
+
+  // we project the ray onto the line
+  let proj = p5.Vector.dot(ray, dir);
+  let projVec = dir.copy().mult(proj);
+
+  // we subtract the projection from the "ray"
+  let orth = ray.sub(projVec);
+
+  return orth.mag();
+}
+
+function pointDistToSegment(vtx, p0, p1) {
+  // we compute the segment direction
+  let dir = p1.copy().sub(p0);
+  let length = dir.mag();
+  if (length == 0) {
+    console.log('Error! A segment should be of length > 0 for a distance to a point to be defined');
+    return 1e9;
+  } else {
+    dir.div(length);
+  }
+
+  // vector from point on line to vtx
+  let ray = vtx.copy().sub(p0);
+
+  // we project the ray onto the line
+  let proj = p5.Vector.dot(ray, dir);
+
+  // if the projected distance on the underlying line to the segment is larger than the segment
+  // length or is negative, then the distance to the segment is that to the end vertices
+  if (proj > length) {
+    return p1.copy().sub(vtx).mag();
+  } else if (proj < 0) {
+    return p0.copy().sub(vtx).mag();
+  } else {
+    // otherwise the distance to the segment is that to the underlying line    
+    let projVec = dir.copy().mult(proj);
+    
+    // we subtract the projection from the "ray"
+    let orth = ray.sub(projVec);
+    
+    return orth.mag();
+  }
 }

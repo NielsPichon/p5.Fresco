@@ -209,6 +209,9 @@ function draw() {
   rays = [];
 
   if (rayCount > 0 && rayCount <= frameCount) {
+    let rect = new Fresco.Rect(width - 2 * margin, height - 2 * margin);
+    rect.layer = 1;
+    rect.draw();
     noLoop();
   }
 }
