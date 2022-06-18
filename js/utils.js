@@ -5,7 +5,7 @@
  */
 
 /**
- * <a href="https://github.com/spite/ccapture.js">CCapture</a> object which allows for recording animations 
+ * <a href="https://github.com/spite/ccapture.js">CCapture</a> object which allows for recording animations
  */
 Fresco.recorder;
 
@@ -16,14 +16,14 @@ Fresco.seed;
 
 
 /**
- * 
+ *
  */
 Fresco.isSVGCanvas = false;
 
 /**
  * Create an canvas with the svg renderer and stores that
  * the mode is SVG for exports
- * @param {number} w width of the canvas  
+ * @param {number} w width of the canvas
  * @param {number} h height of the canvas
  */function createSVGCanvas(w, h)
 {
@@ -32,7 +32,7 @@ Fresco.isSVGCanvas = false;
 }
 
 /**
- * Callback function called when pressing the json export key. 
+ * Callback function called when pressing the json export key.
  * It should return an array of Fresco.Shapes.
  * By default returns the shape buffer
  */
@@ -74,7 +74,7 @@ function keyPressed() {
       if (isLooping()) {
         noLoop();
       }
-      else { 
+      else {
         loop();
       }
     }
@@ -84,7 +84,7 @@ function keyPressed() {
       if (Fresco.isSVGCanvas) {
         save();
       }
-      else 
+      else
       {
         saveCanvas('canvas', 'png');
       }
@@ -100,7 +100,7 @@ function keyPressed() {
       stopRecording();
     }
 
-    // n like noise to display the  
+    // n like noise to display the
     if (key == 'n') {
       showSeed();
     }
@@ -114,7 +114,7 @@ function keyPressed() {
 
 /**
  * Displays the random number generator seed in a
- * pannel, or hides it if already displayed  
+ * pannel, or hides it if already displayed
  */
 function showSeed() {
   let seedDisplay = document.getElementById('seed')
@@ -131,7 +131,7 @@ function showSeed() {
       seedDisplay.innerText = "Seed: " + Fresco.seed.toFixed();
 
     }
-    
+
     seedDisplay.id = "seed";
     seedDisplay.style = "position:absolute;top:10;left" +
       ":10;padding:5px 10px;background-color:green;color:#fff;";
@@ -142,13 +142,13 @@ function showSeed() {
 
 /**
  * Sets the seed for the random number generator and noise generator.
- * 
+ *
  * NOTE: It seems that under the hood p5 uses the native js random
  * number genrator if no seed is set. This generator does not allow
  * to set a seed but is somewhat faster.
- * @param {number} [newSeed] If specified, this will set the seed for 
+ * @param {number} [newSeed] If specified, this will set the seed for
  * both the random number generator and the noise generator. Otherwise
- * it will use a random seed. 
+ * it will use a random seed.
  */
 function setSeed(newSeed=null) {
   // set the seed or generate a random new one
@@ -195,9 +195,9 @@ function recordAnimation(fps=60, video=false) {
   let drawAndRecord = function () {
     if (frameCount == 1) {
       // start the recording
-      Fresco.recorder.start(); 
+      Fresco.recorder.start();
     }
-    document.getElementById('rec').innerText = "Recording... " + (frameCount / fps).toFixed(1) + "s"; 
+    document.getElementById('rec').innerText = "Recording... " + (frameCount / fps).toFixed(1) + "s";
     drawCopy();
     Fresco.recorder.capture(document.getElementById('defaultCanvas0'));
   }
@@ -230,7 +230,7 @@ function stopRecording() {
 
 /**
  * Utility to convert a color hex code string to RGBA
- * @param {string} hex Hex code 
+ * @param {string} hex Hex code
  * @param {number} [A] Opacity, between 0 and 255;
  * @returns {Array.<number>} RGBA color defined as an array of
  * 4 numbers in the [0, 255] range.
@@ -313,7 +313,7 @@ function steeperStep(t, n) {
 }
 
 
-// 
+//
 /**
  * Linearly interpolates between as many colors as provided
  * @param {number} t Interpolant, in the [0, 1] range
@@ -349,7 +349,7 @@ function colorInterp (t, colors) {
 
 /**
  * Draws a gradient on the background
- * @param {Array.Array<number>} colors Colors of the gradient 
+ * @param {Array.Array<number>} colors Colors of the gradient
  * @param {boolean} [vertical] Whether the gradient is vertical or horizontal
  */
 function backgroundGradient(colors, vertical=true) {
@@ -373,7 +373,7 @@ function backgroundGradient(colors, vertical=true) {
 // a function that adds a border of the specified color around the canvas
 /**
  * Draws some borders on top of the current canvas.
- * @param {number} thickness Thickness of the borders in pixels. 
+ * @param {number} thickness Thickness of the borders in pixels.
  * @param {Array.<number>} color RGBA color of the border, represented as an
  * array of 4 numbers in the [0, 255] range
  */
@@ -390,9 +390,9 @@ function border(thickness, color) {
 /**
  * Computes the squared distance between to points. This allows for
  * faster length comparison over the non-squared version
- * @param {p5.Vector} pt1 point 1 
+ * @param {p5.Vector} pt1 point 1
  * @param {p5.Vector} pt2 point 2
- * @returns {number} Distance squared between the 2 points 
+ * @returns {number} Distance squared between the 2 points
  */
 function distSquared(pt1, pt2) {
   const dx = pt1.x - pt2.x;
@@ -412,9 +412,9 @@ function distSquared(pt1, pt2) {
  * @returns {p5.Vector} Gradient of the function at the specified point
  */
 function gradient(func, step, x, y, z=null) {
-  let dx = (func(x + step, y, z) - func(x - step, y, z)) / step; 
+  let dx = (func(x + step, y, z) - func(x - step, y, z)) / step;
   let dy = (func(x, y + step, z) - func(x, y - step, z)) / step;
-  return createVector(dx, dy); 
+  return createVector(dx, dy);
 }
 
 
@@ -429,15 +429,15 @@ function gradient(func, step, x, y, z=null) {
  * @returns {p5.Vector} Gradient of the function at the specified point
  */
 function gradientVec(func, step, x, y, z=null) {
-  let dx = func(x + step, y, z).sub(func(x - step, y, z)).div(step); 
+  let dx = func(x + step, y, z).sub(func(x - step, y, z)).div(step);
   let dy = func(x, y + step, z).sub(func(x, y - step, z)).div(step);
-  return dx.add(dy); 
+  return dx.add(dy);
 }
 
 
 /**
  * Compares 2 angles in radians.
- * @param {number} alpha 
+ * @param {number} alpha
  * @param {number} beta
  * @returns {number} The absolute angle difference between the 2 angles
  */
@@ -465,7 +465,7 @@ function compareAngles(alpha, beta) {
  * Linearly interpolates between 2 vectors
  * @param {p5.Vector} start Start vector to interpolate between
  * @param {p5.Vector} stop Stop vector to interpolate between
- * @param {number} amount interpolent in range [0, 1] 
+ * @param {number} amount interpolent in range [0, 1]
  */
 function lerpVector(start, stop, amount) {
   let lVec = createVector(0, 0, 0);
@@ -502,8 +502,8 @@ function createA4RatioCanvas(size) {
 
 /**
  * Computes the max vector along all 3 axes of a p5.Vector
- * @param {p5.Vector} a 
- * @param {p5.Vector} b 
+ * @param {p5.Vector} a
+ * @param {p5.Vector} b
  * @returns {p5.Vector}
  */
 function vectorMin(a, b) {
@@ -512,10 +512,19 @@ function vectorMin(a, b) {
 
 /**
  * Computes the max vector along all 3 axes of a p5.Vector
- * @param {p5.Vector} a 
- * @param {p5.Vector} b 
+ * @param {p5.Vector} a
+ * @param {p5.Vector} b
  * @returns {p5.Vector}
  */
  function vectorMax(a, b) {
   return createVector(Math.max(a.x, b.x), Math.max(a.y, b.y), Math.max(a.z, b.z))
+}
+
+
+/**
+ * Equivalent to p5.Vector.random2D except this version can be seeded.
+ * @returns {p5.Vector} a random unit 2D vecor
+ */
+function random2DVector(){
+  return p5.Vector.fromAngle(random() * Math.PI * 2);
 }

@@ -2842,6 +2842,7 @@ function lineIntersection(pt1, dir1, pt2, dir2) {
  * @param {p5.Vector} p1 Second end of the first line
  * @param {p5.Vector} p2 First end of the second line
  * @param {p5.Vector} p3 Second end of the second line
+ * @param {Number} epsilon=0 Min distance to end points
  * @returns {p5.Vector} Position of the intersection point.
  * If the point does not exist,
  * this method will return false instead.
@@ -2850,7 +2851,7 @@ function lineIntersection(pt1, dir1, pt2, dir2) {
  * basic vector arithmetic. The return will have the same type
  * as the first point input.
  */
-function segmentIntersection(p0, p1, p2, p3) {
+function segmentIntersection(p0, p1, p2, p3, epsilon=0) {
   let dir1 = p1.copy().sub(p0);
   let dir2 = p3.copy().sub(p2);
 
@@ -2859,10 +2860,10 @@ function segmentIntersection(p0, p1, p2, p3) {
   // if lines intersect, check that intersection is within the
   // segment extremities
   if(t1 !== false) {
-    if (t1 > 1 || t1 < 0) {
+    if (t1 > 1 - epsilon || t1 < epsilon) {
       return false;
     }
-    if (t2 > 1 || t2 < 0) {
+    if (t2 > 1 - epsilon || t2 < epsilon) {
       return false;
     }
 
@@ -3042,6 +3043,50 @@ function raySplineIntersection(rayOri, rayDir, p0, p1, p2, p3) {
   }
 
   return t2;
+}
+
+
+/**
+ * checks whether a line intersects a circle
+ * @param {p5.Vector} p0 Point on the line
+ * @param {p5.Vector} p1 Point on the line. Should be distinct from p0
+ * @param {p5.Vector} center Circle center
+ * @param {Number} radius Circle radius
+ * @returns {Boolean, p5.Vector} true if intersection + the closest point to
+ * the circle center
+ */
+function doLineIntersectCircle(p0, p1, center, radius) {
+  let dir = p1.copy().sub(p0).normalize();
+  let toCenter = center.copy().sub(p0);
+  let proj = toCenter.dot(dir);
+
+  let projPoint = dir.mult(proj).add(p0);
+
+  // intersection if projection point is close enough to the circle
+  // and is within segment
+  return [distSquared(projPoint, center) <= radius * radius, projPoint];
+}
+
+/**
+ * checks whether a segment intersects a circle
+ * @param {p5.Vector} p0 Point on the line
+ * @param {p5.Vector} p1 Point on the line. Should be distinct from p0
+ * @param {p5.Vector} center Circle center
+ * @param {Number} radius Circle radius
+ * @returns {Boolean, p5.Vector} true if intersection + the closest point to
+ * the circle center
+ */
+ function doSegmentIntersectCircle(p0, p1, center, radius) {
+  let [intersect, proj] = doLineIntersectCircle(p0, p1, center, radius)
+
+  if (!intersect) return [false, proj];
+
+  return [
+    distSquared(p0, proj) <= distSquared(p0, p1)
+    || distSquared(p0, center) < radius * radius
+    || distSquared(p1, center) < radius * radius,
+    proj
+  ];
 }
 
 
@@ -3890,12 +3935,12 @@ function pointDistToSegment(vtx, p0, p1) {
   } else if (proj < 0) {
     return p0.copy().sub(vtx).mag();
   } else {
-    // otherwise the distance to the segment is that to the underlying line    
+    // otherwise the distance to the segment is that to the underlying line
     let projVec = dir.copy().mult(proj);
-    
+
     // we subtract the projection from the "ray"
     let orth = ray.sub(projVec);
-    
+
     return orth.mag();
   }
 }
