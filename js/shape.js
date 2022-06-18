@@ -748,7 +748,6 @@ Fresco.Shape = class {
    * @param {p5.Graphics} buffer The p5.Graphics buffer object to draw to
    */
   drawToBuffer(buffer) {
-    console.log(this.vertices);
     if (this.vertices.length == 0) {
       return;
     }
