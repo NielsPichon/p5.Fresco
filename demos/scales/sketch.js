@@ -32,7 +32,6 @@ function setup() {
   background(colorFromHex(backgroundClr));
   setSeed();
   loadFonts();
-  Fresco.registerShapes = false;
 
   if (octaveNoise) noiseDetail(8, 0.65);
 

@@ -127,7 +127,7 @@ function setup() {
       let bttn = createButton(colors[i], String(i));
       bttn.position(width + 100 + 50 * i, height / 2);
       bttn.mouseClicked(() => {
-        currLayer = bttn.value();
+        currLayer = Number(bttn.value());
       });
     }
   }
@@ -171,19 +171,23 @@ function setup() {
 
   jsonExportCallback = () => {
     if (Fresco.shapeBuffer.length > 0) {
-      return Fresco.shapeBuffer.length > 0
+      return Fresco.shapeBuffer;
     } else {
       let shapes = [];
       walkers.forEach(walker => {
-        let shape = new Fresco.Shape(walker.hist);
+        let vertices = []
+        walker.hist.forEach(v => vertices.push(new Fresco.Point(v)));
+        let shape = new Fresco.Shape(vertices);
         if (!roundOnCleanUp) {
           shape.isPolygonal = true;
         }
         shape.layer = walker.layer
         shapes.push(shape);
-      })
+      });
       deadWalkers.forEach(walker => {
-        let shape = new Fresco.Shape(walker.hist);
+        let vertices = []
+        walker.hist.forEach(v => vertices.push(new Fresco.Point(v)));
+        let shape = new Fresco.Shape(vertices);
         if (!roundOnCleanUp) {
           shape.isPolygonal = true;
         }
@@ -191,6 +195,9 @@ function setup() {
         shapes.push(shape);
       })
       fruits.forEach(fruit => shapes.push(fruit));
+      let layers = []
+      shapes.forEach(s => layers.push(s.layer));
+      console.log(layers)
       return shapes;
     }
   }
