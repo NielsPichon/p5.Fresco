@@ -8,7 +8,7 @@ const particleWeight = 2; // if 0 or less, will use the cell size
 const trail = false; // If true, particles will leave a trail which never disappears
 const shootingStar = true; // If true, particles will leave a short trail which will disappear over time
 const fadeSpeed = 0.2; // Value in [0, 1] which defines how fast the trail fades
-const clearUpPeriod = 0; // if strictly larger than 0, every period, the fade speed will reach 1 to clear up the sky  
+const clearUpPeriod = 0; // if strictly larger than 0, every period, the fade speed will reach 1 to clear up the sky
 const addBorder = true; // adds a black border
 const borderClr = '000';
 const borderThickness = 100;
@@ -52,7 +52,7 @@ function setup() {
   createCanvas(1440, 1440);
   background(colorFromHex(backgroundClr));
   setSeed();
-  
+
   // compute amount of particles
   let particlesNum = gridResolution * gridResolution * particleDensity;
 
@@ -79,7 +79,7 @@ function setup() {
     else {
       p.radius = cellX / 2;
     }
-    
+
     // choose direction randomly and set color accordingly
     if (random() <= dirRatio) {
       p.velocity = p5.Vector.fromAngle(radians(dir1)).mult(speed);
@@ -124,7 +124,7 @@ function setup() {
   }
 }
 
-// draw function which is automatically 
+// draw function which is automatically
 // called in a loop
 function draw() {
   if (!trail) {
@@ -138,7 +138,7 @@ function draw() {
     background(colorFromHex(backgroundClr, opacity));
   }
 
-  // move all particles from one direction 
+  // move all particles from one direction
   for (let  i = 0; i < getParticlesNum(); i++) {
     // retrieve i-th  particle
     let p = getParticle(i);
@@ -259,7 +259,7 @@ function checkIfCellEmpty(pos, idx) {
   if (cell >= grid.length || cell < 0) {
     print(cell, pos, idx)
   }
-  
+
   // cell is considered empty if this particle is already in
   // it or the cell is truely empty
   return (grid[cell].length <= 0 || grid[cell].indexOf(idx) >= 0);

@@ -1,22 +1,16 @@
 const backgroundClr = '000';
-const lineWeight = 5;
 const colors = [
   'fff', '888', '444']            // Possible colors for the walkers
-const numWalkers = 100            // number of initial walkers per cluster
+const numWalkers = 100;           // number of initial walkers per cluster
 const numClusters = 5;            // number of spawning clusters
 const bestPacking = false;        // Whether we should try to pack clusters as
                                   // evenly as possible (while still random).
                                   // Number of actually spawned clusters
                                   // is not guaranteed
 const maxDisplacement = 10;       // Max step distance per move. Also affect
-                                  // branching
-const circleSpawn = true;        // If true, points will be evenly scattered
-                                  // on a circle rather than randomly sampled
-                                  // on a disc
-const initialDispersion = 300;    // Max distance from cluster center at spawn.
-                                  //If spawn on a circle, this informs the
-                                  // radius of the initial circle
-const spawnProb = 0.02;            // Probability to branch off at each step
+                                  // branching.
+const initialDispersion = 100;    // Max distance from cluster center at spawn
+const spawnProb = 0.1;            // Probability to branch off at each step
 const noiseFreq = 0.001;          // Frequency of the underlying perlin noise
 const randomRotAmount = 0.4;      // random jitter at each move
 const perlinPerturbation = true;  // If true, the current direction will be
@@ -31,21 +25,14 @@ const margins = 50;               // Margin in pixels to enforce with canvas
 const clickable = true;           // If true, only spawns clusters on click
 const colorButtons = true;        // If true, colors are selectable by clicking
                                   // buttons rather than randomly assigned.
-const fruitsRadius = 10;          // Radius of the drawn fruits
-const fruitProb = 0.01;           // probability of adding a fruit
-const squareGrid = true;         // If true, the displacements will always be
-                                  // either up left right or down
-const pruningProb = 0.1;            // probability to simply kill a walker
 
 
 let walkers = [];
 let deadWalkers = [];
-let fruits = [];
 
 let clusters = [];
 
 let grid = [];
-
 
 let resX;
 let resY;
@@ -93,31 +80,18 @@ function spawnCluster(cluster) {
   if (!colorButtons) {
     layer = randomInt(colors.length);
   }
-  if (circleSpawn) {
-    for (let i = 0; i < numWalkers; i++) {
-      walkers.push(new Walker(
-        cluster.copy().add(
-          p5.Vector.fromAngle(i / numWalkers * 2 * Math.PI).mult(
-            initialDispersion)
-          ),
-          layer
-      ));
-    }
-  }
-  else {
-    for (let i = 0; i < numWalkers; i++) {
-      walkers.push(new Walker(
-        cluster.copy().add(
-          random2DVector().mult(random(initialDispersion))
-          ),
-          layer
-      ));
-    }
+  for (let i = 0; i < numWalkers; i++) {
+    walkers.push(new Walker(
+      cluster.copy().add(
+        random2DVector().mult(random(initialDispersion))
+      ),
+      layer
+    ));
   }
 }
 
 function setup() {
-  createSVGCanvas(2048, 2048);
+  createCanvas(1000, 1000);
   background(colorFromHex(backgroundClr));
   setSeed(5341);
   loadFonts();
@@ -191,7 +165,6 @@ function setup() {
         shape.layer = walker.layer;
         shapes.push(shape);
       })
-      fruits.forEach(fruit => shapes.push(fruit));
       return shapes;
     }
   }
@@ -226,20 +199,6 @@ function checkForCollision(old_pos, new_pos) {
     };
   }
 
-  if (collides) {
-    return collides;
-  }
-  else {
-    for (fruit of fruits) {
-      let [inter, _] = doSegmentIntersectCircle(
-        old_pos, new_pos, fruit.position, fruitsRadius)
-      if (inter) {
-        collides = true;
-        break;
-      }
-    }
-  }
-
   return collides;
 }
 
@@ -252,96 +211,37 @@ function getCell(pos) {
   return y_idx * resX + x_idx;
 }
 
-function checkFruitCanFit(position) {
-  canFit = true;
-  for (fruit of fruits) {
-    if (
-      distSquared(fruit.position, position) < 4 * fruitsRadius * fruitsRadius) {
-      canFit = false;
-      break;
-    }
-  }
-
-  if (!canFit) return false;
-
-  for (cell of grid) {
-    for (edge of cell) {
-      let [inter, _] = doSegmentIntersectCircle(
-        edge[0], edge[1], position, fruitsRadius);
-      if (inter) {
-        canFit = false;
-        break;
-      }
-    }
-    if (!canFit) break;
-  }
-
-  return canFit;
-}
-
 function step() {
   let buffer = []
 
   // for each walker, move it and check whether it has hit a wall.
   // If not move it.
   for (walker of walkers) {
-    if (random() > pruningProb) {
+    let x = (walker.x + width / 2) * noiseFreq;
+    let y = (walker.y + height / 2) * noiseFreq;
+    let norm = noise(x, y) * maxDisplacement;
+    let dir = noiseVector(noise, x + 100, y + 100);
+    let randomDir = random2DVector();
+    dir = lerpVector(dir, randomDir, randomRotAmount);
 
-      if (random() <= fruitProb) {
-        if (walker.hist.length > 1) {
-          deadWalkers.push(walker);
+    if (perlinPerturbation) {
+      dir = lerpVector(walker.last_dir(), dir, perturbationAmount);
+    }
 
-          let newFruit = new Fresco.Circle(fruitsRadius);
-          newFruit.position = createVector(
-            walker.x, walker.y).add(walker.last_dir().copy().mult(fruitsRadius));
-          if (checkFruitCanFit(newFruit.position)) {
-              newFruit.color = colorFromHex(colors[walker.layer]);
-            newFruit.layer = walker.layer;
-            newFruit.strokeWeight = lineWeight;
-            newFruit.draw()
-            fruits.push(newFruit);
-          }
-        }
-      }
-      else {
-        let x = (walker.x + width / 2) * noiseFreq;
-        let y = (walker.y + height / 2) * noiseFreq;
-        let norm = noise(x, y) * maxDisplacement;
-        let dir = noiseVector(noise, x + 100, y + 100);
-        let randomDir = random2DVector();
-        dir = lerpVector(dir, randomDir, randomRotAmount);
+    let disp = dir.mult(norm);
+    let new_pos = walker.copy().add(disp);
+    if (!checkForCollision(walker, new_pos) && isInBounds(new_pos)) {
+      let line = new Fresco.Line(walker, new_pos);
+      line.color = colorFromHex(colors[walker.layer]);
+      line.draw();
+      grid[getCell(walker)].push([walker.copy(), new_pos.copy()]);
+      grid[getCell(new_pos)].push([walker.copy(), new_pos.copy()]);
 
-        if (perlinPerturbation) {
-          dir = lerpVector(walker.last_dir(), dir, perturbationAmount);
-        }
-
-        if (squareGrid) {
-          if (Math.abs(dir.x) > Math.abs(dir.y)) {
-            dir.x /= Math.abs(x);
-            dir.y = 0;
-          } else {
-            dir.x = 0;
-            dir.y /= Math.abs(dir.y);
-          }
-        }
-        let disp = dir.mult(norm);
-
-        let new_pos = walker.copy().add(disp);
-        if (!checkForCollision(walker, new_pos) && isInBounds(new_pos)) {
-          let line = new Fresco.Line(walker, new_pos);
-          line.color = colorFromHex(colors[walker.layer]);
-          line.strokeWeight = lineWeight;
-          line.draw();
-          grid[getCell(walker)].push([walker.copy(), new_pos.copy()]);
-          grid[getCell(new_pos)].push([walker.copy(), new_pos.copy()]);
-
-          walker.set_pos(new_pos);
-          buffer.push(walker);
-        } else {
-          if (walker.hist.length > 1) {
-            deadWalkers.push(walker);
-          }
-        }
+      walker.set_pos(new_pos);
+      buffer.push(walker);
+    } else {
+      if (walker.hist.length > 1) {
+        deadWalkers.push(walker);
       }
     }
   }
@@ -367,7 +267,7 @@ function makeClean() {
   noLoop();
   print('Done');
   background(colorFromHex(backgroundClr));
-  Fresco.registerShapes = true;
+  Fresco.registerShapes = false;
   deadWalkers.forEach(walker => {
     let shape = new Fresco.Shape(walker.hist);
     if (!roundOnCleanUp) {
@@ -375,11 +275,8 @@ function makeClean() {
     }
     shape.layer = walker.layer;
     shape.color = colorFromHex(colors[walker.layer]);
-    shape.strokeWeight = lineWeight;
     shape.draw();
   })
-  fruits.forEach(fruit => fruit.strokeWeight = lineWeight);
-  fruits.forEach(fruit => fruit.draw());
 }
 
 // draw function which is automatically
@@ -387,21 +284,3 @@ function makeClean() {
 function draw() {
   step();
 }
-
-// function draw() {
-//   const freq = 10;
-//   const offset = 30;
-//   const amp = 30;
-//   let vertices = [];
-//   const fade = 0.95;
-
-//   let local_amp = amp * (0.5 + random());
-//   let phase = Math.PI * random();
-//   for (let  i = 0; i < 500; i ++) {
-//     vertices.push(createPoint(i * width / 500 - width / 2, -height / 2 -amp + offset * frameCount + local_amp *  Math.sin(freq * i / 500 * Math.PI * 2 + phase)));
-//   }
-//   let shape = new Fresco.Shape(vertices);
-//   shape.color = 128 * Math.pow(fade, frameCount);
-//   shape.strokeWeight = 3;
-//   shape.draw();
-// }

@@ -17,7 +17,7 @@ const Axis = {
 Fresco.Ray = class {
     /**
      * @constructor
-     * @param {p5.Vector} ori ray origin 
+     * @param {p5.Vector} ori ray origin
      * @param {p5.Vector} dir ray direction
      */
     constructor(ori, dir) {
@@ -54,10 +54,10 @@ Fresco.Matrix = class {
     }
 
     /**
-     * Applies the transformation matrix to a vector by multiplying the 
+     * Applies the transformation matrix to a vector by multiplying the
      * matrix and the vector. Note this returns a copy, the original is unmodified.
      * @param {Fresco.Point} v Vector to transform
-     * @returns {Fresco.Point} Transformed point 
+     * @returns {Fresco.Point} Transformed point
      */
     apply(v) {
         let p = v.copy();
@@ -93,7 +93,7 @@ Fresco.Matrix = class {
         let x13 = a.x10*b.x03 + a.x11*b.x13 + a.x12*b.x23 + a.x13*b.x33;
         let x23 = a.x20*b.x03 + a.x21*b.x13 + a.x22*b.x23 + a.x23*b.x33;
         let x33 = a.x30*b.x03 + a.x31*b.x13 + a.x32*b.x23 + a.x33*b.x33;
-        
+
         return new Fresco.Matrix(
             x00, x01, x02, x03,
             x10, x11, x12, x13,
@@ -105,8 +105,8 @@ Fresco.Matrix = class {
     /**
      * Essentially the same as the apply method except we
      * do not divide by the w coeeficient. Used to transform a position.
-     * @param {Fresco.Point} v 
-     *  @returns {Fresco.Point} Transformed point 
+     * @param {Fresco.Point} v
+     *  @returns {Fresco.Point} Transformed point
      */
     positionMul(v) {
         let p = v.copy();
@@ -115,7 +115,7 @@ Fresco.Matrix = class {
         p.z = this.x20 * v.x + this.x21 * v.y + this.x22 * v.z + this.x23;
         return p;
     }
-    
+
 
     /**
      * Apply the transformation to a direction vector.
@@ -128,9 +128,9 @@ Fresco.Matrix = class {
         p.y = this.x10 * v.x + this.x11 * v.y + this.x12 * v.z;
         p.z = this.x20 * v.x + this.x21 * v.y + this.x22 * v.z;
         p.normalize();
-        return p;        
+        return p;
     }
-    
+
     /**
      * Applies the transform matrix to a ray
      * @param {Fresco.Ray} r
@@ -143,7 +143,7 @@ Fresco.Matrix = class {
 
     /**
      * Multiplies a box by this matrix
-     * @param {Fresco.Box} box 
+     * @param {Fresco.Box} box
      * @returns {Fresco.Box} transformed box
      */
     boxMul(box) {
@@ -165,7 +165,7 @@ Fresco.Matrix = class {
         let maxy = vectorMax(ya, yb);
         let minz = vectorMin(za, zb);
         let maxz = vectorMax(za, zb);
-        
+
         let m = minx.add(miny).add(minz).add(t);
         let M = maxx.add(maxy).add(maxz).add(t);
 
@@ -189,7 +189,7 @@ Fresco.Matrix = class {
             this.x02 * this.x11 * this.x23 * this.x30 - this.x02 * this.x11 * this.x20 * this.x33 -
             this.x03 * this.x10 * this.x21 * this.x32 + this.x03 * this.x10 * this.x22 * this.x31 -
             this.x03 * this.x11 * this.x22 * this.x30 + this.x03 * this.x11 * this.x20 * this.x32 -
-            this.x03 * this.x12 * this.x20 * this.x31 + this.x03 * this.x12 * this.x21 * this.x30)  
+            this.x03 * this.x12 * this.x20 * this.x31 + this.x03 * this.x12 * this.x21 * this.x30)
     }
 
     /**
@@ -206,7 +206,7 @@ Fresco.Matrix = class {
     }
 
     /**
-     * Computes the inverse of this matrix. Because this class is meant as a container 
+     * Computes the inverse of this matrix. Because this class is meant as a container
      * class for 3D transforms, there is no doubt that this matrix can be inverted safely.
      * @returns {Fresco.Matrix} The inverse of this matrix.
      */
@@ -229,7 +229,7 @@ Fresco.Matrix = class {
         let x31 = (a.x01*a.x22*a.x30 - a.x02*a.x21*a.x30 + a.x02*a.x20*a.x31 - a.x00*a.x22*a.x31 - a.x01*a.x20*a.x32 + a.x00*a.x21*a.x32) / d
         let x32 = (a.x02*a.x11*a.x30 - a.x01*a.x12*a.x30 - a.x02*a.x10*a.x31 + a.x00*a.x12*a.x31 + a.x01*a.x10*a.x32 - a.x00*a.x11*a.x32) / d
         let x33 = (a.x01*a.x12*a.x20 - a.x02*a.x11*a.x20 + a.x02*a.x10*a.x21 - a.x00*a.x12*a.x21 - a.x01*a.x10*a.x22 + a.x00*a.x11*a.x22) / d
-        
+
         return new Fresco.Matrix(
             x00, x01, x02, x03,
             x10, x11, x12, x13,
@@ -255,7 +255,7 @@ const TranslationMatrix = (translation) => new Fresco.Matrix(
     1, 0, 0, translation.x,
     0, 1, 0, translation.y,
     0, 0, 1, translation.z,
-    0, 0, 0, 1    
+    0, 0, 0, 1
 );
 
 /**
@@ -272,7 +272,7 @@ const ScaleMatrix = (scale) => new Fresco.Matrix(
 
 /**
  * Creates a rotation matrix
- * @param {Fresco.Point} axis Rotation axis 
+ * @param {Fresco.Point} axis Rotation axis
  * @param {Number} angle Angle
  * @returns {Fresco.Matrix} Rotation Matrix
  */
@@ -280,7 +280,7 @@ const RotationMatrix = (axis, angle) => {
     let v = axis.copy().normalize();
     let s = Math.sin(angle);
     let c = Math.cos(angle);
-    let m = 1 - c; 
+    let m = 1 - c;
     return new Fresco.Matrix (
         m * v.x * v.x + c,       m * v.x * v.y + v.z * s, m * v.z * v.x - v.y * s, 0,
         m * v.x * v.y - v.z * s, m * v.y * v.y + c,       m * v.y * v.z + v.x * s, 0,
@@ -334,7 +334,7 @@ const OrthographicProjection = (l, r, b, t, n, f) => {
 /**
  * Creates a Frustrum Projection matrix, defined from the aspect ratio
  * of the image and field of view rather than the plane bounds.
- * @param {Number} fovy Vertical field of view angle in Radians 
+ * @param {Number} fovy Vertical field of view angle in Radians
  * @param {Number} aspectRatio Camera aspect ratio width / height
  * @param {Number} near z distance to the near plane from the origin in view space.
  * @param {Number} far z distance to the far plane from the origin in view space.
@@ -347,7 +347,7 @@ const PerspectiveProjection = (fovy, aspectRatio, near, far) => {
 }
 
 /**
- * Creates a transform matrix corresponding at 
+ * Creates a transform matrix corresponding at
  * @param {Fresco.Point} eye Eye position
  * @param {Fresco.Point} center Point to look at
  * @param {Fresco.Point} up Up direction
@@ -371,9 +371,9 @@ const LookAtTransform = (eye, center, up) => {
 
 /**
  * Rotate vector around specified axis. Note this returns a copy, the original is unmodified.
- * @param {Fresco.Point} axis Rotation axis 
- * @param {Number} angle 
- * @param {Fresco.Point} v 
+ * @param {Fresco.Point} axis Rotation axis
+ * @param {Number} angle
+ * @param {Fresco.Point} v
  */
 function rotateVector(axis, angle, v) {
     return RotationMatrix(axis, angle).apply(v);
@@ -409,7 +409,7 @@ function translateVector(v, translation) {
     return p;
 }
 
- 
+
 /**
  * Container describing a ray hit
  */
@@ -417,7 +417,7 @@ Fresco.Hit = class {
     /**
      * @constructor
      * @param {Fresco.Shape} shape Hit shape
-     * @param {Number} distance Distance from the camera of the hit 
+     * @param {Number} distance Distance from the camera of the hit
      */
     constructor(shape, distance) {
         this.shape = shape;
@@ -443,7 +443,7 @@ Fresco.Hit = class {
         }
         else {
             return otherHit;
-        }        
+        }
     }
 }
 
@@ -463,7 +463,7 @@ Fresco.Shape3D = class {
     /**
      * @constructor
      * @param {p5.Vector} m position of the closest bottom left corner
-     * @param {p5.Vector} M position of the furthest top right corner 
+     * @param {p5.Vector} M position of the furthest top right corner
      */
     constructor(m, M) {
         super()
@@ -481,7 +481,7 @@ Fresco.Shape3D = class {
 
     /**
      * Returns the absolute position of an anchor point
-     * @param {p5.Vector} v Position of an anchor point in local coordinates 
+     * @param {p5.Vector} v Position of an anchor point in local coordinates
      */
     anchor(v) {
         return this.min.copy().add(this.size().mult(v));
@@ -497,7 +497,7 @@ Fresco.Shape3D = class {
 
     /**
      * Checks whether this box contains a point
-     * @param {p5.Vector} v point 
+     * @param {p5.Vector} v point
      * @returns {Boolean} Whether the point is contained
      */
     contains(v) {
@@ -510,7 +510,7 @@ Fresco.Shape3D = class {
 
     /**
      * Translates this box
-     * @param {p5.Vector} translation 
+     * @param {p5.Vector} translation
      */
     translate(translation) {
         this.min.add(translation);
@@ -539,7 +539,7 @@ Fresco.Shape3D = class {
 
     /**
      * Extends this box to also contain the other box
-     * @param {Fresco.Box} b other box 
+     * @param {Fresco.Box} b other box
      * @returns {Fresco.Box} Encompassing box
      */
     extend(b) {
@@ -548,8 +548,8 @@ Fresco.Shape3D = class {
 
     /**
      * Computes whether a point is outside the box along a certain axis
-     * @param {String} axis Axis along which to check the partition 
-     * @param {Number} value Coordinate of the point along the specified axis 
+     * @param {String} axis Axis along which to check the partition
+     * @param {Number} value Coordinate of the point along the specified axis
      * @returns {Boolean} Whether the coordinate is outside the box
      */
     partition(axis, value) {
@@ -582,7 +582,7 @@ Fresco.Shape3D = class {
 
     /**
      * Computes the intersection of a ray with this box. Note: This method is weird.
-     * @param {Fresco.Ray} r Ray 
+     * @param {Fresco.Ray} r Ray
      * @returns {Fresco.Hit} Hit
      */
      computeRayIntersection(r) {
@@ -594,7 +594,7 @@ Fresco.Shape3D = class {
             let buf = m.x;
             m.x = M.x;
             M.x = buf;
-        } 
+        }
         if (m.y > M.y) {
             let buf = m.y;
             m.y = M.y;
@@ -622,15 +622,15 @@ Fresco.Shape3D = class {
 }
 
 /**
- * Constructs a 3D triangle, which is the basic 
+ * Constructs a 3D triangle, which is the basic
  * building bloc of triangular meshes.
  */
 Fresco.Tri3D = class extends Fresco.Shape3D {
     /**
      * @constructor
-     * @param {Fresco.Point} v1 
-     * @param {Fresco.Point} v2 
-     * @param {Fresco.Point} v3 
+     * @param {Fresco.Point} v1
+     * @param {Fresco.Point} v2
+     * @param {Fresco.Point} v3
      */
     constructor(v1, v2, v3) {
         super();
@@ -693,7 +693,7 @@ Fresco.Tri3D = class extends Fresco.Shape3D {
 
         // let P = ori.copy().add(dir.copy().mult(t));
         // let vp0 = P.copy().sub(this.v0);
-        // let C = edge_1.cross(vp0); 
+        // let C = edge_1.cross(vp0);
         // if (N.dot(C) < 0) return false;
 
 
@@ -757,7 +757,7 @@ Fresco.Cube = class extends Fresco.Box {
 
     /**
      * Checks whether a point is more or less contained in the cube, with some tolerance
-     * @param {Fresco.Point} v point 
+     * @param {Fresco.Point} v point
      * @param {Number} tolerance Tolerance
      * @returns {Boolean} Whether the point is approximately contained in the cube
      */
@@ -773,7 +773,7 @@ Fresco.Cube = class extends Fresco.Box {
     }
 
     /**
-     * Returns a number of lines to hatch fill the specified face 
+     * Returns a number of lines to hatch fill the specified face
      * @param {Number} angle hatch angle
      * @param {Number} spacing hatch lines spacing
      * @param {String} face hatch face specified as e.g. "+xy" where + or - specify it is the face on
@@ -795,7 +795,7 @@ Fresco.Cube = class extends Fresco.Box {
             case 'xz':
                 l = createPoint(this.min.x, this.min.z);
                 r = createPoint(this.max.x, this.max.z);
-                break;   
+                break;
         }
 
         let square = new Fresco.Shape([l, createPoint(l.x, r.y), r, createPoint(r.x, l.y), l]);
@@ -836,7 +836,7 @@ Fresco.Cube = class extends Fresco.Box {
                         v.y = p.y;
                     })
                 })
-                break;   
+                break;
         }
 
         return lines;
@@ -870,9 +870,9 @@ const boolType = {
 Fresco.BooleanShape = class extends Fresco.Shape3D {
     /**
      * @constructor
-     * @param {Fresco.Shape3D} A 
-     * @param {Fresco.Shape3D} B 
-     * @param {String} type 
+     * @param {Fresco.Shape3D} A
+     * @param {Fresco.Shape3D} B
+     * @param {String} type
      */
     constructor(A, B, type) {
         super();
@@ -910,7 +910,7 @@ Fresco.BooleanShape = class extends Fresco.Shape3D {
 
         let v = r.position(h.distance);
 
-        // If there is no hit, return. 
+        // If there is no hit, return.
         // If there is a hit and it is contained in the resulting boolean, return the hit.
         if (!h.OK() || this.contains(v)) {
             return h;
@@ -934,7 +934,7 @@ Fresco.BooleanShape = class extends Fresco.Shape3D {
 Fresco.ArbitraryShape = class extends Fresco.Shape3D {
     /**
      * @constructor
-     * @param {Fresco.Shape} shape 
+     * @param {Fresco.Shape} shape
      */
     constructor(shape) {
         super();
@@ -1017,7 +1017,7 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
         else {
             return [this.shape.copy()];
         }
-        
+
     }
 }
 
@@ -1027,10 +1027,10 @@ Fresco.ArbitraryShape = class extends Fresco.Shape3D {
 Fresco.Quad = class extends Fresco.ArbitraryShape {
     /**
      * @constructor
-     * @param {p5.Vector} v1 vertex 
-     * @param {p5.Vector} v2 vertex 
-     * @param {p5.Vector} v3 vertex 
-     * @param {p5.Vector} v4 vertex 
+     * @param {p5.Vector} v1 vertex
+     * @param {p5.Vector} v2 vertex
+     * @param {p5.Vector} v3 vertex
+     * @param {p5.Vector} v4 vertex
      */
     constructor(v1, v2, v3, v4) {
         let quad = new Fresco.Shape([v1, v2, v3, v4, v1]);
@@ -1112,21 +1112,21 @@ Fresco.Icosphere = class extends Fresco.Polymesh {
             (-X, 0.0, Z),
             (X, 0.0, Z),
             (-X, 0.0, -Z),
-            (X, 0.0, -Z),    
+            (X, 0.0, -Z),
             (0.0, Z, X),
             (0.0, Z, -X),
             (0.0, -Z, X),
-            (0.0, -Z, -X),    
+            (0.0, -Z, -X),
             (Z, X, 0.0),
             (-Z, X, 0.0),
             (Z, -X, 0.0),
-            (-Z, -X, 0.0) 
+            (-Z, -X, 0.0)
         ]
 
         const faces = [
-            [0,4,1], [0,9,4], [9,5,4], [4,5,8], [4,8,1],    
-            [8,10,1], [8,3,10], [5,3,8], [5,2,3], [2,7,3],    
-            [7,10,3], [7,6,10], [7,11,6], [11,0,6], [0,1,6], 
+            [0,4,1], [0,9,4], [9,5,4], [4,5,8], [4,8,1],
+            [8,10,1], [8,3,10], [5,3,8], [5,2,3], [2,7,3],
+            [7,10,3], [7,6,10], [7,11,6], [11,0,6], [0,1,6],
             [6,1,10], [9,0,11], [9,11,2], [9,2,5], [7,2,11]
         ]
 
@@ -1134,13 +1134,14 @@ Fresco.Icosphere = class extends Fresco.Polymesh {
     }
 }
 
+
 /**
  * Node of tree acceleration structure
  */
 Fresco.Node = class {
     /**
      * @constructor
-     * @param {Array<Fresco.Shape3D>} shapes 
+     * @param {Array<Fresco.Shape3D>} shapes
      */
     constructor(shapes, point, depth) {
         this.shapes = shapes;
@@ -1153,8 +1154,8 @@ Fresco.Node = class {
 
     /**
      * Computes the number of shapes on each side of the partition
-     * @param {String} axis 
-     * @param {Number} point 
+     * @param {String} axis
+     * @param {Number} point
      */
     partitionScore(axis, point) {
         let left, right = 0;
@@ -1192,7 +1193,7 @@ Fresco.Node = class {
             }
         });
         return [left, right];
-    }   
+    }
 
     /**
      * Splits the node into 2 sub nodes at the median,
@@ -1202,7 +1203,7 @@ Fresco.Node = class {
         if (this.shapes.length < 8 || this.depth >= 10) {
             return
         }
-        
+
         let xs = [];
         let ys = [];
         let zs = [];
@@ -1262,7 +1263,7 @@ Fresco.Node = class {
         if (bestAxis === Axis.None) {
             return
         }
-        
+
         let [l, r] = this.partition(bestAxis, bestPoint);
         this.axis = bestAxis;
         this.point = bestPoint;
@@ -1347,7 +1348,7 @@ Fresco.Node = class {
 Fresco.Tree = class {
     /**
      * @constructor
-     * @param {Array<Fresco.Shape3D>} shapes 
+     * @param {Array<Fresco.Shape3D>} shapes
      */
     constructor(shapes) {
         // compute bounding box of the scene
@@ -1390,7 +1391,7 @@ Fresco.Scene3D = class {
 
     /**
      * Registers a shape in the scene
-     * @param {Fresco.Shape3D} shape The shape to add to the scene 
+     * @param {Fresco.Shape3D} shape The shape to add to the scene
      */
     registerShape3D(shape) {
         this.shapes.push(shape);
@@ -1398,9 +1399,9 @@ Fresco.Scene3D = class {
     }
 
     /**
-     * Registers a Freco.Shape. These shapes are not really 
+     * Registers a Freco.Shape. These shapes are not really
      * 3D and as such it will not occlude anything but can be occluded.
-     * @param {Fresco.Shape} shape 
+     * @param {Fresco.Shape} shape
      */
     registerShape2D(shape) {
         this.extraShapes.push(shape);
@@ -1415,7 +1416,7 @@ Fresco.Scene3D = class {
     }
 
     /**
-     * 
+     *
      */
     computeRayIntersection(r) {
         if (!this.isBuilt) {
@@ -1427,7 +1428,7 @@ Fresco.Scene3D = class {
 
     /**
      * Checks whether a point is visible or occluded by the scene
-     * @param {p5.Vector} eye position of the eye 
+     * @param {p5.Vector} eye position of the eye
      * @param {p5.Vector} v position of the point
      * @returns {Boolean} Whether the point is visible
      */
@@ -1439,7 +1440,7 @@ Fresco.Scene3D = class {
     }
 
     /**
-     * 
+     *
      * @param {p5.Vector} eye Position of the eye/camera
      * @param {p5.Vector} center Point to look at
      * @param {p5.Vector} up Up vector
@@ -1448,7 +1449,7 @@ Fresco.Scene3D = class {
      * @param {Number} fovy vertical field of view in Radians
      * @param {Number} near z distance to the near plane from the origin in view space.
      * @param {Number} far z distance to the far plane from the origin in view space.
-     * @param {Number} step 
+     * @param {Number} step
      * @returns {Array<Fresco.Shape>} Rendered shapes
      */
     render(eye, center, up, width, height, fovy, near, far, step) {
@@ -1462,7 +1463,7 @@ Fresco.Scene3D = class {
         if (!this.isBuilt) {
             this.buildScene();
         }
-        
+
         let paths = [];
         this.shapes.forEach(s => paths.push(...s.toShapes()));
         paths.push(...this.extraShapes);
