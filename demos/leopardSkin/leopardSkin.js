@@ -185,7 +185,8 @@ class SpotInASpot extends Fresco.Collection {
 }
 
 function setup() {
-  createA4RatioCanvas(1000);
+  const size = 1000;
+  createSVGCanvas(size, size * Math.sqrt(2))
   background(colorFromHex(backgroundClr));
   setSeed(spotsSeed);
   loadFonts();
@@ -212,7 +213,8 @@ function draw() {
   sampler.draw();
 
   if (boxDraw) {
-    let sq = new Fresco.Rect(0.55 * width, 0.55 * height);
+    const size = 0.55 * width;
+    let sq = new Fresco.Rect(size, size * Math.sqrt(2));
     sq.layer = 1;
     sq.strokeWeight = boxThickness;
     sq.draw();

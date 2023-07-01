@@ -28,7 +28,7 @@ Fresco.isSVGCanvas = false;
  */function createSVGCanvas(w, h)
 {
   Fresco.isSVGCanvas = true;
-  createCanvas(w, h, SVG);
+  return createCanvas(w, h, SVG);
 }
 
 /**
@@ -60,7 +60,7 @@ function disableKeyPresses() {
 }
 
 /**
- * Overide of the p5 keyPressed function which handles various  key presses.
+ * Overide of the p5 keyPressed function which handles various key presses.
  * * Pausing with the p and space keys
  * * Saving the current frame to png with the s key
  * * Right arrow key will draw one frame.
@@ -81,7 +81,9 @@ function keyPressed() {
 
     // save current frame to png
     if (key == 's') {
+      console.log('pressed s')
       if (Fresco.isSVGCanvas) {
+        console.log('saving svg')
         save();
       }
       else
@@ -497,7 +499,7 @@ function randomSelect(objects) {
 
 
 function createA4RatioCanvas(size) {
-  createCanvas(size, size * Math.sqrt(2));
+  return createCanvas(size, size * Math.sqrt(2));
 }
 
 /**

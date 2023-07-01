@@ -10,16 +10,17 @@ const maxNoiseFactor = 1;
 const displayCircle = false;
 const playBackSpeed = 2 * Math.PI / 360;
 const noiseModSpeed = 10;
-const startFactor =  0;
+const startFactor =  Math.PI;
 const tailLengthFactor = 0;
 const globalRot = Math.PI / 8;
 // const globalRot = - 3 * Math.PI / 4;
 // const globalTranslationY = 350;
-const globalTranslationY = 0;
+const globalTranslationY = -0;
 const tailSharpness = 2;
-const tailSharpness2 = 5
+const tailSharpness2 = 5;
+const bulgeAmount = 3;
 
-const render = false;
+const render = true;
 
 let factor = startFactor;
 let playbackSign = 1;
@@ -31,7 +32,7 @@ function setup() {
   createA4RatioCanvas(1440);
   setSeed(7902); // (freq (0.001), tailSharpness2 5) 7902, 4490 (20 points) , 1504 (50 points), 2267, 9092(1000 points), 2847 (1000 points, freq 0.002, tailSharpness 6), 8847 (globalRot = - 3 * Math.PI / 4  globalTranslationY = 300, noiseAmplitude 50, freq 0.002, 1000 points)
 
-  r = width / 2 - 300;
+  r = width / 2 - 400;
 
   c = new Fresco.Circle(12, r);
   c.color = colorFromHex(lineClr);
@@ -72,7 +73,7 @@ function draw() {
         * (1 - 0 * noise(
           a.x * noiseFreq,
           a.y * noiseFreq,
-          frameCount * noiseFreq * noiseModSpeed
+          cos(factor / 4 + PI) * noiseFreq * noiseModSpeed
     ));
 
     for (let k = 0; k < tailSharpness; k++) {
@@ -96,7 +97,7 @@ function draw() {
         normalizedRidgedNoise,
         l.vertices[j].x * noiseFreq,
         l.vertices[j].y * noiseFreq,
-        frameCount * noiseFreq * noiseModSpeed
+        cos(factor / 4 + PI) * 0.5 + 0.5 * noiseFreq * noiseModSpeed
       );
 
       let amplitude =lerp(
@@ -119,6 +120,10 @@ function draw() {
       let x = v.x; y = v.y;
       v.y = -x;
       v.x = -y;
+
+      let dist = v.magSq() / r / r;
+      let bulge = 1 - pow(1 - dist, 1 + bulgeAmount * (sin(factor * 0.5 + PI/11) * 0.5 + 0.5));
+      v.mult(bulge / dist);
     });
 
     // draw
@@ -126,9 +131,10 @@ function draw() {
     l.setPosition(createPoint(0, globalTranslationY));
     l.draw();
   }
-  noLoop()
+//   noLoop()
 
- if (render && frameCount > 2 * PI / playBackSpeed) {
+ if (render && factor >= 8 * PI + startFactor) {
     stopRecording();
+    noLoop();
  }
 }

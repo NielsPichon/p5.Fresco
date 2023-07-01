@@ -1,5 +1,5 @@
 const backgroundClr = '000000';
-const density = 60; // amount of points in each direction
+const density = 1000; // amount of points in each direction
 const pointSpacingModulation = 10; // max shift of points upon spawn due to noise
 const minNoiseScale = 0.008;
 const maxNoiseScale = 0.015;
@@ -10,8 +10,13 @@ const moveSpeed = 0.5; // how fast to move points at
 const noiseType = 'ridged'; // type of noise to use, either 'perlin' or 'ridged'
 const drawPoints = true; // whether to draw points or lines/curves
 const clampToAxes = false; // whether to clamp the noise to the x/y axes
-const preSimulate = 0; // if non-zero, the specified amount of steps will
+const preSimulate = 500; // if non-zero, the specified amount of steps will
                        // be precomputed and the result will be drawn
+// const stripeWidth = 100; // width of the stripe
+const squareSize = 500; // size of the square
+const numSquares = 2; // number of squares to draw
+const shrinkSpeed = 0.3; // how fast to shrink the squares
+const margin = 150;
 
 let noiseScale;
 let r1;
@@ -22,28 +27,55 @@ let b1;
 let b2;
 
 function setup() {
-  createCanvas(1000, 1000);
+  if (preSimulate > 0) {
+    createSVGCanvas(1000, 1000 * sqrt(2));
+  } else {
+    createA4RatioCanvas(1000);
+  }
   strokeWeight(pointWeight)
   background(colorFromHex(backgroundClr));
   angleMode(DEGREES);
   noiseDetail(1);
+  setSeed(8034); //1394+ridged, 6990+ridged, 8034+ridged, 9534+noise, 8612+noise
 
   Fresco.registerShapes = false;
 
-  let space = 2 * alphaFadeRadius / density;
+  // const diag = sqrt(width * width + height * height);
+  // let diagDir = createVector(width, height).normalize();
+  // let orth = createVector(-diagDir.y, diagDir.x);
+
+  let size = squareSize;
+
+  for (let j = 0; j < numSquares; j++) {
+
+    for (let i = 0; i < density / numSquares; i++) {
+      let side = Math.floor(random(4));
+      let x = side % 2 == 0 ? random(-size / 2, size / 2) : (side == 1 ? -size / 2 : size / 2);
+      let y = side % 2 == 1 ? random(-size / 2, size / 2) : (side == 0 ? -size / 2 : size / 2);
+      // let X = random(-stripeWidth / 2, stripeWidth / 2);
+      // let Y = random(-diag / 2, diag / 2);
+      // let pos = diagDir.copy().mult(Y).add(orth.copy().mult(X));
+      // let p = createParticle(pos.x, pos.y);
+      let p = createParticle(x, y);
+      p.leaveTrail = true;
+      p.color = [255, 255, 255, 128];
+    }
+
+    size *= shrinkSpeed;
+  }
+
+  // let space = 2 * alphaFadeRadius / density;
 
   // spawn particles at even interval + some random modulation
-  for (let x = - alphaFadeRadius; x < alphaFadeRadius; x += space) {
-    for (let y = - alphaFadeRadius; y < alphaFadeRadius; y += space) {
-      let X = x + random(-pointSpacingModulation, pointSpacingModulation);
-      let Y = y + random(-pointSpacingModulation, pointSpacingModulation);
-      if (X * X + Y * Y < alphaFadeRadius * alphaFadeRadius){
-        let p = createParticle(X, Y);
-        p.leaveTrail = true;
-        p.color = [255, 255, 255, 128];
-      }
-    }
-  }
+
+      // let X = x + random(-pointSpacingModulation, pointSpacingModulation);
+      // let Y = y + random(-pointSpacingModulation, pointSpacingModulation);
+      // x = X * cos(PI / 4) + Y * sin(PI / 4);
+      // y = X * sin(PI / 4) - Y * cos(PI / 4);
+
+      // let p = createParticle(x, y);
+      // p.leaveTrail = true;
+      // p.color = [255, 255, 255, 128];
 
   // Randomize the lines so that they don't spawn from
   // top left corner to bottom right one
@@ -133,7 +165,7 @@ function draw() {
     // draw the last move of each particle
     let drawCount = 0;
     for (let i = 0; i < lineCount; i++) {
-      if (dist(0, 0, particles[i].x, particles[i].y) < alphaFadeRadius) {
+      if (abs(particles[i].x) < width / 2 - margin && abs(particles[i].y) < height / 2 - margin) {
         drawCount ++;
         if (drawPoints) {
           stroke(particles[i].color);
@@ -143,7 +175,8 @@ function draw() {
           particles[i].drawLastMove();
         }
       } else {
-        particles[i].trail.vertices.pop();
+        // particles[i].trail.vertices.pop();
+        particles[i].stopSimulate=true;
       }
     }
 
@@ -154,11 +187,10 @@ function draw() {
   }
   else {
     // if pre-simulated, simply draw the whole trajectory of each particle
-    for (let i = 0; i < particles.length; i++) {
-      if (dist(0, 0, particles[i].x, particles[i].y) < alphaFadeRadius) {
-        particles[i].drawLastMove();
-      }
-    }
+    particles.forEach(p => {
+      let shape = resample(p.trail, 100);
+      shape.draw();
+    });
     noLoop()
   }
 }
